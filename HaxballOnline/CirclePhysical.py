@@ -9,7 +9,7 @@ class CirclePhysical(ABC):
         self.number = number
         self.weight = weight
         self.size = size                # size used for drawing and collision detection
-        self.hitbox = size + 6          # hitbox used for kicking the ball
+        self.hitbox = size + 7          # hitbox used for kicking the ball
         self.v_max = 6/self.weight
         self.friction = self.weight * 0.2
         self.color = color

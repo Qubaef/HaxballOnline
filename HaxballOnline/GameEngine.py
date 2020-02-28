@@ -12,6 +12,7 @@ class GameEngine(object):
     fps = 60
     wall_bounce = 1.0
     members = [] # list containing ball and all players
+    test_mode = False
 
     def __init__(self):
         pygame.init()
@@ -36,6 +37,8 @@ class GameEngine(object):
             self.check_collision()
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
+            if self.test_mode:
+                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
 
 
     def check_collision(self):

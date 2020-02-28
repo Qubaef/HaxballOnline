@@ -29,8 +29,15 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        elif event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
-            player.mode_normal()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_t:
+                if game.test_mode:
+                    game.test_mode = False
+                else:
+                    game.test_mode = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                player.mode_normal()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             p = pygame.mouse.get_pos()
             player.kick(p)
