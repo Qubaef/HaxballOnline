@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import random
 
 from pygame.locals import *
 
@@ -16,8 +17,8 @@ game.new_ball(ball)
 game.new_member(player)
 
 # create static bots (buggy sometimes)
-for i in range(2,30):
-   game.new_member(Player(game, 700, 300, 1, 2))
+for i in range(2,20):
+   game.new_member(Player(game, game.pitch_w * random.uniform(0,1), game.pitch_h * random.uniform(0,1), i + 2, 1))
 
 done = False
 

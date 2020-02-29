@@ -1,4 +1,5 @@
 import pygame
+import math
 from abc import ABC
 
 class CirclePhysical(ABC):
@@ -10,7 +11,7 @@ class CirclePhysical(ABC):
         self.weight = weight
         self.size = size                # size used for drawing and collision detection
         self.hitbox = size + 7          # hitbox used for kicking the ball
-        self.v_max = 6/self.weight
+        self.v_max = 6 / math.pow(self.weight, 2/3)     # maximum velocity is non-linear, cause ball was be too fast
         self.friction = self.weight * 0.2
         self.color = color
         self.p = pygame.math.Vector2(px,py)

@@ -24,36 +24,33 @@ class Player(CirclePhysical):
 
                     overlap = (dist - self.size - circ.size)/2
                     self.p -= overlap * (circ.weight/self.weight) * (self.p - circ.p)/dist
+                    self.game.check_collision(self)
                     circ.p += overlap * (self.weight/circ.weight) * (self.p - circ.p)/dist
+                    circ.game.check_collision(circ)
 
                     #if circ is a ball, transfer velocity
                     if isinstance(circ, Ball):
 
                         # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
-                        # poniżej implementacja wzoru w internetu
+                        # poniżej implementacja wzoru z wikipedi
 
                         # normal vector
                         n = pygame.math.Vector2(0,0)
-                        n = (self.p - circ.p)/dist
+                        n = (circ.p - self.p)/dist
 
-                        # tangent
-                        t = pygame.math.Vector2(-n.y, n.x)
+                        # wikipedia version
+                        d = pygame.math.Vector2
+                        d = self.v - circ.v
+                        p = 2 * (n.x * d.x  + n.y * d.y) / (self.weight + circ.weight)
 
-                        # dot product tangent
-                        dpTan1 = self.v.x * t.x + self.v.y * t.y
-                        dpTan2 = circ.v.x * t.x + circ.v.y * t.y
+                        self.v = (self.v - p * circ.weight * n) * circ.weight / self.weight
+                        circ.v = (circ.v + (p * self.weight * n)) * self.ball_control
 
-                        # dot product normal
-                        dpNorm1 = self.v.x * n.x + self.v.y * n.y
-                        dpNorm2 = circ.v.x * n.x + circ.v.y * n.y
+                        # check if ball velocity is not bigger than max allowed velocity
+                        if circ.v.magnitude() > circ.v_max:
+                            circ.v = circ.v.normalize() * circ.v_max
 
-                        # momentum
-                        m1 = (dpNorm1 * (self.weight - circ.weight) + 2 * circ.weight * dpNorm2) / (self.weight + circ.weight)
-                        m2 = (dpNorm2 * (circ.weight - self.weight) + 2 * self.weight * dpNorm1) / (self.weight + circ.weight)
-
-                        # final velocity
-                        self.v = (t * dpTan1 + n * m1) * self.ball_control
-                        circ.v = (t * dpTan2 + n * m2) * self.ball_control
+                        
 
     def kick(self, pos):
         # check if ball is in hitbox range
