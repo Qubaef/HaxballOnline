@@ -1,23 +1,34 @@
 import pygame
+from math import ceil
 from CirclePhysical import CirclePhysical
 
 class GameEngine(object):
     "object containing Game's data"
     screen_w = 1100
     screen_h = int(screen_w / 1.57)
+
     pitch_w = int(screen_w * 0.8)
     pitch_h = int(pitch_w / 1.57)
+
     back_color = (164, 143, 91)
     pitch_color = (0, 160, 20)
+
     fps = 60
-    wall_bounce = 1.0
-    members = [] # list containing ball and all players
     test_mode = False
+
+    wall_bounce = 1.0
+
+    sector_size = 50
+    
+    balls =[]       # list containing balls
+    members = []    # list containing players
+
 
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
+        self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size) - 1)] for i in range(ceil(self.screen_w/self.sector_size) - 1)] # 2D array containing arrays, to store object in the secotrs and optimise collisions
 
     def draw_background(self):
         self.screen.fill(self.back_color)
@@ -29,22 +40,48 @@ class GameEngine(object):
     def new_member(self, member):
         self.members.append(member)
 
+    def new_ball(self, ball):
+        self.balls.append(ball)
+
     def update(self):
 
-        for obj in self.members:
-            # update positions and redraw members on the screen
-            obj.update()
-            self.check_collision()
-            pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
-            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
-            if self.test_mode:
+        if self.test_mode:
+            for obj in self.members:
+                sector_num = int(obj.size*4/self.sector_size)
+                for i in range(int(obj.p.x/self.sector_size) - sector_num, int(obj.p.x/self.sector_size) + sector_num + 1):
+                    for j in range(int(obj.p.y/self.sector_size) - sector_num, int(obj.p.y/self.sector_size) + sector_num + 1):
+                        pygame.draw.rect(self.screen, (0,255, 0), (i*self.sector_size, j*self.sector_size, int(self.sector_size), int(self.sector_size)))
+            for obj in self.balls:
+                sector_num = int(obj.size*4/self.sector_size)
+                for i in range(int(obj.p.x/self.sector_size) - sector_num, int(obj.p.x/self.sector_size) + sector_num + 1):
+                    for j in range(int(obj.p.y/self.sector_size) - sector_num, int(obj.p.y/self.sector_size) + sector_num + 1):
+                        pygame.draw.rect(self.screen, (0,255, 0), (int(obj.p.x/self.sector_size)*self.sector_size, int(obj.p.y/self.sector_size)*self.sector_size, int(self.sector_size), int(self.sector_size)))
+
+            for obj in self.members:
+                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
+            for obj in self.balls:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
 
+        # update positions
+        for obj in self.members:
+            obj.update()
+        for obj in self.balls:
+            obj.update()
 
-    def check_collision(self):
+        # check collisions and redraw all members
+        for obj in self.members:
+            obj.collide()
+            pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
+            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
+
+        for obj in self.balls:
+            pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
+            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
+
+
+    def check_collision(self, obj):
         # check collision with pitch walls
 
-        for obj in self.members:
             # Left wall
             if obj.p.x < int(obj.size + (self.screen_w - self.pitch_w)/2):
                 obj.p.x = int(obj.size + (self.screen_w - self.pitch_w)/2)

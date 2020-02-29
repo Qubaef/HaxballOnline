@@ -17,12 +17,15 @@ class CirclePhysical(ABC):
         self.v = pygame.math.Vector2(0,0)
         self.a = pygame.math.Vector2(0,0)
         self.ball_control = 1
+        self.sector = (px)
 
     def velocity_add(self, velocity):
         self.v += velocity
 
     def update(self):
-        # temp solution, cause this will be server side part
+        # remove element from current sector
+        if self in self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)]:
+            self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].remove(self)
 
         self.a = -self.v * self.friction
         self.v += self.a
@@ -33,6 +36,13 @@ class CirclePhysical(ABC):
         if self.v.magnitude() > self.v_max:
             self.v = self.v.normalize() * self.v_max
 
+        # fix object's position whith wall collsion detection
+        self.game.check_collision(self)
+
+        # move element to right sector
+        self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].append(self)
+
+
     def set_move(self, v, p):
         # set given veloctity and position
         self.p.x = p[0]
@@ -40,6 +50,21 @@ class CirclePhysical(ABC):
 
         self.v.x = v[0]
         self.v.y = v[1]
+
+    def get_nearby(self):
+        # return list of objects located in nearby sectors
+
+        # get number of nearby sectors (depends of object size)
+        sector_num = int(self.size*4/self.game.sector_size)
+
+        # iterate through sectors and gather all circles
+        objects = []
+        for i in range(int(self.p.x/self.game.sector_size) - sector_num, int(self.p.x/self.game.sector_size) + sector_num + 1):
+            for j in range(int(self.p.y/self.game.sector_size) - sector_num, int(self.p.y/self.game.sector_size) + sector_num + 1):
+                if i >= 0 and j >= 0 and i < len(self.game.sectors) and j < len(self.game.sectors[0]):
+                    objects += self.game.sectors[i][j]
+
+        return objects
 
                     
 

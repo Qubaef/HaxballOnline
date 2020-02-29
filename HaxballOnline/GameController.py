@@ -12,12 +12,12 @@ game = GameEngine()
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, 1.0)
 
-game.new_member(ball)
+game.new_ball(ball)
 game.new_member(player)
 
 # create static bots (buggy sometimes)
-#for i in range(2,10):
-#   game.new_member(Player(game, 700, 300, 1, 2))
+for i in range(2,30):
+   game.new_member(Player(game, 700, 300, 1, 2))
 
 done = False
 
