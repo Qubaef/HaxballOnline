@@ -46,16 +46,17 @@ class GameEngine(object):
     def update(self):
 
         if self.test_mode:
+            # if test mode is on, draw additional markers on screen
             for obj in self.members:
-                sector_num = int(obj.size*4/self.sector_size)
-                for i in range(int(obj.p.x/self.sector_size) - sector_num, int(obj.p.x/self.sector_size) + sector_num + 1):
-                    for j in range(int(obj.p.y/self.sector_size) - sector_num, int(obj.p.y/self.sector_size) + sector_num + 1):
-                        pygame.draw.rect(self.screen, (0,255, 0), (i*self.sector_size, j*self.sector_size, int(self.sector_size), int(self.sector_size)))
+                sector_num = int(obj.size * 4/ self.sector_size)
+                for i in range(int(obj.p.x / self.sector_size) - sector_num, int(obj.p.x / self.sector_size) + sector_num + 1):
+                    for j in range(int(obj.p.y / self.sector_size) - sector_num, int(obj.p.y / self.sector_size) + sector_num + 1):
+                        pygame.draw.rect(self.screen, (0,255 - ((i + j) % 2) * 50, 0), (i * self.sector_size, j * self.sector_size, int(self.sector_size), int(self.sector_size)))
             for obj in self.balls:
-                sector_num = int(obj.size*4/self.sector_size)
-                for i in range(int(obj.p.x/self.sector_size) - sector_num, int(obj.p.x/self.sector_size) + sector_num + 1):
-                    for j in range(int(obj.p.y/self.sector_size) - sector_num, int(obj.p.y/self.sector_size) + sector_num + 1):
-                        pygame.draw.rect(self.screen, (0,255, 0), (int(obj.p.x/self.sector_size)*self.sector_size, int(obj.p.y/self.sector_size)*self.sector_size, int(self.sector_size), int(self.sector_size)))
+                sector_num = int(obj.size * 4 / self.sector_size)
+                for i in range(int(obj.p.x / self.sector_size) - sector_num, int(obj.p.x / self.sector_size) + sector_num + 1):
+                    for j in range(int(obj.p.y / self.sector_size) - sector_num, int(obj.p.y / self.sector_size) + sector_num + 1):
+                        pygame.draw.rect(self.screen, (0,255 - ((i + j) % 2) * 50, 0), (int(obj.p.x / self.sector_size)*self.sector_size, int(obj.p.y / self.sector_size) * self.sector_size, int(self.sector_size), int(self.sector_size)))
 
             for obj in self.members:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)

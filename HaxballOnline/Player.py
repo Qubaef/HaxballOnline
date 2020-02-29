@@ -57,11 +57,11 @@ class Player(CirclePhysical):
 
     def kick(self, pos):
         # check if ball is in hitbox range
-        ball = self.game.members[0]
-        dist = (self.p.x - ball.p.x)**2 + (ball.p.y - self.p.y)**2
-        if dist <= (self.hitbox + ball.hitbox)**2:
-            # kick ball to given pos
-            ball.v = (pos - ball.p).normalize() * (pos - ball.p).length()/12
+        for ball in self.game.balls:
+            dist = (self.p.x - ball.p.x)**2 + (ball.p.y - self.p.y)**2
+            if dist <= (self.hitbox + ball.hitbox)**2:
+                # kick ball to given pos
+                ball.v = (pos - ball.p).normalize() * (pos - ball.p).length()/12
 
     def mode_ball_control(self):
         # turn down ball_control to reduce the bounce
