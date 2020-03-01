@@ -11,7 +11,7 @@ from Ball import Ball
 
 game = GameEngine()
 ball = Ball(game, 500, 300, 0)
-player = Player(game, 400, 300, 1, 1.0)
+player = Player(game, 400, 300, 1, (0, 0, 255))
 
 
 game.new_ball(ball)
@@ -21,7 +21,7 @@ game.new_member(player)
 bots = []
 bots_number = 5
 for i in range(0,bots_number):
-   bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, 1))
+   bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, (255, 0, 0)))
    game.new_member(bots[i])
 
 done = False
