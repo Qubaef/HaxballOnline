@@ -1,0 +1,3 @@
+Python 3
+Additional libraries to download:
+- pygame (pip install pygame)
