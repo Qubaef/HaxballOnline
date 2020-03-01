@@ -45,6 +45,13 @@ class GameEngine(object):
 
     def update(self):
 
+        # update positions
+        for obj in self.members:
+            obj.update()
+        for obj in self.balls:
+            obj.update()
+
+
         if self.test_mode:
             # if test mode is on, draw additional markers on screen
             for obj in self.members:
@@ -62,12 +69,6 @@ class GameEngine(object):
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
             for obj in self.balls:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
-
-        # update positions
-        for obj in self.members:
-            obj.update()
-        for obj in self.balls:
-            obj.update()
 
         # check collisions and redraw all members
         for obj in self.members:
