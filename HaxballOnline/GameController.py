@@ -17,7 +17,7 @@ game.new_ball(ball)
 game.new_member(player)
 
 # create static bots (buggy sometimes)
-for i in range(2,20):
+for i in range(2,50):
    game.new_member(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, 1))
 
 done = False

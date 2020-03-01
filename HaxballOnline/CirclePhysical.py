@@ -24,9 +24,8 @@ class CirclePhysical(ABC):
         self.v += velocity
 
     def update(self):
-        # remove element from current sector
-        if self in self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)]:
-            self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].remove(self)
+
+        self.from_sector_remove()
 
         self.a = -self.v * self.friction
         self.v += self.a
@@ -40,7 +39,16 @@ class CirclePhysical(ABC):
         # fix object's position whith wall collsion detection
         self.game.check_collision(self)
 
-        # move element to right sector
+        self.to_sector_add()
+
+
+    def from_sector_remove(self):
+        # remove element from currently occupied sector
+        if self in self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)]:
+            self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].remove(self)
+
+    def to_sector_add(self):
+        # add element to right sector
         self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].append(self)
 
 

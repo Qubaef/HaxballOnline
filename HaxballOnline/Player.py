@@ -23,10 +23,16 @@ class Player(CirclePhysical):
                         dist = 1
 
                     overlap = (dist - self.size - circ.size)/2
+
+                    super().from_sector_remove()
                     self.p -= overlap * (circ.weight/self.weight) * (self.p - circ.p)/dist
                     self.game.check_collision(self)
+                    super().to_sector_add()
+
+                    circ.from_sector_remove()
                     circ.p += overlap * (self.weight/circ.weight) * (self.p - circ.p)/dist
                     circ.game.check_collision(circ)
+                    circ.to_sector_add()
 
                     #if circ is a ball, transfer velocity
                     if isinstance(circ, Ball):
@@ -37,20 +43,18 @@ class Player(CirclePhysical):
                         # normal vector
                         n = pygame.math.Vector2(0,0)
                         n = (circ.p - self.p)/dist
-
+                        
                         # wikipedia version
                         d = pygame.math.Vector2
                         d = self.v - circ.v
                         p = 2 * (n.x * d.x  + n.y * d.y) / (self.weight + circ.weight)
-
+                        
                         self.v = (self.v - p * circ.weight * n) * circ.weight / self.weight
                         circ.v = (circ.v + (p * self.weight * n)) * self.ball_control
-
+                        
                         # check if ball velocity is not bigger than max allowed velocity
                         if circ.v.magnitude() > circ.v_max:
                             circ.v = circ.v.normalize() * circ.v_max
-
-                        
 
     def kick(self, pos):
         # check if ball is in hitbox range
