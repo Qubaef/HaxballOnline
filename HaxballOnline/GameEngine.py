@@ -28,7 +28,7 @@ class GameEngine(object):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
-        self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size) - 1)] for i in range(ceil(self.screen_w/self.sector_size) - 1)] # 2D array containing arrays, to store object in the secotrs and optimise collisions
+        self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size))] for i in range(ceil(self.screen_w/self.sector_size))] # 2D array containing arrays, to store object in the secotrs and optimise collisions
 
     def draw_background(self):
         self.screen.fill(self.back_color)

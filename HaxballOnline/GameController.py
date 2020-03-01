@@ -18,7 +18,7 @@ game.new_member(player)
 
 # create static bots (buggy sometimes)
 for i in range(2,20):
-   game.new_member(Player(game, game.pitch_w * random.uniform(0,1), game.pitch_h * random.uniform(0,1), i + 2, 1))
+   game.new_member(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, 1))
 
 done = False
 
@@ -64,6 +64,11 @@ while not done:
                 done = True
     
     # move player depending on keyboard input
+
+    if player_move.length() > 0:
+        # make player move with equal speed in all directions
+        player_move = player_move.normalize()
+
     player.velocity_add(player_move)
 
     # update positions and redraw members
