@@ -28,6 +28,7 @@ class GameEngine(object):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
+        self.timer = 0
         self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size))] for i in range(ceil(self.screen_w/self.sector_size))] # 2D array containing arrays, to store object in the secotrs and optimise collisions
 
     def draw_background(self):
@@ -35,13 +36,23 @@ class GameEngine(object):
         pygame.draw.rect(self.screen, self.pitch_color, ((self.screen_w - self.pitch_w)/2,(self.screen_h - self.pitch_h)/2, self.pitch_w, self.pitch_h))
 
     def clock_tick(self):
-        self.fps_clock.tick(self.fps)
+        return self.fps_clock.tick(self.fps)
 
     def new_member(self, member):
         self.members.append(member)
 
     def new_ball(self, ball):
         self.balls.append(ball)
+
+    def redraw(self):
+        # update positions and redraw members
+        self.update()
+
+        # redraw screen
+        pygame.display.update()
+
+        # dt is time since last tick
+        self.timer += self.clock_tick()
 
     def update(self):
 

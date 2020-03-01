@@ -13,12 +13,16 @@ game = GameEngine()
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, 1.0)
 
+
 game.new_ball(ball)
 game.new_member(player)
 
-# create static bots (buggy sometimes)
-for i in range(2,50):
-   game.new_member(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, 1))
+# create static bots
+bots = []
+bots_number = 5
+for i in range(0,bots_number):
+   bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, 1))
+   game.new_member(bots[i])
 
 done = False
 
@@ -71,10 +75,13 @@ while not done:
 
     player.velocity_add(player_move)
 
-    # update positions and redraw members
-    game.update()
+    for i in range (0,bots_number):
+        if game.timer > 100 * i:
+            dir = (ball.p - bots[i].p).normalize()
+            bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))
 
-    # redraw screen
-    pygame.display.update()
-    game.clock_tick()
+    if game.timer > 100 * bots_number:
+        game.timer = 0
+
+    game.redraw()
 

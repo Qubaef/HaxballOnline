@@ -10,7 +10,7 @@ class CirclePhysical(ABC):
         self.number = number
         self.weight = weight
         self.size = size                # size used for drawing and collision detection
-        self.hitbox = size + 7          # hitbox used for kicking the ball
+        self.hitbox = int(size * 3/2)          # hitbox used for kicking the ball
         self.v_max = 6 / math.pow(self.weight, 2/3)     # maximum velocity is non-linear, cause ball was be too fast
         self.friction = self.weight * 0.2
         self.color = color
@@ -54,8 +54,10 @@ class CirclePhysical(ABC):
 
     def set_move(self, v, p):
         # set given veloctity and position
-        self.p.x = p[0]
-        self.p.y = p[1]
+        # if given pos is less than 0, dont change it
+        if p[0] >= 0 and p[1] >= 0:
+            self.p.x = p[0]
+            self.p.y = p[1]
 
         self.v.x = v[0]
         self.v.y = v[1]

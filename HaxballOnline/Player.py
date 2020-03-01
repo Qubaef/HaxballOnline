@@ -35,17 +35,17 @@ class Player(CirclePhysical):
                     circ.to_sector_add()
 
                     #if circ is a ball, transfer velocity
-                    if isinstance(circ, Ball):
+                    #if isinstance(circ, Ball):
 
-                        # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
-                        # poniżej implementacja wzoru z wikipedidd
+                    # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
+                    # poniżej implementacja wzoru z wikipedidd
 
-                        # normal vector
-                        self.v,circ.v = CirclePhysical.collision_calculator(self.v,circ.v, self.weight,circ.weight,self.p,circ.p)
-                        circ.v=circ.v*self.ball_control
-                        # check if ball velocity is not bigger than max allowed velocity
-                        if circ.v.magnitude() > circ.v_max:
-                            circ.v = circ.v.normalize() * circ.v_max
+                    # normal vector
+                    self.v,circ.v = CirclePhysical.collision_calculator(self.v,circ.v, self.weight , circ.weight,self.p,circ.p)
+                    circ.v = circ.v * self.ball_control
+                    # check if ball velocity is not bigger than max allowed velocity
+                    if circ.v.magnitude() > circ.v_max:
+                        circ.v = circ.v.normalize() * circ.v_max
 
     def kick(self, pos):
         # check if ball is in hitbox range
