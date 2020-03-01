@@ -75,6 +75,12 @@ class CirclePhysical(ABC):
 
         return objects
 
+    @staticmethod
+    def collision_calculator(v1, v2, m1, m2, x1, x2) -> pygame.math.Vector2:
+        mass = 2 * m1 / (m1 + m2)
+        v11= v1 - (mass * (v1 - v2).dot(x1 - x2) / pow((x1 - x2).length(), 2)) * (x1 - x2)
+        v22= v2 - (mass * (v2 - v1).dot(x2 - x1) / pow((x2 - x1).length(), 2)) * (x2 - x1)
+        return v11,v22
                     
 
 

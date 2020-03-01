@@ -38,20 +38,11 @@ class Player(CirclePhysical):
                     if isinstance(circ, Ball):
 
                         # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
-                        # poniżej implementacja wzoru z wikipedi
+                        # poniżej implementacja wzoru z wikipedidd
 
                         # normal vector
-                        n = pygame.math.Vector2(0,0)
-                        n = (circ.p - self.p)/dist
-                        
-                        # wikipedia version
-                        d = pygame.math.Vector2
-                        d = self.v - circ.v
-                        p = 2 * (n.x * d.x  + n.y * d.y) / (self.weight + circ.weight)
-                        
-                        self.v = (self.v - p * circ.weight * n) * circ.weight / self.weight
-                        circ.v = (circ.v + (p * self.weight * n)) * self.ball_control
-                        
+                        self.v,circ.v = CirclePhysical.collision_calculator(self.v,circ.v, self.weight,circ.weight,self.p,circ.p)
+                        circ.v=circ.v*self.ball_control
                         # check if ball velocity is not bigger than max allowed velocity
                         if circ.v.magnitude() > circ.v_max:
                             circ.v = circ.v.normalize() * circ.v_max
