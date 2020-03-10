@@ -23,7 +23,7 @@ class GameEngine(object):
     balls =[]       # list containing balls
     members = []    # list containing players
 
-
+    posts = []       # list containing posts
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
@@ -44,6 +44,9 @@ class GameEngine(object):
     def new_ball(self, ball):
         self.balls.append(ball)
 
+    def new_post(self,post):
+        self.posts.append(post)
+
     def redraw(self):
         # update positions and redraw members
         self.update()
@@ -61,8 +64,6 @@ class GameEngine(object):
             obj.update()
         for obj in self.balls:
             obj.update()
-
-
         if self.test_mode:
             # if test mode is on, draw additional markers on screen
             for obj in self.members:
@@ -79,6 +80,8 @@ class GameEngine(object):
             for obj in self.members:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
             for obj in self.balls:
+                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
+            for obj in self.posts:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
 
         # check collisions and redraw all members
