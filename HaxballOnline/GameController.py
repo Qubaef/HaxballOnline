@@ -5,9 +5,9 @@ import random
 
 from pygame.locals import *
 
-from Player import Player
-from GameEngine import GameEngine
-from Ball import Ball
+from HaxballOnline.Player import Player
+from HaxballOnline.GameEngine import GameEngine
+from HaxballOnline.Ball import Ball
 
 game = GameEngine()
 ball = Ball(game, 500, 300, 0)
