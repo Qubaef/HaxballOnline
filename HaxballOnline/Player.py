@@ -4,7 +4,7 @@ from Ball import Ball
 from CirclePhysical import CirclePhysical
 
 class Player(CirclePhysical):
-    """Object containing player's mathods"""
+    # Object containing player's mathods
 
     def __init__(self, game, px, py, number, color):
         super().__init__(game, px, py, number, 1, 15, color)
@@ -37,9 +37,6 @@ class Player(CirclePhysical):
 
                     circ.game.check_collision(circ)
                     circ.to_sector_add()
-
-                    #if circ is a ball, transfer velocity
-                    #if isinstance(circ, Ball):
 
                     # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
                     # poniżej implementacja wzoru z wikipedidd

@@ -3,7 +3,6 @@ import math
 from abc import ABC
 
 class CirclePhysical(ABC):
-    """description of class"""
 
     def __init__(self, game, px, py, number, weight, size, color):
         self.game = game
@@ -19,6 +18,8 @@ class CirclePhysical(ABC):
         self.a = pygame.math.Vector2(0,0)
         self.ball_control = 1
         self.sector = (px)
+
+    # methods
 
     def velocity_add(self, velocity):
         self.v += velocity
@@ -66,7 +67,7 @@ class CirclePhysical(ABC):
         # return list of objects located in nearby sectors
 
         # get number of nearby sectors (depends of object size)
-        sector_num = int(self.size*4/self.game.sector_size)
+        sector_num = int(self.size * 4 / self.game.sector_size)
 
         # iterate through sectors and gather all circles
         objects = []

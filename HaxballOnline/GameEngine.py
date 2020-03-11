@@ -1,9 +1,11 @@
 import pygame
 from math import ceil
 from CirclePhysical import CirclePhysical
+from Goal import Goal
 
 class GameEngine(object):
-    "object containing Game's data"
+    #object containing Game's data
+
     screen_w = 1100
     screen_h = int(screen_w / 1.57)
 
@@ -23,29 +25,47 @@ class GameEngine(object):
     balls =[]       # list containing balls
     members = []    # list containing players
 
-    posts = []       # list containing posts
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
         self.timer = 0
-        self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size))] for i in range(ceil(self.screen_w/self.sector_size))] # 2D array containing arrays, to store object in the secotrs and optimise collisions
+
+        # 2D array containing arrays, to store object in the secotrs and optimise collisions
+        self.sectors = [ [ [] for j in range(ceil(self.screen_h/self.sector_size))] for i in range(ceil(self.screen_w/self.sector_size))] 
+
+        # create goals
+        screen_margin = (self.screen_h-self.pitch_h)/2
+        self.goal_left = Goal(self, self.pitch_color ,(self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, -1)
+        self.goal_right = Goal(self, self.pitch_color, self.pitch_w + (self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, 0)
+
 
     def draw_background(self):
+        # draw backgroud
         self.screen.fill(self.back_color)
+
+        # draw pitch
         pygame.draw.rect(self.screen, self.pitch_color, ((self.screen_w - self.pitch_w)/2,(self.screen_h - self.pitch_h)/2, self.pitch_w, self.pitch_h))
+        
+        # draw goals
+        pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
+        pygame.draw.rect(self.screen, self.goal_right.color, (self.goal_right.get_px(), self.goal_right.get_py(), self.goal_right.get_width(), self.goal_right.get_height()))
+
+        # draw poles
+        pygame.draw.circle(self.screen, self.goal_left.post_up.color, (int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y)), self.goal_left.post_up.size)
+        pygame.draw.circle(self.screen, self.goal_left.post_down.color, (int(self.goal_left.post_down.p.x), int(self.goal_left.post_down.p.y)), self.goal_left.post_down.size)
+
+        pygame.draw.circle(self.screen, self.goal_right.post_up.color, (int(self.goal_right.post_up.p.x), int(self.goal_right.post_up.p.y)), self.goal_right.post_up.size)
+        pygame.draw.circle(self.screen, self.goal_right.post_down.color, (int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y)), self.goal_right.post_down.size)
 
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
 
-    def new_member(self, member):
+    def new_player(self, member):
         self.members.append(member)
 
     def new_ball(self, ball):
         self.balls.append(ball)
-
-    def new_post(self,post):
-        self.posts.append(post)
 
     def redraw(self):
         # update positions and redraw members
@@ -81,8 +101,6 @@ class GameEngine(object):
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
             for obj in self.balls:
                 pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
-            for obj in self.posts:
-                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
 
         # check collisions and redraw all members
         for obj in self.members:
@@ -93,10 +111,6 @@ class GameEngine(object):
         for obj in self.balls:
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
-
-        for obj in self.posts:
-            pygame.draw.circle(self.screen, (0, 0, 0), (int(obj.p.x), int(obj.p.y)), obj.size)
-            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size - 2)
 
 
     def check_collision(self, obj):

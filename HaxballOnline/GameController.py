@@ -4,7 +4,7 @@ import math
 import random
 
 from pygame.locals import *
-from post import Post
+from Post import Post
 from Player import Player
 from GameEngine import GameEngine
 from Ball import Ball
@@ -14,23 +14,15 @@ screenw_add = (game.screen_w-game.pitch_w)/2
 screenh_add = (game.screen_h-game.pitch_h)/2
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, (0, 0, 255))
-postLU = Post(game,screenw_add,int(screenh_add + game.pitch_h*6/16))
-postLD = Post(game,screenw_add,int(screenh_add + game.pitch_h*10/16))
-postRU = Post(game,screenw_add + game.pitch_w,int(screenh_add + game.pitch_h*6/16))
-postRD = Post(game,screenw_add + game.pitch_w,int(screenh_add + game.pitch_h*10/16))
 
 game.new_ball(ball)
-game.new_member(player)
-game.new_post(postLD)
-game.new_post(postLU)
-game.new_post(postRU)
-game.new_post(postRD)
+game.new_player(player)
 # create static bots
 bots = []
 bots_number = 5
 for i in range(0,bots_number):
    bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, (255, 0, 0)))
-   game.new_member(bots[i])
+   game.new_player(bots[i])
 
 done = False
 

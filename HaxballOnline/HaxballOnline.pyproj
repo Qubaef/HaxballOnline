@@ -26,6 +26,9 @@
     <Compile Include="CirclePhysical.py" />
     <Compile Include="GameController.py" />
     <Compile Include="GameEngine.py" />
+    <Compile Include="Goal.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.py" />
     <Compile Include="Post.py">
       <SubType>Code</SubType>
