@@ -4,10 +4,10 @@ import math
 import random
 
 from pygame.locals import *
-from HaxballOnline.post import Post
-from HaxballOnline.Player import Player
-from HaxballOnline.GameEngine import GameEngine
-from HaxballOnline.Ball import Ball
+from post import Post
+from Player import Player
+from GameEngine import GameEngine
+from Ball import Ball
 
 game = GameEngine()
 screenw_add = (game.screen_w-game.pitch_w)/2

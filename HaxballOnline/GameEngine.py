@@ -1,6 +1,6 @@
 import pygame
 from math import ceil
-from HaxballOnline.CirclePhysical import CirclePhysical
+from CirclePhysical import CirclePhysical
 
 class GameEngine(object):
     "object containing Game's data"

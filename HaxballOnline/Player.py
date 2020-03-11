@@ -1,7 +1,7 @@
 import pygame
 import math
-from HaxballOnline.Ball import Ball
-from HaxballOnline.CirclePhysical import CirclePhysical
+from Ball import Ball
+from CirclePhysical import CirclePhysical
 
 class Player(CirclePhysical):
     """Object containing player's mathods"""
