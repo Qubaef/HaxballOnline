@@ -7,3 +7,6 @@ class Post(CirclePhysical):
 
     def update(self):
         return 1
+    
+    def set_p(self, px, py):
+        return 1

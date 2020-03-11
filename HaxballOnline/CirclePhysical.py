@@ -30,8 +30,7 @@ class CirclePhysical(ABC):
 
         self.a = -self.v * self.friction
         self.v += self.a
-        self.p.x += self.v.x
-        self.p.y += self.v.y
+        self.p += self.v
 
         # check if velocity is not bigger than max allowed velocity
         if self.v.magnitude() > self.v_max:
@@ -62,6 +61,11 @@ class CirclePhysical(ABC):
 
         self.v.x = v[0]
         self.v.y = v[1]
+
+    def set_p(self, px, py):
+        # set p vector
+        self.p.x = px
+        self.p.y = py
 
     def get_nearby(self):
         # return list of objects located in nearby sectors

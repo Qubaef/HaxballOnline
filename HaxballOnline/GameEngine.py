@@ -118,20 +118,30 @@ class GameEngine(object):
 
             # Left wall
             if obj.p.x < int(obj.size + (self.screen_w - self.pitch_w)/2):
-                obj.p.x = int(obj.size + (self.screen_w - self.pitch_w)/2)
-                obj.v.x *= -self.wall_bounce
+                if obj.p.y < self.goal_left.post_down.p.y and obj.p.y > self.goal_left.post_up.p.y:
+                    if obj.p.x < self.goal_left.x - self.goal_left.width + obj.size:
+                        obj.set_p(self.goal_left.x - self.goal_left.width + obj.size, obj.p.y)
+                        obj.v *= 0
+                else:
+                    obj.set_p(int(obj.size + (self.screen_w - self.pitch_w)/2), obj.p.y)
+                    obj.v.x *= -self.wall_bounce
 
             # Right wall
             if obj.p.x > int(self.pitch_w + ((self.screen_w - self.pitch_w)/2) - obj.size):
-                obj.p.x = int(self.pitch_w + ((self.screen_w - self.pitch_w)/2) - obj.size)
-                obj.v.x *= -self.wall_bounce
+                if obj.p.y < self.goal_right.post_down.p.y and obj.p.y > self.goal_right.post_up.p.y:
+                    if obj.p.x > self.goal_right.x + self.goal_right.width - obj.size:
+                        obj.set_p(self.goal_right.x + self.goal_right.width - obj.size, obj.p.y)
+                        obj.v *= 0
+                else: 
+                    obj.set_p(int(self.pitch_w + ((self.screen_w - self.pitch_w)/2) - obj.size), obj.p.y)
+                    obj.v.x *= -self.wall_bounce
 
             # Top wall
             if obj.p.y < int(obj.size + (self.screen_h - self.pitch_h)/2):
-                obj.p.y = int(obj.size + (self.screen_h - self.pitch_h)/2)
+                obj.set_p(obj.p.x, int(obj.size + (self.screen_h - self.pitch_h)/2))
                 obj.v.y *= -self.wall_bounce
 
             # Bottom wall
             if obj.p.y > int(self.pitch_h + ((self.screen_h - self.pitch_h)/2) - obj.size):
-                obj.p.y = int(self.pitch_h + ((self.screen_h - self.pitch_h)/2) - obj.size)
+                obj.set_p(obj.p.x, int(self.pitch_h + ((self.screen_h - self.pitch_h)/2) - obj.size))
                 obj.v.y *= -self.wall_bounce
