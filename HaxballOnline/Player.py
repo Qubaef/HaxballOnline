@@ -19,18 +19,22 @@ class Player(CirclePhysical):
                 if dist <= (self.size + circ.size)**2:
                     dist = math.sqrt(dist)
 
-                    if dist == 0:
-                        dist = 1
-
                     overlap = (dist - self.size - circ.size)/2
 
                     super().from_sector_remove()
-                    self.p -= overlap * (circ.weight/self.weight) * (self.p - circ.p)/dist
+                    if dist != 0:
+                        self.p -= overlap * (circ.weight/self.weight) * (self.p - circ.p)/dist
+                    else:
+                        self.p -= overlap * (circ.weight/self.weight) * self.p.normalize()
                     self.game.check_collision(self)
                     super().to_sector_add()
 
                     circ.from_sector_remove()
-                    circ.p += overlap * (self.weight/circ.weight) * (self.p - circ.p)/dist
+                    if dist != 0:
+                        circ.p += overlap * (self.weight/circ.weight) * (self.p - circ.p)/dist
+                    else:
+                        circ.p += overlap * (self.weight/circ.weight) * self.p.normalize()
+
                     circ.game.check_collision(circ)
                     circ.to_sector_add()
 
