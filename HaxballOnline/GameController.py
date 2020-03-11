@@ -4,19 +4,27 @@ import math
 import random
 
 from pygame.locals import *
-
-from Player import Player
-from GameEngine import GameEngine
-from Ball import Ball
+from HaxballOnline.post import Post
+from HaxballOnline.Player import Player
+from HaxballOnline.GameEngine import GameEngine
+from HaxballOnline.Ball import Ball
 
 game = GameEngine()
+screenw_add = (game.screen_w-game.pitch_w)/2
+screenh_add = (game.screen_h-game.pitch_h)/2
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, (0, 0, 255))
-
+postLU = Post(game,screenw_add,int(screenh_add + game.pitch_h*6/16))
+postLD = Post(game,screenw_add,int(screenh_add + game.pitch_h*10/16))
+postRU = Post(game,screenw_add + game.pitch_w,int(screenh_add + game.pitch_h*6/16))
+postRD = Post(game,screenw_add + game.pitch_w,int(screenh_add + game.pitch_h*10/16))
 
 game.new_ball(ball)
 game.new_member(player)
-
+game.new_post(postLD)
+game.new_post(postLU)
+game.new_post(postRU)
+game.new_post(postRD)
 # create static bots
 bots = []
 bots_number = 5

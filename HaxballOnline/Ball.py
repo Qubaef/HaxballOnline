@@ -1,5 +1,5 @@
 import pygame
-from CirclePhysical import CirclePhysical
+from HaxballOnline.CirclePhysical import CirclePhysical
 
 class Ball(CirclePhysical):
     """
