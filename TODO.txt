@@ -1,0 +1,17 @@
+Server side:
+- reimplementation of physics calculation on the server side (c++)
+- threads management to handle clients data
+
+Communication:
+- connection beetwen app and serwer via sockets
+- model of data serialization (objects to byte code, to send them in best way)
+
+Local side:
+- add teams
+- goal event detection
+- polish of client application (graphics, numbers, pitch lines, score display)
+- main menu with server and team choice
+
+Optional (added if necessary):
+- lag compensation
+- movement prediction
