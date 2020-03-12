@@ -125,9 +125,6 @@ class GameEngine(object):
     def check_collision(self, obj):
         # check collision with pitch walls
 
-            if(obj.color == (0,0,0)):
-                f = 1
-
             # Left wall
             if obj.p.x < int(obj.size + (self.screen_w - self.pitch_w)/2):
                 if obj.p.y < self.goal_left.post_down.p.y and obj.p.y > self.goal_left.post_up.p.y:

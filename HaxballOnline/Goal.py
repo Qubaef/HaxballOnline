@@ -24,4 +24,3 @@ class Goal(object):
 
     def get_height(self):
         return self.y_down - self.y_up
-

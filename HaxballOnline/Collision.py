@@ -42,7 +42,7 @@ class Collision(object):
                     else:
                         p_new = circ2.p + overlap * (circ1.weight / circ2.weight) * circ1.p.normalize()
                         circ2.set_p(p_new.x, p_new.y)
-                        circ2.game.check_collision(circ2)
+                    circ2.game.check_collision(circ2)
                     circ2.to_sector_add()
 
                     # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)

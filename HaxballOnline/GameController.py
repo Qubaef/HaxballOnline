@@ -84,4 +84,3 @@ while not done:
         game.timer = 0
 
     game.redraw()
-
