@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 from math import ceil
 from CirclePhysical import CirclePhysical
 from Goal import Goal
@@ -55,11 +56,11 @@ class GameEngine(object):
         pygame.draw.rect(self.screen, self.goal_right.color, (self.goal_right.get_px(), self.goal_right.get_py(), self.goal_right.get_width(), self.goal_right.get_height()))
 
         # draw poles
-        pygame.draw.circle(self.screen, self.goal_left.post_up.color, (int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y)), self.goal_left.post_up.size)
-        pygame.draw.circle(self.screen, self.goal_left.post_down.color, (int(self.goal_left.post_down.p.x), int(self.goal_left.post_down.p.y)), self.goal_left.post_down.size)
+        pygame.gfxdraw.filled_circle(self.screen, int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y), self.goal_left.post_up.size, self.goal_left.post_up.color)
+        pygame.gfxdraw.filled_circle(self.screen, int(self.goal_left.post_down.p.x), int(self.goal_left.post_down.p.y), self.goal_left.post_down.size, self.goal_left.post_down.color)
 
-        pygame.draw.circle(self.screen, self.goal_right.post_up.color, (int(self.goal_right.post_up.p.x), int(self.goal_right.post_up.p.y)), self.goal_right.post_up.size)
-        pygame.draw.circle(self.screen, self.goal_right.post_down.color, (int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y)), self.goal_right.post_down.size)
+        pygame.gfxdraw.filled_circle(self.screen, int(self.goal_right.post_up.p.x), int(self.goal_right.post_up.p.y), self.goal_right.post_up.size, self.goal_right.post_up.color)
+        pygame.gfxdraw.filled_circle(self.screen, int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y), self.goal_right.post_down.size, self.goal_right.post_down.color)
 
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
@@ -101,15 +102,15 @@ class GameEngine(object):
                         pygame.draw.rect(self.screen, (0,255 - ((i + j) % 2) * 50, 0), (int(obj.p.x / self.sector_size)*self.sector_size, int(obj.p.y / self.sector_size) * self.sector_size, int(self.sector_size), int(self.sector_size)))
 
             for obj in self.members:
-                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
+                pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.hitbox, (0,0,255))
             for obj in self.balls:
-                pygame.draw.circle(self.screen, (0,0,255), (int(obj.p.x), int(obj.p.y)), obj.hitbox, 1)
+                pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.hitbox, (0,0,255))
 
         # check collisions and redraw all members
         for obj in self.members:
             Collision.collide(obj)
-            pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
-            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
+            pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
+            pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size-2, obj.color)
 
         Collision.collide(self.goal_left.post_up)
         Collision.collide(self.goal_left.post_down)
@@ -117,14 +118,15 @@ class GameEngine(object):
         Collision.collide(self.goal_right.post_down)
 
         for obj in self.balls:
-            pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
-            pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
-
-
+            pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
+            pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size-2, obj.color)
 
 
     def check_collision(self, obj):
         # check collision with pitch walls
+
+            if(obj.color == (0,0,0)):
+                f = 1
 
             # Left wall
             if obj.p.x < int(obj.size + (self.screen_w - self.pitch_w)/2):

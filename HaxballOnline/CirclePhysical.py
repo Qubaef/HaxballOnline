@@ -81,9 +81,3 @@ class CirclePhysical(ABC):
                     objects += self.game.sectors[i][j]
 
         return objects
-                    
-
-
-
-
-
