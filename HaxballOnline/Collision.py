@@ -15,8 +15,12 @@ class Collision(object):
             if circ2 != circ1:
                 dist = (circ1.p.x - circ2.p.x) ** 2 + (circ2.p.y - circ1.p.y) ** 2
                 if dist <= (circ1.size + circ2.size) ** 2:
-                    if isinstance(circ2, Post):
-                        circ2.v = (0, 0)
+
+                    # fix post speed
+                    if isinstance(circ1, Post):
+                        circ1.v.x = 0
+                        circ1.v.y = 0
+
                     dist = math.sqrt(dist)
 
                     overlap = (dist - circ1.size - circ2.size) / 2
@@ -38,7 +42,6 @@ class Collision(object):
                     else:
                         p_new = circ2.p + overlap * (circ1.weight / circ2.weight) * circ1.p.normalize()
                         circ2.set_p(p_new.x, p_new.y)
-                    if not isinstance(circ2,Post):
                         circ2.game.check_collision(circ2)
                     circ2.to_sector_add()
 

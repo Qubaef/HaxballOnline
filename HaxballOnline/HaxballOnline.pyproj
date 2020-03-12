@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="Ball.py" />
     <Compile Include="CirclePhysical.py" />
+    <Compile Include="Collision.py" />
     <Compile Include="GameController.py" />
     <Compile Include="GameEngine.py" />
     <Compile Include="Goal.py">

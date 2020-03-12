@@ -111,10 +111,16 @@ class GameEngine(object):
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
 
+        Collision.collide(self.goal_left.post_up)
+        Collision.collide(self.goal_left.post_down)
+        Collision.collide(self.goal_right.post_up)
+        Collision.collide(self.goal_right.post_down)
+
         for obj in self.balls:
-            Collision.collide(obj)
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
+
+
 
 
     def check_collision(self, obj):
