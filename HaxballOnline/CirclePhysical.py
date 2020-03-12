@@ -81,56 +81,6 @@ class CirclePhysical(ABC):
                     objects += self.game.sectors[i][j]
 
         return objects
-
-    # check if circle collides with any other circle in nearest sectors
-    def collide(self):
-        nearby = self.get_nearby()
-
-        for circ in nearby:
-            if circ != self:
-                dist = (self.p.x - circ.p.x)**2 + (circ.p.y - self.p.y)**2
-                if dist <= (self.size + circ.size)**2:
-                    dist = math.sqrt(dist)
-
-                    overlap = (dist - self.size - circ.size)/2
-
-                    self.from_sector_remove()
-                    if dist != 0:
-                        p_new = self.p - overlap * (circ.weight/self.weight) * (self.p - circ.p)/dist
-                        self.set_p(p_new.x, p_new.y)
-                    else:
-                        p_new = self.p - overlap * (circ.weight/self.weight) * self.p.normalize()
-                        self.set_p(p_new.x, p_new.y)
-                    self.game.check_collision(self)
-                    self.to_sector_add()
-
-                    circ.from_sector_remove()
-                    if dist != 0:
-                        p_new = circ.p + overlap * (self.weight/circ.weight) * (self.p - circ.p)/dist
-                        circ.set_p(p_new.x, p_new.y)
-                    else:
-                        p_new = circ.p + overlap * (self.weight/circ.weight) * self.p.normalize()
-                        circ.set_p(p_new.x, p_new.y)
-
-                    circ.game.check_collision(circ)
-                    circ.to_sector_add()
-
-                    # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
-                    # poniżej implementacja wzoru z wikipedidd
-
-                    # normal vector
-                    self.v,circ.v = self.collision_calculator(self.v,circ.v, self.weight , circ.weight,self.p,circ.p)
-                    circ.v = circ.v * self.ball_control
-                    # check if ball velocity is not bigger than max allowed velocity
-                    if circ.v.magnitude() > circ.v_max:
-                        circ.v = circ.v.normalize() * circ.v_max
-
-    @staticmethod
-    def collision_calculator(v1, v2, m1, m2, x1, x2) -> pygame.math.Vector2:
-        mass = 2 * m1 / (m1 + m2)
-        v11= v1 - (mass * (v1 - v2).dot(x1 - x2) / pow((x1 - x2).length(), 2)) * (x1 - x2)
-        v22= v2 - (mass * (v2 - v1).dot(x2 - x1) / pow((x2 - x1).length(), 2)) * (x2 - x1)
-        return v11,v22
                     
 
 

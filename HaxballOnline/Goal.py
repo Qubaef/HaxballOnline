@@ -10,7 +10,7 @@ class Goal(object):
         self.width = width
         self.direction = direction
 
-        self.post_up = Post(self.game, self.x, self.y_up)
+        self.post_up = Post(self.game, 300, 300)
         self.post_down = Post(self.game, self.x, self.y_down)
         
     def get_px(self):

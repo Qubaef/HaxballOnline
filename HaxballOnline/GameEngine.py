@@ -3,6 +3,9 @@ from math import ceil
 from CirclePhysical import CirclePhysical
 from Goal import Goal
 
+from Collision import Collision
+
+
 class GameEngine(object):
     #object containing Game's data
 
@@ -104,12 +107,12 @@ class GameEngine(object):
 
         # check collisions and redraw all members
         for obj in self.members:
-            obj.collide()
+            Collision.collide(obj)
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
 
         for obj in self.balls:
-            obj.collide()
+            Collision.collide(obj)
             pygame.draw.circle(self.screen, (0,0,0), (int(obj.p.x), int(obj.p.y)), obj.size)
             pygame.draw.circle(self.screen, obj.color, (int(obj.p.x), int(obj.p.y)), obj.size-2)
 
