@@ -9,6 +9,7 @@ class Collision(object):
     @staticmethod
     def collide(circ1):
 
+        # get objects from nearby sectors
         nearby = circ1.get_nearby()
 
         for circ2 in nearby:
@@ -21,10 +22,11 @@ class Collision(object):
                         circ1.v.x = 0
                         circ1.v.y = 0
 
+                    ### move colliding circles away
                     dist = math.sqrt(dist)
-
                     overlap = (dist - circ1.size - circ2.size) / 2
 
+                    # move circle1
                     circ1.from_sector_remove()
                     if dist != 0:
                         p_new = circ1.p - overlap * (circ2.weight / circ1.weight) * (circ1.p - circ2.p) / dist
@@ -35,6 +37,7 @@ class Collision(object):
                     circ1.game.check_collision(circ1)
                     circ1.to_sector_add()
 
+                    # move circle2
                     circ2.from_sector_remove()
                     if dist != 0:
                         p_new = circ2.p + overlap * (circ1.weight / circ2.weight) * (circ1.p - circ2.p) / dist
@@ -45,15 +48,16 @@ class Collision(object):
                     circ2.game.check_collision(circ2)
                     circ2.to_sector_add()
 
-                    # zderzenie gracza z piłką to zderzenie sprężyste dynamiczne (następuje zmiana prędkości obu obiektów)
-                    # poniżej implementacja wzoru z wikipedidd
-
-                    # normal vector
+                    ### count velocities after collision
                     circ1.v, circ2.v = Collision.collision_calculator(circ1.v, circ2.v, circ1.weight, circ2.weight, circ1.p, circ2.p)
+
+                    # player ball control
                     circ2.v = circ2.v * circ1.ball_control
+
                     # check if ball velocity is not bigger than max allowed velocity
                     if circ2.v.magnitude() > circ2.v_max:
                         circ2.v = circ2.v.normalize() * circ2.v_max
+
 
     @staticmethod
     def collision_calculator(v1, v2, m1, m2, x1, x2) -> pygame.math.Vector2:

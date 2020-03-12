@@ -10,6 +10,7 @@ class Goal(object):
         self.width = width
         self.direction = direction
 
+        # initialize Posts
         self.post_up = Post(self.game, self.x, self.y_up)
         self.post_down = Post(self.game, self.x, self.y_down)
         

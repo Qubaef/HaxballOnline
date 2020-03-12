@@ -9,15 +9,15 @@ from Player import Player
 from GameEngine import GameEngine
 from Ball import Ball
 
+# initialize game, ball, and player
 game = GameEngine()
-screenw_add = (game.screen_w-game.pitch_w)/2
-screenh_add = (game.screen_h-game.pitch_h)/2
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, (0, 0, 255))
 
 game.new_ball(ball)
 game.new_player(player)
-# create static bots
+
+# create bots
 bots = []
 bots_number = 5
 for i in range(0,bots_number):
@@ -31,6 +31,7 @@ while not done:
     # draw static background
     game.draw_background()
 
+    # get user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
@@ -59,7 +60,7 @@ while not done:
             if input[K_a]:
                 player_move += (-1,0)
             if input[K_r]:
-                # set ball v and p values
+                # cross ball from left top corner position
                 ball.set_move((15,15), (0,0))
             if input[K_SPACE]:
                 # turn on better ball control
@@ -67,14 +68,15 @@ while not done:
             if input[K_ESCAPE]:
                 done = True
     
-    # move player depending on keyboard input
+
 
     if player_move.length() > 0:
         # make player move with equal speed in all directions
         player_move = player_move.normalize()
-
+    # move player depending on keyboard input
     player.velocity_add(player_move)
 
+    # move bots
     for i in range (0,bots_number):
         if game.timer > 100 * i:
             dir = (ball.p - bots[i].p).normalize()

@@ -28,6 +28,7 @@ class CirclePhysical(ABC):
 
         self.from_sector_remove()
 
+        # update vectors values
         self.a = -self.v * self.friction
         self.v += self.a
         self.p += self.v

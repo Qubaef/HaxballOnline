@@ -55,7 +55,7 @@ class GameEngine(object):
         pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
         pygame.draw.rect(self.screen, self.goal_right.color, (self.goal_right.get_px(), self.goal_right.get_py(), self.goal_right.get_width(), self.goal_right.get_height()))
 
-        # draw poles
+        # draw posts
         pygame.gfxdraw.filled_circle(self.screen, int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y), self.goal_left.post_up.size, self.goal_left.post_up.color)
         pygame.gfxdraw.aacircle(self.screen, int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y), self.goal_left.post_up.size, self.goal_left.post_up.color)
         pygame.gfxdraw.filled_circle(self.screen, int(self.goal_left.post_down.p.x), int(self.goal_left.post_down.p.y), self.goal_left.post_down.size, self.goal_left.post_down.color)
@@ -66,6 +66,7 @@ class GameEngine(object):
         pygame.gfxdraw.filled_circle(self.screen, int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y), self.goal_right.post_down.size, self.goal_right.post_down.color)
         pygame.gfxdraw.aacircle(self.screen, int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y), self.goal_right.post_down.size, self.goal_right.post_down.color)
     
+        
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
 
@@ -92,8 +93,11 @@ class GameEngine(object):
             obj.update()
         for obj in self.balls:
             obj.update()
+
+        ### if test mode is on, draw additional markers on screen
         if self.test_mode:
-            # if test mode is on, draw additional markers on screen
+
+            # draw sectors around ball and players
             for obj in self.members:
                 sector_num = int(obj.size * 4/ self.sector_size)
                 for i in range(int(obj.p.x / self.sector_size) - sector_num, int(obj.p.x / self.sector_size) + sector_num + 1):
@@ -104,7 +108,8 @@ class GameEngine(object):
                 for i in range(int(obj.p.x / self.sector_size) - sector_num, int(obj.p.x / self.sector_size) + sector_num + 1):
                     for j in range(int(obj.p.y / self.sector_size) - sector_num, int(obj.p.y / self.sector_size) + sector_num + 1):
                         pygame.draw.rect(self.screen, (0,255 - ((i + j) % 2) * 50, 0), (int(obj.p.x / self.sector_size)*self.sector_size, int(obj.p.y / self.sector_size) * self.sector_size, int(self.sector_size), int(self.sector_size)))
-
+            
+            # draw hitboxes
             for obj in self.members:
                 pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.hitbox, (0,0,255))
             for obj in self.balls:
@@ -117,16 +122,18 @@ class GameEngine(object):
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size-1, (0,0,0))
 
+        # check collisions with posts
+        # TODO: move it to goal verification function
         Collision.collide(self.goal_left.post_up)
         Collision.collide(self.goal_left.post_down)
         Collision.collide(self.goal_right.post_up)
         Collision.collide(self.goal_right.post_down)
 
+        # check collisions and redraw balls
         for obj in self.balls:
             pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size-1, (0,0,0))
-
 
 
     def check_collision(self, obj):
