@@ -1,5 +1,4 @@
-#include "Vector2D.h"
-#include <cmath>
+#include "stdafx.h"
 
 Vector2D::Vector2D(float x, float y)
 	:x(x), y(y)

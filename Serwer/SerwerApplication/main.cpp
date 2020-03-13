@@ -1,5 +1,4 @@
-#include "Vector2D.h"
-#include <iostream>
+#include "stdafx.h"
 
 using namespace  std;
 
