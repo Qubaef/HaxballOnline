@@ -2,7 +2,6 @@
 
 using namespace  std;
 
-
 int main()
 {
 	Vector2D vector = Vector2D(2, 3);

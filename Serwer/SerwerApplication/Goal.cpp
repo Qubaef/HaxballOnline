@@ -8,8 +8,6 @@ Goal::Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int directio
 	this->yDown = yDown;
 	this->width = width;
 	this->direction = direction;
-	this->pPostDown = pPostDown;
-	this->pPostUp = pPostUp;
 	this->pPostUp = new Post(pGame,x,yUp);
 	this->pPostDown = new Post(pGame, x, yDown);
 }
@@ -31,11 +29,21 @@ int Goal::getWidth()
 
 int Goal::getHeight()
 {
-	return this->yDown-this->yUp;
+	return (this->yDown)-(this->yUp);
 }
 
 void Goal::goalCollide()
 {
 	this->pPostDown->collide();
 	this->pPostUp->collide();
+}
+
+Post* Goal::getPostUp()
+{
+	return pPostUp;
+}
+
+Post* Goal::getPostDown()
+{
+	return pPostUp;
 }

@@ -5,12 +5,12 @@ class Team
 private:
 	GameEngine* pGame;
 	Goal* pGoal;
-	vector<Player> players;
+	vector<Player*> players;
 	int score;
 	int pitchHalf;
 public:
 	Team(GameEngine* game, Goal* goal, int pitchHalf);
-	void addPlayer(Player player);
+	void addPlayer(Player* player);
 	void removePlayer(Player* player);
 	void resetScore();
 	void addPoint();
