@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 
-Post::Post(GameEngine* game, int px, int py)
-	:CirclePhysical(game,px,py,0,1,8)
+Post::Post(GameEngine* pGame, int px, int py)
+	:CirclePhysical(pGame,px,py,0,1,8)
 {
 	
 }

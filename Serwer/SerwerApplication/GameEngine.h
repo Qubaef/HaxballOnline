@@ -3,9 +3,10 @@
 class GameEngine
 {
 private:
-	Post posts[4];
-	Ball* ball;
+	Goal* pGoals;
+	Ball* pBall;
 	vector<Player> players;
+	vector<CirclePhysical> objects;
 	int timer = 0;
 public:
 	GameEngine();
@@ -13,5 +14,6 @@ public:
 	void newBall();
 	void update();
 	void wallsCollsion();
+	vector<CirclePhysical> getObjects();
 };
 

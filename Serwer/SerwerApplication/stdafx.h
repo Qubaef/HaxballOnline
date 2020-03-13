@@ -13,4 +13,6 @@ using namespace std;
 #include "Ball.h"
 #include "Player.h"
 #include "Post.h"
+#include "Goal.h"
+#include "Team.h"
 #include "GameEngine.h"

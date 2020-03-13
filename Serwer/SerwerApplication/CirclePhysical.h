@@ -7,7 +7,7 @@ class GameEngine;
 class CirclePhysical
 {
 private:
-	GameEngine* game;
+	GameEngine* pGame;
 	Vector2D p;
 	Vector2D v;
 	const int size;
@@ -23,7 +23,6 @@ public:
 	virtual void update();
 	virtual void setMove(Vector2D v);
 	virtual void setPosition(Vector2D p);
-	vector<CirclePhysical> getNearby() const;
 	void collide();
 };
 #endif
