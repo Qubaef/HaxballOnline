@@ -1,5 +1,4 @@
-#include "Goal.h"
-#include "CirclePhysical.h"
+#include "stdafx.h"
 
 Goal::Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int direction)
 {

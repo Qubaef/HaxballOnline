@@ -2,9 +2,8 @@
 
 
 CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, float weight, int size)
-	:pGame(game),p(px,py),number(number),weight(weight),size(size),v(0,0),vMax(6/pow(weight,2/3)),hitbox(size*3/2),ballControl(1)
+	:pGame(game),p(px,py),number(number),weight(weight),size(size),v(0,0),vMax(6/pow(weight,2/3)),hitbox(size*3/2),ballControl(1),friction(weight*0.2)
 {
-	
 }
 void CirclePhysical::setPosition(Vector2D p)
 {

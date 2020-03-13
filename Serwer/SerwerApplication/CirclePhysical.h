@@ -14,7 +14,7 @@ protected:
 	const float hitbox;
 	float vMax;
 	float friction;
-	int ballControl;
+	float ballControl;
 	float weight;
 	int number;
 public:
@@ -41,7 +41,7 @@ public:
 	//getter of friction
 	float getFriction();
 	//getter of ballControl
-	int getBallControl();
+	float getBallControl();
 	//getter of weight
 	float getWeight();
 	//getter of number
