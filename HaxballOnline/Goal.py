@@ -1,6 +1,6 @@
 from Post import Post
 
-class Goal(object):
+class Goal( object ):
     def __init__(self, game, color, p_post_x, p_post_y_up, p_post_y_down, width, direction):
         self.game = game
         self.color = color

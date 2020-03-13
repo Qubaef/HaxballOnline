@@ -104,8 +104,6 @@ class GameEngine( object ):
            int(self.screen_h / 2), \
            self.border_width * 3, self.border_color)
 
-        
-
         # draw goals and borders
         pygame.draw.rect(self.screen, self.border_color, (self.goal_left.get_px() - self.border_width,self.goal_left.get_py() - self.border_width, self.goal_left.get_width() + self.border_width - 1, self.goal_left.get_height() + self.border_width * 2 - 1), self.border_width)
         pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
