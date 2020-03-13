@@ -20,6 +20,9 @@ class GameEngine(object):
     pitch_color_1 = (113, 152, 63)
     pitch_color_2 = (134, 185, 80)
 
+    border_width = 2
+    border_color = (0,0,0)
+
     fps = 60
     test_mode = False
 
@@ -27,7 +30,7 @@ class GameEngine(object):
 
     sector_size = 50
     
-    balls =[]       # list containing balls
+    balls =[]       # list containing ballswa
     members = []    # list containing players
 
     def __init__(self):
@@ -49,17 +52,22 @@ class GameEngine(object):
         # draw backgroud
         self.screen.fill(self.back_color)
 
+        
+        # draw pitch border
+        pygame.draw.rect(self.screen, self.border_color, ((self.screen_w - self.pitch_w)/2 - self.border_width,(self.screen_h - self.pitch_h)/2 - self.border_width, self.pitch_w + self.border_width * 2 - 1, self.pitch_h + self.border_width * 2 - 1), self.border_width)
+
         # draw pitch
-        # draw border
-        pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
         for i in range(0, 10):
             if i%2:
                 pygame.draw.rect(self.screen, self.pitch_color_1, ((self.screen_w - self.pitch_w)/2 + i * self.pitch_w/10,(self.screen_h - self.pitch_h)/2, self.pitch_w/10, self.pitch_h))
             else:
                 pygame.draw.rect(self.screen, self.pitch_color_2, ((self.screen_w - self.pitch_w)/2 + i * self.pitch_w/10,(self.screen_h - self.pitch_h)/2, self.pitch_w/10, self.pitch_h))
         
-        # draw goals
+        # draw goals and borders
+        pygame.draw.rect(self.screen, self.border_color, (self.goal_left.get_px() - self.border_width,self.goal_left.get_py() - self.border_width, self.goal_left.get_width() + self.border_width - 1, self.goal_left.get_height() + self.border_width * 2 - 1), self.border_width)
         pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
+        
+        pygame.draw.rect(self.screen, self.border_color, (self.goal_right.get_px(),self.goal_right.get_py() - self.border_width, self.goal_right.get_width() + self.border_width - 1, self.goal_right.get_height() + self.border_width * 2 - 1), self.border_width)
         pygame.draw.rect(self.screen, self.goal_right.color, (self.goal_right.get_px(), self.goal_right.get_py(), self.goal_right.get_width(), self.goal_right.get_height()))
 
         # draw posts
