@@ -54,11 +54,11 @@ void CirclePhysical::collide()
 				object.setMove(object.v - (object.p - this->p) * (mass * Vector2D::Dot(object.v - this->v, object.p - this->p) / pow((object.p - this->p).length(), 2)));
 
 				object.v = object.v * this->ballControl;
-				if (this->v.length() > this->GetVMax())
-					this->setMove(Vector2D::Normal(this->v) * this->GetVMax());
+				if (this->v.length() > this->getVMax())
+					this->setMove(Vector2D::Normal(this->v) * this->getVMax());
 				
-				if (object.v.length() > object.GetVMax())
-					object.setMove(Vector2D::Normal(object.v) * object.GetVMax());
+				if (object.v.length() > object.getVMax())
+					object.setMove(Vector2D::Normal(object.v) * object.getVMax());
 			}
 		}
 	}
@@ -69,10 +69,49 @@ void CirclePhysical::velocityAdd(Vector2D velocity)
 	
 }
 
-float CirclePhysical::GetVMax()
+float CirclePhysical::getVMax()
 {
 	return this->vMax;
 }
+
+
+int CirclePhysical::getBallControl()
+{
+	return this->ballControl;
+}
+
+float CirclePhysical::getFriction()
+{
+	return this->friction;
+}
+
+GameEngine* CirclePhysical::getGame()
+{
+	return this->pGame;
+}
+
+float CirclePhysical::getHitbox()
+{
+	return this->hitbox;
+}
+
+int CirclePhysical::getNumber()
+{
+	return this->number;
+}
+
+int CirclePhysical::getSize()
+{
+	return this->size;
+}
+
+float CirclePhysical::getWeight()
+{
+	return this->weight;
+}
+
+
+
 
 
 
