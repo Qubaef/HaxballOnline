@@ -17,7 +17,7 @@ void Player::kick(Vector2D pos)
 
 
 	float dist = (this->getPosition().getX() - b->getPosition().getX()) ^ 2;
-	dist += (b->getPosition->getY() - this->getPosition->getY())^2;
+	dist += (b->getPosition().getY() - this->getPosition().getY())^2;
 
 	if (dist <= (b->getHitbox() + this->getHitbox()) ^ 2)
 	{
