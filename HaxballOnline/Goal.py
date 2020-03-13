@@ -1,4 +1,5 @@
 from Post import Post
+from Collision import Collision
 
 class Goal( object ):
     def __init__(self, game, color, p_post_x, p_post_y_up, p_post_y_down, width, direction):
@@ -13,6 +14,10 @@ class Goal( object ):
         # initialize Posts
         self.post_up = Post(self.game, self.x, self.y_up)
         self.post_down = Post(self.game, self.x, self.y_down)
+
+    def goal_collide(self):
+        Collision.collide(self.post_up)
+        Collision.collide(self.post_down)
         
     def get_px(self):
         return self.x + self.direction * self.width

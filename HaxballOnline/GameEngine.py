@@ -50,6 +50,7 @@ class GameEngine( object ):
 
     def __init__(self):
         pygame.init()
+
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
 
@@ -61,12 +62,20 @@ class GameEngine( object ):
         self.goal_left = Goal(self, self.pitch_color_1, (self.screen_w - self.pitch_w) / 2, screen_margin + self.pitch_h * 6 / 16, screen_margin + self.pitch_h * 10 / 16, 50, -1)
         self.goal_right = Goal(self, self.pitch_color_2, self.pitch_w + (self.screen_w - self.pitch_w) / 2, screen_margin + self.pitch_h * 6 / 16, screen_margin + self.pitch_h * 10 / 16, 50, 0)
 
-        self.team_right = Team(self, self.team1_color, 1) # 1 is rigth goal
-        self.team_left = Team(self, self.team2_color, -1) # -1 is left goal
+        self.team_right = Team(self, self.team1_color, self.goal_right, 1)
+        self.team_left = Team(self, self.team2_color, self.goal_left, -1)
 
     def draw_background(self):
         # draw backgroud
         self.screen.fill(self.back_color)
+
+        # draw score
+        font = pygame.font.Font(pygame.font.get_default_font(), 18)
+        score_left = font.render(str(self.team_left.score), False, self.team_left.color)
+        score_right = font.render(str(self.team_right.score), False, self.team_right.color)
+
+        self.screen.blit(score_left, (self.screen_w/10, self.screen_h/20))
+        self.screen.blit(score_right, (self.screen_w * 9/10, self.screen_h/20))
         
         # draw pitch border
         pygame.draw.rect(self.screen, self.border_color, \
@@ -227,11 +236,8 @@ class GameEngine( object ):
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
 
         # check collisions with posts
-        # TODO: move it to goal verification function
-        Collision.collide(self.goal_left.post_up)
-        Collision.collide(self.goal_left.post_down)
-        Collision.collide(self.goal_right.post_up)
-        Collision.collide(self.goal_right.post_down)
+        self.goal_left.goal_collide()
+        self.goal_right.goal_collide()
 
         # check collisions and redraw balls
         for obj in self.balls:
@@ -245,11 +251,15 @@ class GameEngine( object ):
         Collision.walls_collision(obj, self)
 
     # set game state to -2
-    # goal = -1 is left goal
-    # goal = 1 is right goal
+    # add point to team which scored
     def goal_scored(self, goal):
-        self.play_mode = -2
+        if goal == self.goal_left:
+            self.team_right.add_point()
+        else:
+            self.team_left.add_point()
 
+        self.play_mode = -2
+                                
 
     def game_state_manager(self):
         if self.play_mode == -2:

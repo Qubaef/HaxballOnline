@@ -110,7 +110,7 @@ class Collision( object ):
             if obj.p.x < int(obj.size + (game.screen_w - game.pitch_w) / 2):
                 if obj.p.y < game.goal_left.post_down.p.y and obj.p.y > game.goal_left.post_up.p.y:
                     if obj.p.x < game.goal_left.x - obj.size:
-                        game.goal_scored(-1)
+                        game.goal_scored(game.goal_left)
                 else:
                     obj.set_p(int(obj.size + (game.screen_w - game.pitch_w) / 2), obj.p.y)
                     obj.v.x *= -game.wall_bounce
@@ -119,7 +119,7 @@ class Collision( object ):
             if obj.p.x > int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size):
                 if obj.p.y < game.goal_right.post_down.p.y and obj.p.y > game.goal_right.post_up.p.y:
                     if obj.p.x >= game.goal_right.x + obj.size:
-                        game.goal_scored(1)
+                        game.goal_scored(game.goal_right)
                 else: 
                     obj.set_p(int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size), obj.p.y)
                     obj.v.x *= -game.wall_bounce
