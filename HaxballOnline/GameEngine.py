@@ -37,10 +37,10 @@ class GameEngine( object ):
     play_mode = 1
     # play_mode flags states:
     # play_mode = 0 => game running
-    # play_mode = -2 => game freezed, players and ball not set on the right positions, wating time not initialized (set after goal score)
-    # play_mode = -1 => game freezed, players and ball not set on the right positions, wating time initialized (set after goal score and -2 state)
-    # play_mode = 1 => game freezed, players and ball set on the right positions, wating time not initialized (set at the beginning of the game and after -1 state (after goal score cooldown))
-    # play_mode = 2 => game freezed, players and ball set on the right positions, wating time initialized (set after 1 state; after time counter drops to 0, game starts)
+    # play_mode = -2 => game freezed, players and ball not set on the right positions, waiting time not initialized (set after goal score)
+    # play_mode = -1 => game freezed, players and ball not set on the right positions, waiting time initialized (set after goal score and -2 state)
+    # play_mode = 1 => game freezed, players and ball set on the right positions, waiting time not initialized (set at the beginning of the game and after -1 state (after goal score cooldown))
+    # play_mode = 2 => game freezed, players and ball set on the right positions, waiting time initialized (set after 1 state; after time counter drops to 0, game starts)
 
     balls = []       # list containing balls
     players = []     # list containing players
@@ -70,12 +70,20 @@ class GameEngine( object ):
         self.screen.fill(self.back_color)
 
         # draw score
-        font = pygame.font.Font(pygame.font.get_default_font(), 18)
+        font = pygame.font.Font(pygame.font.get_default_font(), 30)
         score_left = font.render(str(self.team_left.score), False, self.team_left.color)
         score_right = font.render(str(self.team_right.score), False, self.team_right.color)
 
-        self.screen.blit(score_left, (self.screen_w/10, self.screen_h/20))
-        self.screen.blit(score_right, (self.screen_w * 9/10, self.screen_h/20))
+        self.screen.blit(score_left, (self.screen_w / 10, self.screen_h / 20))
+        self.screen.blit(score_right, (self.screen_w * 9 / 10, self.screen_h / 20))
+
+        if self.play_mode == -1:
+            status_message = font.render('GOAL!', False, (0,0,0))
+            self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
+        elif self.play_mode == 2 and self.delay < 500:
+            status_message = font.render('PLAY!', False, (0,0,0))
+            self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
+
         
         # draw pitch border
         pygame.draw.rect(self.screen, self.border_color, \
@@ -174,7 +182,7 @@ class GameEngine( object ):
         self.game_state_manager()
 
         # dt is time since last tick
-        dt  = self.clock_tick()
+        dt = self.clock_tick()
 
         self.bots_timer += dt
 
@@ -283,4 +291,4 @@ class GameEngine( object ):
 
     def positions_reset(self):
         for obj in self.balls:
-            obj.set_move((0,0),(self.screen_w/2, self.screen_h/2))
+            obj.set_move((0,0),(self.screen_w / 2, self.screen_h / 2))

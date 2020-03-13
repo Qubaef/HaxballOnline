@@ -59,6 +59,9 @@ class Collision( object ):
                     if circ2.v.magnitude() > circ2.v_max:
                         circ2.v = circ2.v.normalize() * circ2.v_max
 
+                    if circ1.v.magnitude() > circ1.v_max:
+                        circ1.v = circ1.v.normalize() * circ1.v_max
+
 
     @staticmethod
     def collision_calculator(v1, v2, m1, m2, x1, x2) -> pygame.math.Vector2:
