@@ -6,7 +6,7 @@
 class GameEngine;
 class CirclePhysical
 {
-private:
+protected:
 	GameEngine* pGame;
 	Vector2D p;
 	Vector2D v;
@@ -24,6 +24,13 @@ public:
 	virtual void setMove(Vector2D v);
 	virtual void setPosition(Vector2D p);
 	void collide();
-	float GetVMax();
+	float getVMax();
+	GameEngine* getGame();
+	int getSize();
+	float getHitbox();
+	float getFriction();
+	int getBallControl();
+	float getWeight();
+	int getNumber();
 };
 #endif
