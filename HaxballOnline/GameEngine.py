@@ -249,9 +249,10 @@ class GameEngine( object ):
 
         # check collisions and redraw balls
         for obj in self.balls:
-            pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
+            #pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
+            #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
+            #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
+            self.screen.blit(obj.ballImage, pygame.rect.Rect(obj.p.x - obj.size/2, obj.p.y - obj.size/2, obj.size, obj.size))
 
 
     # fix objects position, to prevent walls collisions

@@ -80,7 +80,7 @@ while not done:
             if game.bots_timer > 100 * i:
                 dir = (ball.p - bots[i].p).normalize()
                 bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))    
-    
+        
         if game.bots_timer > 100 * bots_number:
             game.bots_timer = 0
 
