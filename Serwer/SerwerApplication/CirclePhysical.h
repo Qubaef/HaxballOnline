@@ -12,7 +12,7 @@ protected:
 	Vector2D v;
 	const int size;
 	const float hitbox;
-	const float vMax;
+	float vMax;
 	float friction;
 	int ballControl;
 	float weight;
