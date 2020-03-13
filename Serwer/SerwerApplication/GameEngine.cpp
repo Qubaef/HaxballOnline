@@ -1,7 +1,10 @@
 #include "stdafx.h"
 GameEngine::GameEngine()
 {
-	
+	//this->pGoalLeft = (this, );
+	//this->pGoalRight = ();
+	//this->teamLeft();
+	//this->teamRight();
 }
 
 void GameEngine::update()
