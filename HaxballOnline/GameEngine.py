@@ -41,8 +41,8 @@ class GameEngine(object):
 
         # create goals
         screen_margin = (self.screen_h-self.pitch_h)/2
-        self.goal_left = Goal(self, self.pitch_color ,(self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, -1)
-        self.goal_right = Goal(self, self.pitch_color, self.pitch_w + (self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, 0)
+        self.goal_left = Goal(self, self.pitch_color_1 ,(self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, -1)
+        self.goal_right = Goal(self, self.pitch_color_2, self.pitch_w + (self.screen_w-self.pitch_w)/2, screen_margin + self.pitch_h*6/16, screen_margin + self.pitch_h*10/16, 50, 0)
 
 
     def draw_background(self):
@@ -50,7 +50,11 @@ class GameEngine(object):
         self.screen.fill(self.back_color)
 
         # draw pitch
-        pygame.draw.rect(self.screen, self.pitch_color, ((self.screen_w - self.pitch_w)/2,(self.screen_h - self.pitch_h)/2, self.pitch_w, self.pitch_h))
+        for i in range(0, 10):
+            if i%2:
+                pygame.draw.rect(self.screen, self.pitch_color_1, ((self.screen_w - self.pitch_w)/2 + i * self.pitch_w/10,(self.screen_h - self.pitch_h)/2, self.pitch_w/10, self.pitch_h))
+            else:
+                pygame.draw.rect(self.screen, self.pitch_color_2, ((self.screen_w - self.pitch_w)/2 + i * self.pitch_w/10,(self.screen_h - self.pitch_h)/2, self.pitch_w/10, self.pitch_h))
         
         # draw goals
         pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
@@ -78,6 +82,9 @@ class GameEngine(object):
         self.balls.append(ball)
 
     def redraw(self):
+        # draw static background
+        self.draw_background()
+
         # update positions and redraw members
         self.update()
 

@@ -28,9 +28,6 @@ done = False
 
 # main loop of the game
 while not done:
-    # draw static background
-    game.draw_background()
-
     # get user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
