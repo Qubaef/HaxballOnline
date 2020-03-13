@@ -32,5 +32,7 @@ public:
 	int getBallControl();
 	float getWeight();
 	int getNumber();
+	Vector2D getPosition();
+	Vector2D getMove();
 };
 #endif

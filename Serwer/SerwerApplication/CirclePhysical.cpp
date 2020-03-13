@@ -110,10 +110,13 @@ float CirclePhysical::getWeight()
 	return this->weight;
 }
 
+Vector2D CirclePhysical::getPosition()
+{
+	return this->p;
+}
 
 
-
-
-
-
-
+Vector2D CirclePhysical::getMove()
+{
+	return this->v;
+}
