@@ -3,12 +3,13 @@ import pygame.gfxdraw
 from math import ceil
 from CirclePhysical import CirclePhysical
 from Goal import Goal
+from Team import Team
 
 from Collision import Collision
 
 
 class GameEngine( object ):
-    #object containing Game's data
+    # object containing Game's data
 
     screen_w = 1100
     screen_h = int(screen_w / 1.57)
@@ -23,21 +24,34 @@ class GameEngine( object ):
     border_width = 2
     border_color = (174,202,137)
 
-    fps = 60
-    test_mode = False
+    sector_size = 50
 
+    fps = 60
+    bots_timer = 0
+    test_mode = False
     wall_bounce = 1.0
 
-    sector_size = 50
-    
+    goal_delay = 2000       # in miliseconds
+    start_delay = 2000      # in miliseconds
+    delay_counter = 0
+    play_mode = 1
+    # play_mode flags states:
+    # play_mode = 0 => game running
+    # play_mode = -2 => game freezed, players and ball not set on the right positions, wating time not initialized (set after goal score)
+    # play_mode = -1 => game freezed, players and ball not set on the right positions, wating time initialized (set after goal score and -2 state)
+    # play_mode = 1 => game freezed, players and ball set on the right positions, wating time not initialized (set at the beginning of the game and after -1 state (after goal score cooldown))
+    # play_mode = 2 => game freezed, players and ball set on the right positions, wating time initialized (set after 1 state; after time counter drops to 0, game starts)
+
     balls = []       # list containing balls
-    players = []    # list containing players
+    players = []     # list containing players
+
+    team1_color = (0,0,255)
+    team2_color = (255,0,0)
 
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.screen_w, self.screen_h))
         self.fps_clock = pygame.time.Clock()
-        self.timer = 0
 
         # 2D array containing arrays, to store object in the secotrs and optimise collisions
         self.sectors = [ [ [] for j in range(ceil(self.screen_h / self.sector_size))] for i in range(ceil(self.screen_w / self.sector_size))] 
@@ -47,11 +61,12 @@ class GameEngine( object ):
         self.goal_left = Goal(self, self.pitch_color_1, (self.screen_w - self.pitch_w) / 2, screen_margin + self.pitch_h * 6 / 16, screen_margin + self.pitch_h * 10 / 16, 50, -1)
         self.goal_right = Goal(self, self.pitch_color_2, self.pitch_w + (self.screen_w - self.pitch_w) / 2, screen_margin + self.pitch_h * 6 / 16, screen_margin + self.pitch_h * 10 / 16, 50, 0)
 
+        self.team_right = Team(self, self.team1_color, 1) # 1 is rigth goal
+        self.team_left = Team(self, self.team2_color, -1) # -1 is left goal
 
     def draw_background(self):
         # draw backgroud
         self.screen.fill(self.back_color)
-
         
         # draw pitch border
         pygame.draw.rect(self.screen, self.border_color, \
@@ -126,32 +141,62 @@ class GameEngine( object ):
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
 
-    def new_player(self, player):
+    def new_player(self, player, team_number=None):
+        # add new player to the game and team
         self.players.append(player)
-
+        
+        if team_number == None:
+            if self.team_left.size() >= self.team_right.size():
+                self.team_right.add_player(player)
+            else:
+                self.team_left.add_player(player)
+        else:
+            if team_number == 1:
+                self.team_left.add_player(player)
+            else:
+                self.team_right.add_player(player)
+    
     def new_ball(self, ball):
         self.balls.append(ball)
 
     def redraw(self):
-        # draw static background
-        self.draw_background()
 
-        # update positions and redraw players
-        self.update()
-
-        # redraw screen
-        pygame.display.update()
+        # control game states
+        self.game_state_manager()
 
         # dt is time since last tick
-        self.timer += self.clock_tick()
+        dt  = self.clock_tick()
+
+        self.bots_timer += dt
+
+        if self.delay != 0:
+            self.delay -= dt
+        if self.delay < 0:
+            self.delay = 0
+
+        if self.play_mode == 0:
+            # update objects positions and redraw players
+            self.update()
+
+        # redraw whole board
+        self.display_redraw()
+
+        # update the screen
+        pygame.display.update()
+
 
     def update(self):
-
-        # update positions
+        # update object's positions
         for obj in self.players:
             obj.update()
         for obj in self.balls:
             obj.update()
+
+    def display_redraw(self):
+        # redraw board and players
+
+        # draw static background
+        self.draw_background()
 
         ### if test mode is on, draw additional markers on screen
         if self.test_mode:
@@ -178,8 +223,8 @@ class GameEngine( object ):
         for obj in self.players:
             Collision.collide(obj)
             pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, (0,0,0))
+            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
+            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
 
         # check collisions with posts
         # TODO: move it to goal verification function
@@ -191,9 +236,41 @@ class GameEngine( object ):
         # check collisions and redraw balls
         for obj in self.balls:
             pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
-            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, (0,0,0))
+            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
+            pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
+
 
     # fix objects position, to prevent walls collisions
     def walls_collision(self, obj):
         Collision.walls_collision(obj, self)
+
+    # set game state to -2
+    # goal = -1 is left goal
+    # goal = 1 is right goal
+    def goal_scored(self, goal):
+        self.play_mode = -2
+
+
+    def game_state_manager(self):
+        if self.play_mode == -2:
+            # after goal score, prepare delay
+            self.play_mode = -1 
+            self.delay = self.goal_delay
+        elif self.play_mode == -1 and self.delay == 0:
+            # if delay passed, reset positions and set mode to 1
+            self.play_mode = 1
+        elif self.play_mode == 1:
+            # if game started (or is after goal), prepare delay
+            self.positions_reset()
+            self.team_left.reset_positions()
+            self.team_right.reset_positions()
+
+            self.play_mode = 2 
+            self.delay = self.start_delay
+        elif self.play_mode == 2 and self.delay == 0:
+            # if delay passed, start the game
+            self.play_mode = 0
+
+    def positions_reset(self):
+        for obj in self.balls:
+            obj.set_move((0,0),(self.screen_w/2, self.screen_h/2))

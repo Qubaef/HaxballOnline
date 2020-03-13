@@ -13,6 +13,7 @@ class CirclePhysical( ABC ):
         self.v_max = 6 / math.pow(self.weight, 2 / 3)     # maximum velocity is non-linear, cause ball was too fast
         self.friction = self.weight * 0.2
         self.color = color
+        self.border_color = (0,0,0)
         self.p = pygame.math.Vector2(px,py)
         self.v = pygame.math.Vector2(0,0)
         self.ball_control = 1
