@@ -19,7 +19,7 @@ void GameEngine::newPlayer()
 	
 }
 
-void GameEngine::wallsCollsion()
+void GameEngine::wallsCollsion(CirclePhysical* object)
 {
 	
 }

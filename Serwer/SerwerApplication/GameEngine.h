@@ -13,7 +13,7 @@ public:
 	void newPlayer();
 	void newBall();
 	void update();
-	void wallsCollsion();
+	void wallsCollsion(CirclePhysical* object);
 	vector<CirclePhysical> getObjects();
 };
 

@@ -32,7 +32,33 @@ void CirclePhysical::collide()
 			if(dist<=object.size + this->size)
 			{
 				float overlap = (dist - this->size - object.size);
+				if(dist!=0)
+				{
+					Vector2D pNew = this->p - (this->p - object.p)* overlap * (object.weight / this->weight) / dist;
+					this->setPosition(pNew);
+				}
+				else
+				{
+					Vector2D pNew = this->p - Vector2D::Normal(this->p) * overlap * (object.weight / this->weight);
+					this->setPosition(pNew);
+				}
+				this->pGame->wallsCollsion(this);
+				if(dist!=0)
+				{
+					Vector2D pNew = object.p - (object.p - this->p) * overlap * (this->weight / object.weight) / dist;
+					object.setPosition(pNew);
+				}
+				object.pGame->wallsCollsion(&object);
+				float mass = 2 * this->weight / (this->weight + object.weight);
+				this->setMove(this->v - (this->p - object.p) * (mass * Vector2D::Dot(this->v - object.v, this->p - object.p) / pow((this->p - object.p).length(), 2)));
+				object.setMove(object.v - (object.p - this->p) * (mass * Vector2D::Dot(object.v - this->v, object.p - this->p) / pow((object.p - this->p).length(), 2)));
+
+				object.v = object.v * this->ballControl;
+				if (this->v.length() > this->GetVMax())
+					this->setMove(Vector2D::Normal(this->v) * this->GetVMax());
 				
+				if (object.v.length() > object.GetVMax())
+					object.setMove(Vector2D::Normal(object.v) * object.GetVMax());
 			}
 		}
 	}
@@ -42,6 +68,12 @@ void CirclePhysical::velocityAdd(Vector2D velocity)
 {
 	
 }
+
+float CirclePhysical::GetVMax()
+{
+	return this->vMax;
+}
+
 
 
 

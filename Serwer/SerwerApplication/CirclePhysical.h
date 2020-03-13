@@ -24,5 +24,6 @@ public:
 	virtual void setMove(Vector2D v);
 	virtual void setPosition(Vector2D p);
 	void collide();
+	float GetVMax();
 };
 #endif
