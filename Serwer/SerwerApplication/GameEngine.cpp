@@ -29,5 +29,20 @@ vector<CirclePhysical> GameEngine::getObjects()
 	return this->objects;
 }
 
+vector<Player> GameEngine::getPlayers()
+{
+	return this->players;
+}
+
+Ball* GameEngine::getBall()
+{
+	return this->pBall;
+}
+
+Goal* GameEngine::getGoal()
+{
+	return this->pGoals;
+}
+
 
 

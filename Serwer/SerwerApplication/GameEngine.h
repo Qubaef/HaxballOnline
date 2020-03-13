@@ -15,5 +15,10 @@ public:
 	void update();
 	void wallsCollsion(CirclePhysical* object);
 	vector<CirclePhysical> getObjects();
+	vector<Player> getPlayers();
+	Ball* getBall();
+	Goal* getGoal();
+
+
 };
 

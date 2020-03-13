@@ -6,7 +6,7 @@
 class GameEngine;
 class CirclePhysical
 {
-private:
+protected:
 	GameEngine* pGame;
 	Vector2D p;
 	Vector2D v;
