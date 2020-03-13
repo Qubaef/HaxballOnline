@@ -50,6 +50,8 @@ class GameEngine(object):
         self.screen.fill(self.back_color)
 
         # draw pitch
+        # draw border
+        pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
         for i in range(0, 10):
             if i%2:
                 pygame.draw.rect(self.screen, self.pitch_color_1, ((self.screen_w - self.pitch_w)/2 + i * self.pitch_w/10,(self.screen_h - self.pitch_h)/2, self.pitch_w/10, self.pitch_h))

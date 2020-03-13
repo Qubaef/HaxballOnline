@@ -15,7 +15,6 @@ class CirclePhysical(ABC):
         self.color = color
         self.p = pygame.math.Vector2(px,py)
         self.v = pygame.math.Vector2(0,0)
-        self.a = pygame.math.Vector2(0,0)
         self.ball_control = 1
         self.sector = (px)
 
