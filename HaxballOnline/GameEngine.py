@@ -80,7 +80,7 @@ class GameEngine( object ):
         if self.play_mode == -1:
             status_message = font.render('GOAL!', False, (0,0,0))
             self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
-        elif self.play_mode == 2 and self.delay < 500:
+        elif self.play_mode == 2 and self.delay_counter < 500:
             status_message = font.render('PLAY!', False, (0,0,0))
             self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
 
@@ -186,10 +186,10 @@ class GameEngine( object ):
 
         self.bots_timer += dt
 
-        if self.delay != 0:
-            self.delay -= dt
-        if self.delay < 0:
-            self.delay = 0
+        if self.delay_counter != 0:
+            self.delay_counter -= dt
+        if self.delay_counter < 0:
+            self.delay_counter = 0
 
         if self.play_mode == 0:
             # update objects positions and redraw players
@@ -252,7 +252,7 @@ class GameEngine( object ):
             #pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
             #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
             #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
-            self.screen.blit(obj.ballImage, pygame.rect.Rect(obj.p.x - obj.size/2, obj.p.y - obj.size/2, obj.size, obj.size))
+            self.screen.blit(obj.ballImage, pygame.rect.Rect(obj.p.x - obj.size, obj.p.y - obj.size, obj.size, obj.size))
 
 
     # fix objects position, to prevent walls collisions
@@ -274,8 +274,8 @@ class GameEngine( object ):
         if self.play_mode == -2:
             # after goal score, prepare delay
             self.play_mode = -1 
-            self.delay = self.goal_delay
-        elif self.play_mode == -1 and self.delay == 0:
+            self.delay_counter = self.goal_delay
+        elif self.play_mode == -1 and self.delay_counter == 0:
             # if delay passed, reset positions and set mode to 1
             self.play_mode = 1
         elif self.play_mode == 1:
@@ -285,8 +285,8 @@ class GameEngine( object ):
             self.team_right.reset_positions()
 
             self.play_mode = 2 
-            self.delay = self.start_delay
-        elif self.play_mode == 2 and self.delay == 0:
+            self.delay_counter = self.start_delay
+        elif self.play_mode == 2 and self.delay_counter == 0:
             # if delay passed, start the game
             self.play_mode = 0
 
