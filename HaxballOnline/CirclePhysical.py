@@ -8,9 +8,9 @@ class CirclePhysical(ABC):
         self.game = game
         self.number = number
         self.weight = weight
-        self.size = size                # size used for drawing and collision detection
-        self.hitbox = int(size * 3/2)          # hitbox used for kicking the ball
-        self.v_max = 6 / math.pow(self.weight, 2/3)     # maximum velocity is non-linear, cause ball XD
+        self.size = size                                # size used for drawing and collision detection
+        self.hitbox = int(size * 3/2)                   # hitbox used for kicking the ball
+        self.v_max = 6 / math.pow(self.weight, 2/3)     # maximum velocity is non-linear, cause ball was too fast
         self.friction = self.weight * 0.2
         self.color = color
         self.p = pygame.math.Vector2(px,py)
@@ -38,7 +38,7 @@ class CirclePhysical(ABC):
             self.v = self.v.normalize() * self.v_max
 
         # fix object's position whith wall collsion detection
-        self.game.check_collision(self)
+        self.game.walls_collision(self)
 
         self.to_sector_add()
 

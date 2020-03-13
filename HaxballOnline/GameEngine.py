@@ -17,7 +17,8 @@ class GameEngine(object):
     pitch_h = int(pitch_w / 1.57)
 
     back_color = (164, 143, 91)
-    pitch_color = (0, 160, 20)
+    pitch_color_1 = (113, 152, 63)
+    pitch_color_2 = (134, 185, 80)
 
     fps = 60
     test_mode = False
@@ -135,36 +136,6 @@ class GameEngine(object):
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, (0,0,0))
             pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size-1, (0,0,0))
 
-
-    def check_collision(self, obj):
-        # check collision with pitch walls
-
-            # Left wall
-            if obj.p.x < int(obj.size + (self.screen_w - self.pitch_w)/2):
-                if obj.p.y < self.goal_left.post_down.p.y and obj.p.y > self.goal_left.post_up.p.y:
-                    if obj.p.x < self.goal_left.x - self.goal_left.width + obj.size:
-                        obj.set_p(self.goal_left.x - self.goal_left.width + obj.size, obj.p.y)
-                        obj.v *= 0
-                else:
-                    obj.set_p(int(obj.size + (self.screen_w - self.pitch_w)/2), obj.p.y)
-                    obj.v.x *= -self.wall_bounce
-
-            # Right wall
-            if obj.p.x > int(self.pitch_w + ((self.screen_w - self.pitch_w)/2) - obj.size):
-                if obj.p.y < self.goal_right.post_down.p.y and obj.p.y > self.goal_right.post_up.p.y:
-                    if obj.p.x > self.goal_right.x + self.goal_right.width - obj.size:
-                        obj.set_p(self.goal_right.x + self.goal_right.width - obj.size, obj.p.y)
-                        obj.v *= 0
-                else: 
-                    obj.set_p(int(self.pitch_w + ((self.screen_w - self.pitch_w)/2) - obj.size), obj.p.y)
-                    obj.v.x *= -self.wall_bounce
-
-            # Top wall
-            if obj.p.y < int(obj.size + (self.screen_h - self.pitch_h)/2):
-                obj.set_p(obj.p.x, int(obj.size + (self.screen_h - self.pitch_h)/2))
-                obj.v.y *= -self.wall_bounce
-
-            # Bottom wall
-            if obj.p.y > int(self.pitch_h + ((self.screen_h - self.pitch_h)/2) - obj.size):
-                obj.set_p(obj.p.x, int(self.pitch_h + ((self.screen_h - self.pitch_h)/2) - obj.size))
-                obj.v.y *= -self.wall_bounce
+    # fix objects position, to prevent walls collisions
+    def walls_collision(self, obj):
+        Collision.walls_collision(obj, self)
