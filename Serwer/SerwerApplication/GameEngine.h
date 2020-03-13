@@ -7,7 +7,6 @@ private:
 	Ball* pBall;
 	vector<Player> players;
 	vector<CirclePhysical> objects;
-	int timer = 0;
 public:
 	GameEngine();
 	void newPlayer();
@@ -15,7 +14,7 @@ public:
 	void update();
 	void wallsCollsion(CirclePhysical* object);
 	vector<CirclePhysical> getObjects();
-	vector<Player> getPlayers();
+	vector<CirclePhysical> getPlayers();
 	Ball* getBall();
 	Goal* getGoal();
 
