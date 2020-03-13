@@ -3,7 +3,7 @@
 using namespace  std;
 
 
-float main()
+int main()
 {
 	Vector2D vector = Vector2D(2, 3);
 	Vector2D vector2 = vector * 3;
