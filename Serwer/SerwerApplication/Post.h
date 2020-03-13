@@ -2,8 +2,10 @@
 #include "stdafx.h"
 class Post:public CirclePhysical
 {
+public:
 	Post(GameEngine* game, int px, int py);
 	void update() override;
-	void SetP(Vector2D p) override;
+	void setPosition(Vector2D p) override;
+	void setMove(Vector2D v)override;
 };
 

@@ -20,9 +20,9 @@ private:
 public:
 	CirclePhysical(GameEngine *game, int px, int py, int number,float weight, int size);
 	void velocityAdd(Vector2D velocity);
-	void update();
-	void setMove(Vector2D v);
-	void setPosition(Vector2D p);
+	virtual void update();
+	virtual void setMove(Vector2D v);
+	virtual void setPosition(Vector2D p);
 	vector<CirclePhysical> getNearby() const;
 	void collide();
 };
