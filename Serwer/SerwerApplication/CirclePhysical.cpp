@@ -18,7 +18,14 @@ void CirclePhysical::setMove(Vector2D v)
 
 void CirclePhysical::update()
 {
+	this->v = this->v - this->v * friction;
 	this->p = this->p + this->v;
+
+	if(this->v.length()>this->getVMax())
+	{
+		this->setMove(Vector2D::Normal(this->v) * this->getVMax());
+		this->pGame->wallsCollsion(this);
+	}
 }
 
 void CirclePhysical::collide()
@@ -66,7 +73,7 @@ void CirclePhysical::collide()
 
 void CirclePhysical::velocityAdd(Vector2D velocity)
 {
-	
+	this->v = this->v + velocity;
 }
 
 float CirclePhysical::getVMax()
