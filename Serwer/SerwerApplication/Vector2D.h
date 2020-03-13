@@ -2,17 +2,17 @@
 class Vector2D
 {
 private:
-	int x;
-	int y;
+	float x;
+	float y;
 
 public:
-	Vector2D(int x, int y);
-	int getX() const;
-	int getY() const;
-	void SetVector(int x, int y);
+	Vector2D(float x, float y);
+	float getX() const;
+	float getY() const;
+	void SetVector(float x, float y);
 	void SetVector(Vector2D);
-	void SetX(int x);
-	void SetY(int y);
+	void SetX(float x);
+	void SetY(float y);
 	float length() const;
 	//vector operations operators
 	Vector2D operator+(const Vector2D& vector) const;
@@ -35,6 +35,9 @@ public:
 	Vector2D operator/(const float& scalar) const;
 
 	//special operations
-	float dot() const;
-	Vector2D Normalize() const;
+	static float Dot(const Vector2D&, const Vector2D&);
+	static float CrossProduct(const Vector2D&, const Vector2D&);
+
+	//Return the unit vector of the input
+	static Vector2D Normal(const Vector2D&);
 };
