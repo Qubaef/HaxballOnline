@@ -83,21 +83,24 @@ void GameEngine::gameStateManager()
 	else if (playMode == 2 && delayCounter == 0) {
 		playMode = 0;
 		cout << "Game starts!";
+		pBall->setMove(Vector2D(-20, 0));
 	}
 }
 
 void GameEngine::positionsReset()
 {
 	pBall->setMove(Vector2D(0, 0));
-	pBall->setPosition(Vector2D(0, 0));
+	pBall->setPosition(Vector2D(screenW/2, screenH/2));
 }
 
 void GameEngine::goalScored(Goal* pGoal)
 {
 	if (pGoal == pGoalLeft) {
+		cout << "Goal for team right!";
 		pTeamRight->addPoint();
 	}
 	else {
+		cout << "Game for team left!";
 		pTeamLeft->addPoint();
 	}
 
