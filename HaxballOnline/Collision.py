@@ -121,7 +121,7 @@ class Collision( object ):
             # Right wall
             if obj.p.x > int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size):
                 if obj.p.y < game.goal_right.post_down.p.y and obj.p.y > game.goal_right.post_up.p.y:
-                    if obj.p.x >= game.goal_right.x + obj.size:
+                    if obj.p.x > game.goal_right.x + obj.size:
                         game.goal_scored(game.goal_right)
                 else: 
                     obj.set_p(int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size), obj.p.y)
