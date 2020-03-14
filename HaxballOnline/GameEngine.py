@@ -236,6 +236,11 @@ class GameEngine( object ):
             for obj in self.balls:
                 pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.hitbox, (0,0,255))
 
+            # draw kick trace
+            for obj in self.players:
+                if obj.mouse_pos != 0:
+                    pygame.draw.line(self.screen, obj.border_color, (int(obj.p.x), int(obj.p.y)), (obj.mouse_pos), 2)
+
         # check collisions and redraw all players
         for obj in self.players:
             Collision.collide(obj)

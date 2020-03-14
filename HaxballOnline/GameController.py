@@ -30,6 +30,9 @@ done = False
 
 # main loop of the game
 while not done:
+
+    player.mouse_pos = pygame.mouse.get_pos()
+
     # get user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -44,8 +47,7 @@ while not done:
             if event.key == pygame.K_SPACE:
                 player.mode_normal()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            p = pygame.mouse.get_pos()
-            player.kick(p)
+            player.kick(player.mouse_pos)
 
         if done != True:
             player_move = pygame.math.Vector2(0,0)
@@ -53,7 +55,7 @@ while not done:
             if input[K_w]:
                 player_move += (0,-1)
             if input[K_s]:
-                player_move += (0, 1)
+                player_move += (0,1)
             if input[K_d]:
                 player_move += (1,0)
             if input[K_a]:
@@ -76,12 +78,12 @@ while not done:
         player.velocity_add(player_move)
 
         # move bots
-        #for i in range(0,bots_number):
-        #    if game.bots_timer > 100 * i:
-        #        dir = (ball.p - bots[i].p).normalize()
-        #        bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))    
-        #
-        #if game.bots_timer > 100 * bots_number:
-        #    game.bots_timer = 0
+        for i in range(0,bots_number):
+            if game.bots_timer > 100 * i:
+                dir = (ball.p - bots[i].p).normalize()
+                bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))    
+        
+        if game.bots_timer > 100 * bots_number:
+            game.bots_timer = 0
 
     game.redraw()

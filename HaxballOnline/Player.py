@@ -8,6 +8,7 @@ class Player( CirclePhysical ):
 
     def __init__(self, game, px, py, number, color):
         super().__init__(game, px, py, number, 1, 15, color)
+        self.mouse_pos = 0
 
     def kick(self, pos):
         # check if ball is in hitbox range
