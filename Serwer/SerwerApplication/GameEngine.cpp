@@ -5,15 +5,19 @@ GameEngine::GameEngine()
 	this->pGoalLeft = new Goal(this, (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, -1);
 	this->pGoalRight = new Goal(this, (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, 0);
 
+	this->pBall = new Ball(this, 300, 300);
+
 	this->pTeamLeft = new Team(this, pGoalLeft, 1);
 	this->pTeamRight = new Team(this, pGoalLeft, -1);
+
+	this->timer = chrono::high_resolution_clock::now();
 }
 
 void GameEngine::redraw()
 {
 	this->gameStateManager();
 
-	int dt = clockTick();
+	double dt = clockTick();
 
 	if (delayCounter != 0) {
 		delayCounter -= dt;
@@ -50,10 +54,13 @@ void GameEngine::update()
 	pBall->collide();
 }
 
-int GameEngine::clockTick()
+double GameEngine::clockTick()
 {
-	// TODO: write own clock tick
-	return 0;
+	// return time since last tick (in miliseconds)
+	chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
+	double dt = chrono::duration_cast<chrono::nanoseconds>(current - this->timer).count() / 1000000.0;
+	this->timer = current;
+	return dt;
 }
 
 void GameEngine::gameStateManager()
@@ -75,16 +82,17 @@ void GameEngine::gameStateManager()
 	}
 	else if (playMode == 2 && delayCounter == 0) {
 		playMode = 0;
+		cout << "Game starts!";
 	}
 }
 
 void GameEngine::positionsReset()
 {
-	pBall->setMove(*(new Vector2D(0, 0)));
-	pBall->setPosition(*(new Vector2D(0, 0)));
+	pBall->setMove(Vector2D(0, 0));
+	pBall->setPosition(Vector2D(0, 0));
 }
 
-void GameEngine::goal_scored(Goal* pGoal)
+void GameEngine::goalScored(Goal* pGoal)
 {
 	if (pGoal == pGoalLeft) {
 		pTeamRight->addPoint();
@@ -138,11 +146,99 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber = 0)
 	}
 }
 
-void GameEngine::wallsCollsion(CirclePhysical* pObject)
+void GameEngine::wallsCollision(CirclePhysical* pObject)
 {
-	// TODO: write wallsCollision
-}
+	// Top Wall
+	if (pObject->getPosition().getY() < (int)(pObject->getSize() + (this->screenH + this->pitchH) / 2))
+	{
+		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(pObject->getSize() + (this->screenH + this->pitchH) / 2)));
+		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+	}
 
+	// Bottom Wall
+	if (pObject->getPosition().getY() > (int)(this->pitchH - pObject->getSize() + (this->screenH + this->pitchH) / 2))
+	{
+		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(this->pitchH - pObject->getSize() + (this->screenH + this->pitchH) / 2)));
+		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+	}
+
+	if (Player* player = dynamic_cast<Player*>(pObject))
+	{
+		// Left Wall
+		if (pObject->getPosition().getX() < (int)(pObject->getSize() + (this->screenW - this->pitchW) / 2))
+		{
+			if (pObject->getPosition().getY() < this->pGoalLeft->getPostDown()->getPosition().getY() && pObject->getPosition().getY() > this->pGoalLeft->getPostUp()->getPosition().getY())
+			{
+				if (pObject->getPosition().getX() < this->pGoalLeft->getPx())
+				{
+					pObject->setPosition(Vector2D(this->pGoalLeft->getPx(), pObject->getPosition().getY()));
+					pObject->setMove(Vector2D(0,0));
+				}
+			}
+			else
+			{
+				pObject->setPosition(Vector2D((int)(pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
+				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+			}
+		}
+
+		// Right Wall
+		if (pObject->getPosition().getX() > (int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2))
+		{
+			if (pObject->getPosition().getY() < this->pGoalRight->getPostDown()->getPosition().getY() && pObject->getPosition().getY() > this->pGoalRight->getPostUp()->getPosition().getY())
+			{
+				if (pObject->getPosition().getX() > this->pGoalRight->getPx())
+				{
+					pObject->setPosition(Vector2D(this->pGoalRight->getPx(), pObject->getPosition().getY()));
+					pObject->setMove(Vector2D(0, 0));
+				}
+			}
+			else
+			{
+				pObject->setPosition(Vector2D((int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
+				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+			}
+		}
+	}
+
+
+	if (Ball* ball = dynamic_cast<Ball*>(pObject))
+	{
+		// Left Wall
+		if (pObject->getPosition().getX() < (int)(pObject->getSize() + (this->screenW - this->pitchW) / 2))
+		{
+			if (pObject->getPosition().getY() < this->pGoalLeft->getPostDown()->getPosition().getY() && pObject->getPosition().getY() > this->pGoalLeft->getPostUp()->getPosition().getY())
+			{
+				if (pObject->getPosition().getX() < this->pGoalLeft->getPx() - pObject->getSize())
+				{
+					goalScored(this->pGoalLeft);
+				}
+			}
+			else
+			{
+				pObject->setPosition(Vector2D((int)(pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
+				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+			}
+		}
+
+		// Right Wall
+		if (pObject->getPosition().getX() > (int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2))
+		{
+			if (pObject->getPosition().getY() < this->pGoalRight->getPostDown()->getPosition().getY() && pObject->getPosition().getY() > this->pGoalRight->getPostUp()->getPosition().getY())
+			{
+				if (pObject->getPosition().getX() > this->pGoalRight->getPx() + pObject->getSize())
+				{
+					goalScored(this->pGoalRight);
+				}
+			}
+			else
+			{
+				pObject->setPosition(Vector2D((int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
+				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+			}
+		}
+	}
+}
 
 vector<Player*> GameEngine::getPlayers()
 {
@@ -183,6 +279,3 @@ int GameEngine::getPitchH()
 {
 	return this->pitchH;
 }
-
-
-

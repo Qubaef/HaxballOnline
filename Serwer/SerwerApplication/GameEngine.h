@@ -9,10 +9,13 @@ private:
 	const int pitchW = screenW * 0.8;
 	const int pitchH = pitchW / 1.5;
 
+	const double wallBounce = 1.0;
+
 	// delay time in miliseconds
 	const int startDelay = 2000;
 	const int goalDelay = 2000;
-	int delayCounter = 0;
+	double delayCounter = 0;
+	chrono::high_resolution_clock::time_point timer;
 
 	int playMode = 1;
 	// play_mode flags states:
@@ -37,9 +40,9 @@ public:
 	void update();
 	void gameStateManager();
 	void positionsReset();
-	void goal_scored(Goal* pGoal);
-	int clockTick();
-	void wallsCollsion(CirclePhysical* pObject);
+	void goalScored(Goal* pGoal);
+	double clockTick();
+	void wallsCollision(CirclePhysical* pObject);
 	vector<CirclePhysical*> getObjects();
 	vector<Player*> getPlayers();
 	Ball* getBall();

@@ -23,7 +23,7 @@ void CirclePhysical::update()
 	if(this->v.length()>this->getVMax())
 	{
 		this->setMove(Vector2D::Normal(this->v) * this->getVMax());
-		this->pGame->wallsCollsion(this);
+		this->pGame->wallsCollision(this);
 	}
 }
 
@@ -49,13 +49,13 @@ void CirclePhysical::collide()
 					Vector2D pNew = this->p - Vector2D::Normal(this->p) * overlap * (object->weight / this->weight);
 					this->setPosition(pNew);
 				}
-				this->pGame->wallsCollsion(this);
+				this->pGame->wallsCollision(this);
 				if(dist!=0)
 				{
 					Vector2D pNew = object->p - (object->p - this->p) * overlap * (this->weight / object->weight) / dist;
 					object->setPosition(pNew);
 				}
-				object->pGame->wallsCollsion(object);
+				object->pGame->wallsCollision(object);
 				float mass = 2 * this->weight / (this->weight + object->weight);
 				this->setMove(this->v - (this->p - object->p) * (mass * Vector2D::Dot(this->v - object->v, this->p - object->p) / pow((this->p - object->p).length(), 2)));
 				object->setMove(object->v - (object->p - this->p) * (mass * Vector2D::Dot(object->v - this->v, object->p - this->p) / pow((object->p - this->p).length(), 2)));

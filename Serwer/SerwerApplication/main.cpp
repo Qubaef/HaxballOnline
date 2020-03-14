@@ -1,17 +1,14 @@
 #include "stdafx.h"
-
 using namespace  std;
 
 int main()
 {
-	Vector2D vector = Vector2D(2, 3);
-	Vector2D vector2 = vector * 3;
+	GameEngine game = GameEngine();
 
-	cout << vector2.getX() <<" "<< vector2.getY() << endl;
-	Vector2D vector3 = vector2 /vector;
+	while(true)
+	{
+		game.redraw();
+	}
 
-	cout << vector3.getX() << " " << vector3.getY() << endl;
-	vector3 = Vector2D::Normal(vector2);
-
-	cout << vector3.getX() << " " << vector3.getY() << " " << vector3.length()<< endl;
+	return 1;
 }
