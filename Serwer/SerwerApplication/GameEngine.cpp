@@ -83,7 +83,6 @@ void GameEngine::gameStateManager()
 	else if (playMode == 2 && delayCounter == 0) {
 		playMode = 0;
 		cout << "Game starts!";
-		pBall->setMove(Vector2D(-20, 0));
 	}
 }
 

@@ -45,5 +45,5 @@ Post* Goal::getPostUp()
 
 Post* Goal::getPostDown()
 {
-	return pPostUp;
+	return pPostDown;
 }
