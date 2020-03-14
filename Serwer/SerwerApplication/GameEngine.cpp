@@ -152,16 +152,16 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber = 0)
 void GameEngine::wallsCollision(CirclePhysical* pObject)
 {
 	// Top Wall
-	if (pObject->getPosition().getY() < (int)(pObject->getSize() + (this->screenH + this->pitchH) / 2))
+	if (pObject->getPosition().getY() < (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2))
 	{
-		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(pObject->getSize() + (this->screenH + this->pitchH) / 2)));
+		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2)));
 		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
 	}
 
 	// Bottom Wall
-	if (pObject->getPosition().getY() > (int)(this->pitchH - pObject->getSize() + (this->screenH + this->pitchH) / 2))
+	if (pObject->getPosition().getY() > (int)(this->pitchH - pObject->getSize() + (this->screenH - this->pitchH) / 2))
 	{
-		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(this->pitchH - pObject->getSize() + (this->screenH + this->pitchH) / 2)));
+		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(this->pitchH - pObject->getSize() + (this->screenH - this->pitchH) / 2)));
 		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
 	}
 

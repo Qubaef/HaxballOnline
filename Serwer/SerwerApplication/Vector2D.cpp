@@ -61,22 +61,22 @@ Vector2D Vector2D::operator-() const
 
 Vector2D Vector2D::operator*(const Vector2D& vector) const
 {
-	return Vector2D(this->x * vector.x, this->x * vector.x);
+	return Vector2D(this->x * vector.x, this->y * vector.y);
 }
 
 Vector2D Vector2D::operator/(const Vector2D& vector) const
 {
-	return Vector2D(this->x / vector.x, this->x / vector.x);
+	return Vector2D(this->x / vector.x, this->y / vector.y);
 }
 
 Vector2D Vector2D::operator+(const Vector2D& vector) const
 {
-	return Vector2D(this->x + vector.x, this->x + vector.x);
+	return Vector2D(this->x + vector.x, this->y + vector.y);
 }
 
  Vector2D Vector2D::operator-(const Vector2D& vector) const
 {
-	return Vector2D(this->x - vector.x, this->x - vector.x);
+	return Vector2D(this->x - vector.x, this->y - vector.y);
 }
 
 bool Vector2D::operator<(const Vector2D& vector) const
