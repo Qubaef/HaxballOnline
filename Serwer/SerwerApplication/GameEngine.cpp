@@ -82,7 +82,7 @@ void GameEngine::gameStateManager()
 	}
 	else if (playMode == 2 && delayCounter == 0) {
 		playMode = 0;
-		cout << "Game starts!";
+		cout << "Game starts!" << endl;
 	}
 }
 
@@ -95,11 +95,11 @@ void GameEngine::positionsReset()
 void GameEngine::goalScored(Goal* pGoal)
 {
 	if (pGoal == pGoalLeft) {
-		cout << "Goal for team right!";
+		cout << "Goal for team right!" << endl;
 		pTeamRight->addPoint();
 	}
 	else {
-		cout << "Game for team left!";
+		cout << "Game for team left!" << endl;
 		pTeamLeft->addPoint();
 	}
 
