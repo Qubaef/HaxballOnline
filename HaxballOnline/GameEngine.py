@@ -137,11 +137,13 @@ class GameEngine( object ):
            self.border_width * 3, self.border_color)
 
         # draw goals and borders
+
         pygame.draw.rect(self.screen, self.border_color, (self.goal_left.get_px() - self.border_width,self.goal_left.get_py() - self.border_width, self.goal_left.get_width() + self.border_width - 1, self.goal_left.get_height() + self.border_width * 2 - 1), self.border_width)
         pygame.draw.rect(self.screen, self.goal_left.color, (self.goal_left.get_px(), self.goal_left.get_py(), self.goal_left.get_width(), self.goal_left.get_height()))
         
         pygame.draw.rect(self.screen, self.border_color, (self.goal_right.get_px(),self.goal_right.get_py() - self.border_width, self.goal_right.get_width() + self.border_width - 1, self.goal_right.get_height() + self.border_width * 2 - 1), self.border_width)
         pygame.draw.rect(self.screen, self.goal_right.color, (self.goal_right.get_px(), self.goal_right.get_py(), self.goal_right.get_width(), self.goal_right.get_height()))
+        
 
         # draw posts
         pygame.gfxdraw.filled_circle(self.screen, int(self.goal_left.post_up.p.x), int(self.goal_left.post_up.p.y), self.goal_left.post_up.size, self.goal_left.post_up.color)
@@ -155,6 +157,15 @@ class GameEngine( object ):
         pygame.gfxdraw.aacircle(self.screen, int(self.goal_right.post_down.p.x), int(self.goal_right.post_down.p.y), self.goal_right.post_down.size, self.goal_right.post_down.color)
     
         
+    def draw_graphics(self):
+        #ball
+        for obj in self.balls:
+            self.screen.blit(obj.ballImage, pygame.rect.Rect(obj.p.x - obj.size, obj.p.y - obj.size, obj.size, obj.size))
+        # goal left
+        self.screen.blit(self.goal_left.goal, pygame.rect.Rect(self.goal_left.get_px(), self.goal_left.get_py() - 3, self.goal_left.get_width(), self.goal_left.get_height()))
+        #goal right
+        self.screen.blit(self.goal_right.goal, pygame.rect.Rect(self.goal_right.get_px(), self.goal_right.get_py() - 3, self.goal_right.get_width(), self.goal_right.get_height()))
+
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
 
@@ -252,12 +263,14 @@ class GameEngine( object ):
         self.goal_left.goal_collide()
         self.goal_right.goal_collide()
 
-        # check collisions and redraw balls
-        for obj in self.balls:
+        # redraw ball
+        #for obj in self.balls:
             #pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
             #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
             #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
-            self.screen.blit(obj.ballImage, pygame.rect.Rect(obj.p.x - obj.size, obj.p.y - obj.size, obj.size, obj.size))
+        
+        # draw graphics on top of the screen
+        self.draw_graphics()
 
 
     # fix objects position, to prevent walls collisions
