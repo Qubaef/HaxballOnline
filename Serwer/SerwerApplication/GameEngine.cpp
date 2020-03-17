@@ -89,7 +89,7 @@ void GameEngine::gameStateManager()
 void GameEngine::positionsReset()
 {
 	pBall->setMove(Vector2D(0, 0));
-	pBall->setPosition(Vector2D(screenW/2, screenH/2));
+	pBall->setPosition(Vector2D(screenW / 2, screenH / 2));
 }
 
 void GameEngine::goalScored(Goal* pGoal)
@@ -154,14 +154,14 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 	if (pObject->getPosition().getY() < (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2))
 	{
 		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2)));
-		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+		pObject->setMove(Vector2D(pObject->getMove().getX(), pObject->getMove().getY()*(-(this->wallBounce))));
 	}
 
 	// Bottom Wall
 	if (pObject->getPosition().getY() > (int)(this->pitchH - pObject->getSize() + (this->screenH - this->pitchH) / 2))
 	{
 		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(this->pitchH - pObject->getSize() + (this->screenH - this->pitchH) / 2)));
-		pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+		pObject->setMove(Vector2D(pObject->getMove().getX(), pObject->getMove().getY()*(-(this->wallBounce))));
 	}
 
 	if (Player* player = dynamic_cast<Player*>(pObject))
@@ -174,13 +174,13 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 				if (pObject->getPosition().getX() < this->pGoalLeft->getPx())
 				{
 					pObject->setPosition(Vector2D(this->pGoalLeft->getPx(), pObject->getPosition().getY()));
-					pObject->setMove(Vector2D(0,0));
+					pObject->setMove(Vector2D(0, 0));
 				}
 			}
 			else
 			{
 				pObject->setPosition(Vector2D((int)(pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
-				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+				pObject->setMove(Vector2D(pObject->getMove().getX()*(-(this->wallBounce)), pObject->getMove().getY()));
 			}
 		}
 
@@ -198,7 +198,7 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 			else
 			{
 				pObject->setPosition(Vector2D((int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
-				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+				pObject->setMove(Vector2D(pObject->getMove().getX()*(-(this->wallBounce)), pObject->getMove().getY()));
 			}
 		}
 	}
@@ -219,7 +219,7 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 			else
 			{
 				pObject->setPosition(Vector2D((int)(pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
-				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+				pObject->setMove(Vector2D(pObject->getMove().getX()*(-(this->wallBounce)), pObject->getMove().getY()));
 			}
 		}
 
@@ -236,7 +236,7 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 			else
 			{
 				pObject->setPosition(Vector2D((int)(this->pitchW - pObject->getSize() + (this->screenW - this->pitchW) / 2), pObject->getPosition().getY()));
-				pObject->setMove(pObject->getMove()*(-(this->wallBounce)));
+				pObject->setMove(Vector2D(pObject->getMove().getX()*(-(this->wallBounce)), pObject->getMove().getY()));
 			}
 		}
 	}

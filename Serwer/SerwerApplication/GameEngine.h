@@ -7,7 +7,7 @@ private:
 	const int screenH = screenW / 1.57;
 
 	const int pitchW = screenW * 0.8;
-	const int pitchH = pitchW / 1.5;
+	const int pitchH = pitchW / 1.57;
 
 	const double wallBounce = 1.0;
 
