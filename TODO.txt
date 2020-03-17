@@ -1,9 +1,12 @@
 Server side:
 - main soccet in connectionsManager thread
 - sockets management inside client's threads
+- game finish condition (bool finished in GameEngine)
+- GameEngine.stop() function to deallocate memory
 
 Communication:
 - data serialization and switch between c++ and python data types
+- library to convert data types between languages
 
 Local side:
 - polish of client application (numbers, score display)
