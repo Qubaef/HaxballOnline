@@ -58,9 +58,10 @@ void CirclePhysical::collide()
 				}
 				object->pGame->wallsCollision(object);
 				float mass = 2 * this->weight / (this->weight + object->weight);
-				this->setMove(this->v - (this->p - object->p) * (mass * Vector2D::Dot(this->v - object->v, this->p - object->p) / pow((this->p - object->p).length(), 2)));
+				Vector2D temp = this->v - (this->p - object->p) * (mass * Vector2D::Dot(this->v - object->v, this->p - object->p) / pow((this->p - object->p).length(), 2));
+				
 				object->setMove(object->v - (object->p - this->p) * (mass * Vector2D::Dot(object->v - this->v, object->p - this->p) / pow((object->p - this->p).length(), 2)));
-
+				this->setMove(temp);
 				object->v = object->v * this->ballControl;
 				if (this->v.length() > this->getVMax())
 					this->setMove(Vector2D::Normal(this->v) * this->getVMax());

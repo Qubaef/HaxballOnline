@@ -3,7 +3,7 @@ GameEngine::GameEngine()
 {
 	int screenMargin = (screenH - pitchH) / 2;
 	this->pGoalLeft = new Goal(this, (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, -1);
-	this->pGoalRight = new Goal(this, (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, 0);
+	this->pGoalRight = new Goal(this, pitchW + (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, 0);
 
 	this->pBall = new Ball(this, 300, 300);
 
