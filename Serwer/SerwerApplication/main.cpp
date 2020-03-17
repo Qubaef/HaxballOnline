@@ -10,12 +10,12 @@ int main()
 	{
 		game.redraw();
 		if(i%10==0)
-			game.getBall()->setMove(Vector2D(3, 2));
+			game.getBall()->setMove(Vector2D(3, -1.91));
 		if (i == 50)
 			int a = 0;
-		if (i == 100)
+		if (i == 75)
 			int a = 0;
-		if (i == 125)
+		if (i == 100)
 			int a = 0;
 		if (i == 150)
 			int a = 0;
