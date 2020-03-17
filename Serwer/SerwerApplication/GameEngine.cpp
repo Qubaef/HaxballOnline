@@ -83,7 +83,12 @@ void GameEngine::gameStateManager()
 	}
 	else if (playMode == 2 && delayCounter == 0) {
 		playMode = 0;
+
 		cout << "Game starts!" << endl;
+		for(Player* player : this->players)
+		{
+			cout << "player pos: " << player->getPosition().getX() << " " << player->getPosition().getY() << endl;
+		}
 	}
 }
 
@@ -127,7 +132,7 @@ void GameEngine::newBall(Ball* pBall)
 	this->pBall = pBall;
 }
 
-void GameEngine::newPlayer(Player* pPlayer, int teamNumber = 0)
+void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
 	players.push_back(pPlayer);
 

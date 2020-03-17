@@ -7,6 +7,7 @@ private:
 	GameEngine* pGame;
 	TransferManager* pManager;
 	void play();
+	void manageConnections();
 public:
 	Server();
 	void start();
