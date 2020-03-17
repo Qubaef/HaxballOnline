@@ -2,6 +2,8 @@
 #include <cmath>
 #include <chrono>	// clock implementation
 #include <iostream>
+#include <vector>
+#include <thread>
 
 using namespace std;
 
@@ -13,3 +15,6 @@ using namespace std;
 #include "Goal.h"
 #include "Team.h"
 #include "GameEngine.h"
+#include "ClientData.h"
+#include "TransferManager.h"
+#include "Server.h"

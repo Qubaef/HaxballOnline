@@ -32,6 +32,8 @@ private:
 	Team* pTeamRight;
 	Team* pTeamLeft;
 
+	bool finished;
+
 public:
 	GameEngine();
 	void newPlayer(Player* pPlayer, int teamNumber);
@@ -53,4 +55,5 @@ public:
 	int getScreenH();
 	int getPitchW();
 	int getPitchH();
+	bool getFinished();
 };

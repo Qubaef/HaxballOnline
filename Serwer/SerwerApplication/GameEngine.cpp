@@ -11,6 +11,7 @@ GameEngine::GameEngine()
 	this->pTeamRight = new Team(this, pGoalLeft, -1);
 
 	this->timer = chrono::high_resolution_clock::now();
+	this->finished = false;
 }
 
 void GameEngine::redraw()
@@ -280,4 +281,9 @@ int GameEngine::getPitchW()
 int GameEngine::getPitchH()
 {
 	return this->pitchH;
+}
+
+bool GameEngine::getFinished()
+{
+	return this->finished;
 }
