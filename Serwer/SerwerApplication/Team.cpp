@@ -10,8 +10,6 @@ Team::Team(GameEngine* game, Goal* goal, int pitchHalf)
 
 Team::~Team()
 {
-	delete pGame;
-	delete pGoal;
 
 }
 

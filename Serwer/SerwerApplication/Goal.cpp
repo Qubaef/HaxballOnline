@@ -14,7 +14,6 @@ Goal::Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int directio
 
 Goal::~Goal()
 {
-	delete pGame;
 	delete pPostUp;
 	delete pPostDown;
 }

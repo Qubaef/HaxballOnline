@@ -16,11 +16,12 @@ GameEngine::GameEngine()
 
 GameEngine::~GameEngine()
 {
+	delete pTeamRight;
+	delete pTeamLeft;
 	delete pBall;
 	delete pGoalLeft;
 	delete pGoalRight;
-	delete pTeamRight;
-	delete pTeamLeft;
+	
 
 }
 

@@ -8,8 +8,7 @@ ClientData::ClientData()
 
 ClientData::~ClientData()
 {
-	delete pPlayer;
-	pPlayer = null;
+
 }
 
 

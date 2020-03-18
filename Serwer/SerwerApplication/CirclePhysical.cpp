@@ -8,8 +8,7 @@ CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, flo
 
 CirclePhysical::~CirclePhysical()
 {
-	delete pGame;
-	pGame = null;
+
 }
 
 void CirclePhysical::setPosition(Vector2D p)
