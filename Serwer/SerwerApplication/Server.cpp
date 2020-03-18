@@ -5,6 +5,12 @@ Server::Server()
 	this->pManager = new TransferManager();
 }
 
+Server::~Server()
+{
+	delete pGame;
+	delete pManager;
+}
+
 void Server::start()
 {
 	// initialize thread to accept connections from users on separate socket

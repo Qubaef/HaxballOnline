@@ -6,6 +6,12 @@ ClientData::ClientData()
 	this->pPlayer = nullptr;
 }
 
+ClientData::~ClientData()
+{
+	delete pPlayer;
+	pPlayer = null;
+}
+
 
 bool ClientData::getReady()
 {

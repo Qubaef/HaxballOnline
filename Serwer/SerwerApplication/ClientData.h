@@ -11,6 +11,7 @@ private:
 	unsigned short number;
 public:
 	ClientData();
+	~ClientData();
 	bool getReady();
 	void setPlayer(Player* pPlayer);
 	Player* getPlayer();

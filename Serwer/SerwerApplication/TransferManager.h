@@ -9,6 +9,7 @@ private:
 	void communicate(ClientData* data);
 public:
 	TransferManager();
+	~TransferManager();
 	void newClient();
 	bool readyToPlay();
 	vector<ClientData*>* getClientsData();

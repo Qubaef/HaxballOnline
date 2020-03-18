@@ -12,6 +12,13 @@ Goal::Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int directio
 	this->pPostDown = new Post(pGame, x, yDown);
 }
 
+Goal::~Goal()
+{
+	delete pGame;
+	delete pPostUp;
+	delete pPostDown;
+}
+
 int Goal::getPx()
 {
 	return this->x;

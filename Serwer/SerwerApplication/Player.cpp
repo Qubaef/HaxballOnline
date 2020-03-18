@@ -8,6 +8,10 @@ Player::Player(GameEngine* pGame, int px, int py, int number)
 
 }
 
+Player::~Player()
+{
+}
+
 void Player::kick(Vector2D pos)
 {
 	//for (Ball b : this->pGame->getBall)

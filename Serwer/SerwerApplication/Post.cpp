@@ -7,6 +7,10 @@ Post::Post(GameEngine* pGame, int px, int py)
 	
 }
 
+Post::~Post()
+{
+}
+
 void Post::setPosition(Vector2D p)
 {
 	return;

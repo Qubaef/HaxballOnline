@@ -19,6 +19,7 @@ protected:
 	int number;
 public:
 	CirclePhysical(GameEngine *game, int px, int py, int number, float weight, int size);
+	~CirclePhysical();
 
 	//adding velocity to speed
 	void velocityAdd(Vector2D velocity);

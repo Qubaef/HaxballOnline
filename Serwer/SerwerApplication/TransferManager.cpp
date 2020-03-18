@@ -4,6 +4,10 @@ TransferManager::TransferManager()
 {
 }
 
+TransferManager::~TransferManager()
+{
+}
+
 // function called bu separate thread
 // communicate with your client
 void TransferManager::communicate(ClientData* data)

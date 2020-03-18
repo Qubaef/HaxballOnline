@@ -10,6 +10,7 @@ private:
 	int pitchHalf;
 public:
 	Team(GameEngine* game, Goal* goal, int pitchHalf);
+	~Team();
 	void addPlayer(Player* player);
 	void removePlayer(Player* player);
 	void resetScore();
