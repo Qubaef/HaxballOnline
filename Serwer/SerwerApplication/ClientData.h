@@ -6,13 +6,14 @@ class ClientData
 private:
 	string nickname;
 	Player* pPlayer;
-	int lastInput;
+	SOCKET clientSocket;
 	bool ready;
 	unsigned short number;
 public:
-	ClientData();
+	ClientData(SOCKET clientSocket);
 	bool getReady();
 	void setPlayer(Player* pPlayer);
 	Player* getPlayer();
+	SOCKET getSocket();
 	int getNumber();
 };

@@ -5,11 +5,11 @@ class TransferManager
 {
 private:
 	vector<ClientData*> clientsData;
-	vector<thread> clientsCommunicators;
+	vector<thread> clientsThreads;
 	void communicate(ClientData* data);
 public:
 	TransferManager();
-	void newClient();
+	void newClient(SOCKET clientSocket);
 	bool readyToPlay();
 	vector<ClientData*>* getClientsData();
 };

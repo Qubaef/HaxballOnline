@@ -1,9 +1,10 @@
 #include "stdafx.h"
 
-ClientData::ClientData()
+ClientData::ClientData(SOCKET clientSocket)
 {
-	this->ready = true;	// TMP solution; later, user will choose if he is ready
-	this->pPlayer = nullptr;
+	this->ready = false;
+	this->pPlayer = nullptr;		// player will be created right before game starts
+	this->clientSocket = clientSocket;
 }
 
 
@@ -21,6 +22,11 @@ void ClientData::setPlayer(Player* pPlayer)
 Player* ClientData::getPlayer()
 {
 	return this->pPlayer;
+}
+
+SOCKET ClientData::getSocket()
+{
+	return this->clientSocket;
 }
 
 
