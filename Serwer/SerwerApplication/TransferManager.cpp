@@ -27,6 +27,7 @@ void TransferManager::communicate(ClientData* data)
 {
 	int iSendResult;
 	char recvbuf[DEFAULT_BUFLEN];
+	char sendbuf[DEFAULT_BUFLEN] = { "Hello, server here!" };
 	int iResult;
 
 	cout << "communicating with client!" << endl;
@@ -38,8 +39,7 @@ void TransferManager::communicate(ClientData* data)
 			cout << "Bytes received: " << iResult << endl;
 			cout << recvbuf;
 
-			// Echo the buffer back to the sender
-			iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
+			iSendResult = send(data->getSocket(), sendbuf, iResult, 0);
 			if (iSendResult == SOCKET_ERROR) {
 				cout << "send failed with error: " << WSAGetLastError() << endl;
 				closesocket(data->getSocket());
@@ -49,7 +49,8 @@ void TransferManager::communicate(ClientData* data)
 			cout << "Bytes sent: " << iSendResult << endl;
 		}
 		else if (iResult == 0)
-			cout << "Connection closing..." << endl;
+			// TODO: break connection here (?)
+			continue;
 		else {
 			cout << "recv failed with error: " << WSAGetLastError() << endl;
 			closesocket(data->getSocket());
