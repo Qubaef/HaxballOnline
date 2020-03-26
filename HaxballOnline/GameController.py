@@ -2,12 +2,23 @@ import pygame
 import sys
 import math
 import random
+import socket
 
 from pygame.locals import *
 from Post import Post
 from Player import Player
 from GameEngine import GameEngine
 from Ball import Ball
+
+# socket communication test
+HOST = '127.0.0.1'
+PORT = 8080 
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(b'Hello, client here!')
+    data = s.recv(1024)
+
 
 # initialize game, ball, and player
 game = GameEngine()
