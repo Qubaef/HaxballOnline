@@ -14,6 +14,17 @@ GameEngine::GameEngine()
 	this->finished = false;
 }
 
+GameEngine::~GameEngine()
+{
+	delete pTeamRight;
+	delete pTeamLeft;
+	delete pBall;
+	delete pGoalLeft;
+	delete pGoalRight;
+	
+
+}
+
 void GameEngine::redraw()
 {
 	this->gameStateManager();

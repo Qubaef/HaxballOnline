@@ -7,6 +7,11 @@ ClientData::ClientData(SOCKET clientSocket)
 	this->clientSocket = clientSocket;
 }
 
+ClientData::~ClientData()
+{
+
+}
+
 
 bool ClientData::getReady()
 {

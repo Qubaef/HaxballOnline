@@ -5,6 +5,10 @@ Vector2D::Vector2D(float x, float y)
 {
 }
 
+Vector2D::~Vector2D()
+{
+}
+
 void Vector2D::SetX(float x)
 {
 	this->x = x;

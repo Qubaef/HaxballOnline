@@ -9,6 +9,7 @@ private:
 	void communicate(ClientData* data);
 public:
 	TransferManager();
+	~TransferManager();
 	void newClient(SOCKET clientSocket);
 	bool readyToPlay();
 	vector<ClientData*>* getClientsData();

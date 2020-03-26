@@ -36,6 +36,7 @@ private:
 
 public:
 	GameEngine();
+	~GameEngine();
 	void newPlayer(Player* pPlayer, int teamNumber = 0);
 	void newBall(Ball* pBall);
 	void redraw();

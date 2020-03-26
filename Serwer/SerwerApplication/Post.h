@@ -4,6 +4,7 @@ class Post:public CirclePhysical
 {
 public:
 	Post(GameEngine* game, int px, int py);
+	~Post();
 	void update() override;
 	void setPosition(Vector2D p) override;
 	void setMove(Vector2D v)override;

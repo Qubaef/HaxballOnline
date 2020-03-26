@@ -17,6 +17,10 @@ void TransferManager::newClient(SOCKET clientSocket)
 	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient));
 }
 
+TransferManager::~TransferManager()
+{
+}
+
 // function called bu separate thread
 // communicate with your client
 void TransferManager::communicate(ClientData* data)

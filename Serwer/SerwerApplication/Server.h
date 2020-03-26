@@ -10,5 +10,6 @@ private:
 	void manageConnections();
 public:
 	Server();
+	~Server();
 	void start();
 };

@@ -8,6 +8,7 @@ private:
 
 public:
 	Vector2D(float x, float y);
+	~Vector2D();
 	float getX() const;
 	float getY() const;
 	void SetVector(float x, float y);

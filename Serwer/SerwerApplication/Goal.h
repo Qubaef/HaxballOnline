@@ -13,6 +13,7 @@ private:
 	Post *pPostDown;
 public:
 	Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int direction);
+	~Goal();
 	int getPx();
 	int getPy();
 	int getWidth();

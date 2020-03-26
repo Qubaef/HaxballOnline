@@ -8,6 +8,11 @@ Team::Team(GameEngine* game, Goal* goal, int pitchHalf)
 	this->score = 0;
 }
 
+Team::~Team()
+{
+
+}
+
 void Team::addPlayer(Player* pPlayer)
 {
 	this->players.push_back(pPlayer);

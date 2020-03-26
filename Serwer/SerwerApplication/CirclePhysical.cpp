@@ -5,6 +5,12 @@ CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, flo
 	:pGame(game),p(px,py),number(number),weight(weight),size(size),v(0,0),vMax(6/pow(weight,2/3.0)),hitbox(size*3/2),ballControl(1),friction(weight*0.2)
 {
 }
+
+CirclePhysical::~CirclePhysical()
+{
+
+}
+
 void CirclePhysical::setPosition(Vector2D p)
 {
 	this->p = p;
