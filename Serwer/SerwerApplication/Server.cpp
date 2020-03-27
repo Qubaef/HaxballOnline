@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <minwindef.h>
 
 Server::Server()
 {
