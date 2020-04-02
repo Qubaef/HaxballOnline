@@ -59,7 +59,9 @@ void TransferManager::communicate(ClientData* data)
 				return;
 			}
 			cout << "Bytes sent: " << iSendResult << endl;
-			
+			double*dataToSent = this->pGame->serialize();
+			//TODO sen data
+			int a = 0;
 		}
 		else if (iResult == 0)
 		{	

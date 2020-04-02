@@ -2,7 +2,7 @@
 
 ClientData::ClientData(SOCKET clientSocket)
 {
-	this->ready = false;
+	this->ready = true;
 	this->pPlayer = nullptr;		// player will be created right before game starts
 	this->clientSocket = clientSocket;
 }
