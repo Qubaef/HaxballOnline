@@ -2,26 +2,20 @@ import pygame
 import sys
 import math
 import random
-import socket
 
 from pygame.locals import *
 from Post import Post
 from Player import Player
 from GameEngine import GameEngine
 from Ball import Ball
+from TransferManager import TransferManager
 
-# socket communication test
-HOST = '127.0.0.1'
-PORT = 8080 
+nickname = "Player"
+transferManager = TransferManager(nickname);
+if transferManager.initConnection() == -1:
+    sys.exit()
 
-while (True):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        message = 'Hello, client here!' + chr(0)
-        s.sendall(bytes(message, encoding='utf-8'))
-        data = s.recv(1024)
-        print(data)
-
+transferManager.readyToPlay = True
 
 # initialize game, ball, and player
 game = GameEngine()
