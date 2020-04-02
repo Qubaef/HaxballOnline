@@ -34,8 +34,12 @@ SOCKET ClientData::getSocket()
 	return this->clientSocket;
 }
 
-
 int ClientData::getNumber()
 {
 	return this->number;
+}
+
+string ClientData::getNickname()
+{
+	return this->nickname;
 }

@@ -17,4 +17,5 @@ public:
 	Player* getPlayer();
 	SOCKET getSocket();
 	int getNumber();
+	string getNickname();
 };

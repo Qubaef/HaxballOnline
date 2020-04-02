@@ -12,6 +12,7 @@ void TransferManager::newClient(SOCKET clientSocket)
 	ClientData* newClient = new ClientData(clientSocket);
 
 	// insert this data to vector in transfer manager
+	ifNewData.push_back(false);
 	clientsData.push_back(newClient);
 	unsigned int threadNumber = clientsData.size();
 
@@ -44,6 +45,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 
 	cout << "communicating with client!" << endl;
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
+
 	while (true)
 	{
 		iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
@@ -116,12 +118,42 @@ vector<ClientData*>* TransferManager::getClientsData()
 
 void TransferManager::sendInitializationPack()
 {
-	
+	// prepare initialization pack and place it in dataContainer
+	PlayerInitializePack* initData = new PlayerInitializePack[this->clientsData.size()];
+	unsigned int length = 0;
+
+	for(ClientData* client : this->clientsData)
+	{
+		initData->playerNickname = client->getNickname();
+		initData->playerNumber = client->getNumber();
+		length += sizeof(PlayerInitializePack);
+	}
+
+	this->dataContainer = initData;
+	this->dataContainerLength = length;
+
+	// set all flags to True
+	for(bool sendFlag : this->ifNewData)
+	{
+		sendFlag = true;
+	}
 }
 
 
-
-void* TransferManager::getInitializationPack()
+void* TransferManager::getInitializationPack(int threadNumber)
 {
-	
+	if(this->ifNewData[threadNumber] == true)
+	{
+		return this->dataContainer;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+
+void TransferManager::dataSent(int threadNumber)
+{
+	this->ifNewData[threadNumber] = false;
 }
