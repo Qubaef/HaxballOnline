@@ -135,3 +135,15 @@ Vector2D CirclePhysical::getMove()
 {
 	return this->v;
 }
+
+double* CirclePhysical::serialize()
+{
+	double* data = new double[CIRCLE_SIZE];
+	data[0] = p.getX();
+	data[1] = p.getY();
+	data[2] = v.getX();
+	data[3] = v.getY();
+	data[4] = ballControl;
+	return data;
+}
+

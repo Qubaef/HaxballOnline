@@ -65,5 +65,8 @@ public:
 
 	//getter of v
 	Vector2D getMove();
+
+	//serialize circle data to be send to the client
+	double* serialize();
 };
 #endif
