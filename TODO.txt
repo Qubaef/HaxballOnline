@@ -1,15 +1,14 @@
 Server side:
-- reimplementation of physics calculation on the server side (c++)
-- threads management to handle clients data
+- main soccet in connectionsManager thread
+- sockets management inside client's threads
+- game finish condition (bool finished in GameEngine)
 
 Communication:
-- connection beetwen app and serwer via sockets
-- model of data serialization (objects to byte code, to send them in best way)
+- data serialization and switch between c++ and python data types
+- library to convert data types between languages
 
 Local side:
-- add teams
-- goal event detection
-- polish of client application (graphics, numbers, pitch lines, score display)
+- polish of client application (numbers, score display)
 - main menu with server and team choice
 
 Optional (added if necessary):
