@@ -10,7 +10,10 @@ from GameEngine import GameEngine
 from Ball import Ball
 from TransferManager import TransferManager
 
-nickname = "Player"
+# main menu loop
+
+nickname = input('Enter nickname: ')
+
 transferManager = TransferManager(nickname);
 if transferManager.initConnection() == -1:
     sys.exit()
