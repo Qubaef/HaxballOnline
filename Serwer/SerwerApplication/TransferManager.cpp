@@ -38,7 +38,7 @@ void TransferManager::communicate(ClientData* data)
 {
 	int iSendResult;
 	char recvbuf[DEFAULT_BUFLEN];
-	char sendbuf[DEFAULT_BUFLEN] = { "Hello, server here!" };
+	char sendbuf[DEFAULT_BUFLEN];
 	int iResult;
 
 	cout << "communicating with client!" << endl;
@@ -46,12 +46,16 @@ void TransferManager::communicate(ClientData* data)
 	while (true)
 	{
 		iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+		double* dataToSent = this->pGame->serialize();
+		int size = pGame->size();
+		size *= sizeof(double);
+		memcpy(sendbuf, dataToSent, size);
 		if (iResult > 0) {
 			current = std::chrono::system_clock::now();
 			cout << "Bytes received: " << iResult << endl;
 			cout << recvbuf;
 
-			iSendResult = send(data->getSocket(), sendbuf, iResult, 0);
+			iSendResult = send(data->getSocket(), sendbuf, size, 0);
 			if (iSendResult == SOCKET_ERROR) {
 				cout << "send failed with error: " << WSAGetLastError() << endl;
 				closesocket(data->getSocket());
@@ -59,9 +63,7 @@ void TransferManager::communicate(ClientData* data)
 				return;
 			}
 			cout << "Bytes sent: " << iSendResult << endl;
-			double*dataToSent = this->pGame->serialize();
-			//TODO sen data
-			int a = 0;
+			
 		}
 		else if (iResult == 0)
 		{	

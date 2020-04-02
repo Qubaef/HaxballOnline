@@ -1,14 +1,14 @@
 import threading
 import socket
 import time
-
+import GameEngine
 class TransferManager( object ):
     def __init__(self, nickname):
         self.nickname = nickname
         self.number = -1
         self.readyToPlay = False
         self.s = 0
-
+        self.game = 0
     def initConnection(self):
 
         # initialize socket
@@ -36,12 +36,18 @@ class TransferManager( object ):
 
         return 1
 
+    def addGame(self, game:GameEngine):
+        self.game=game
+
 
     def communicate(self):
         # keep sending and receiving readyToPlay to the server to keep connection
         while(True):
             readySignal = str(self.readyToPlay) + chr(0)
             self.s.sendall(bytes(readySignal, encoding='utf-8'))
-            readySignal = self.s.recv(16)
+            size=8
+            dataSize = 5*size + 2*size +size*len(self.game.team_left.players)*5 + size*len(self.game.team_right.players)*5
+            data = self.s.recv(dataSize)
+            #TODO change bytes to double from C, convert to python double and serialzie
             time.sleep(0.2)
 

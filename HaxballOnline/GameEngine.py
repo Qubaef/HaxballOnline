@@ -311,3 +311,10 @@ class GameEngine( object ):
     def positions_reset(self):
         for obj in self.balls:
             obj.set_move((0,0),(self.screen_w / 2, self.screen_h / 2))
+
+
+    def deserialize(self,data):
+        self.balls[0].deserialize(data)
+        data=data[5:]
+        self.team_left.deserialize(data)
+        self.team_right.deserialize(data)

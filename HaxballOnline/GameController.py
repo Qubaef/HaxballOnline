@@ -15,27 +15,28 @@ from TransferManager import TransferManager
 nickname = input('Enter nickname: ')
 
 transferManager = TransferManager(nickname);
+game = GameEngine()
+ball = Ball(game, 500, 300, 0)
+player = Player(game, 400, 300, 1, (0, 0, 255))
+transferManager.addGame(game)
+game.new_ball(ball)
+game.new_player(player)
+
+player.border_color = (255,255,0)
 if transferManager.initConnection() == -1:
     sys.exit()
 
 transferManager.readyToPlay = True
 
 # initialize game, ball, and player
-game = GameEngine()
-ball = Ball(game, 500, 300, 0)
-player = Player(game, 400, 300, 1, (0, 0, 255))
 
-game.new_ball(ball)
-game.new_player(player)
-
-player.border_color = (255,255,0)
 
 # create bots
-bots = []
-bots_number = 5
-for i in range(0,bots_number):
-   bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, (255, 0, 0)))
-   game.new_player(bots[i])
+#bots = []
+#bots_number = 5
+#for i in range(0,bots_number):
+#   bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, (255, 0, 0)))
+#   game.new_player(bots[i])
 
 done = False
 
