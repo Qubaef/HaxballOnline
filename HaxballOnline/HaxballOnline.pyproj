@@ -12,6 +12,7 @@
     <Name>HaxballOnline</Name>
     <RootNamespace>HaxballOnline</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>Global|VisualStudio|games</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +41,9 @@
     <Compile Include="TransferManager.py">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|VisualStudio|games" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

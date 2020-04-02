@@ -303,3 +303,25 @@ bool GameEngine::getFinished()
 {
 	return this->finished;
 }
+
+double* GameEngine::serialize()
+{
+	//we don't have to send const value like goals and screen, we have to send balls and teams
+	//TODO: should we have initial create info?
+	//TODO: serialize ball
+	//TODO: serialize teams, teams should have own serialize function
+	//
+	double* data = new double[pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE + pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE + CIRCLE_SIZE];
+	double* ballData = pBall->serialize();
+	memcpy(data, ballData, CIRCLE_SIZE * sizeof(double));
+	double* data1 = data + CIRCLE_SIZE * sizeof(double);
+	delete ballData;
+	double* leftTeamData = pTeamLeft->serialize();
+	memcpy(data1, leftTeamData, (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE)* sizeof(double));
+	data1 += (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE) * sizeof(double);
+	delete leftTeamData;
+	double* rightTeamData = pTeamRight->serialize();
+	memcpy(data, rightTeamData, (pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE) * sizeof(double));
+	delete rightTeamData;
+	return data;
+}

@@ -12,7 +12,8 @@
 #include <ctime> 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
-
+#define CIRCLE_SIZE 5
+#define TEAM_SIZE 1
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "8080"
 #define TIMEOUT 10.0

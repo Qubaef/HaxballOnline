@@ -37,15 +37,25 @@ private:
 public:
 	GameEngine();
 	~GameEngine();
+	//add player to the game
 	void newPlayer(Player* pPlayer, int teamNumber = 0);
+	//add ball during initialize
 	void newBall(Ball* pBall);
+	//update game status if should be updated
 	void redraw();
+	//update game status
 	void update();
+	//manage state of game(freeze and running switching)
 	void gameStateManager();
+	//reset position state to default
 	void positionsReset();
+	//manage goal scored event
 	void goalScored(Goal* pGoal);
+	//manage time
 	double clockTick();
+	//manage walls colision effect and update player position and speed after it
 	void wallsCollision(CirclePhysical* pObject);
+	
 	vector<CirclePhysical*> getObjects();
 	vector<Player*> getPlayers();
 	Ball* getBall();
@@ -57,4 +67,6 @@ public:
 	int getPitchW();
 	int getPitchH();
 	bool getFinished();
+	//serialize game data
+	double* serialize();
 };
