@@ -69,7 +69,7 @@ void TransferManager::communicate(ClientData* data)
 			std::chrono::duration<double> elapsed_seconds = now - current;
 			if(elapsed_seconds.count()<TIMEOUT)
 				continue;
-			// TODO: deleteing player from game, delete all his data, threads etc
+			// TODO: deleting player from game, delete all his data, threads etc
 			break;
 		}
 
