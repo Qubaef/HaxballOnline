@@ -27,7 +27,8 @@ void Server::start()
 		// check if there is enough players on the server
 		// and if all of them confirmed that they are ready to play
 		if (pManager->readyToPlay()) {
-			cout << "All players ready! Starting..." << endl;
+			cout << "All players ready! Starting and waiting for their game to load!" << endl;
+
 			play();
 		}
 	}
