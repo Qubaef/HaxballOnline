@@ -2,17 +2,18 @@ import pygame
 import math
 from abc import ABC
 
-class CirclePhysical(ABC):
+class CirclePhysical( ABC ):
 
     def __init__(self, game, px, py, number, weight, size, color):
         self.game = game
         self.number = number
         self.weight = weight
         self.size = size                                # size used for drawing and collision detection
-        self.hitbox = int(size * 3/2)                   # hitbox used for kicking the ball
-        self.v_max = 6 / math.pow(self.weight, 2/3)     # maximum velocity is non-linear, cause ball was too fast
+        self.hitbox = int(size * 3 / 2)                   # hitbox used for kicking the ball
+        self.v_max = 6 / math.pow(self.weight, 2 / 3)     # maximum velocity is non-linear, cause ball was too fast
         self.friction = self.weight * 0.2
         self.color = color
+        self.border_color = (0,0,0)
         self.p = pygame.math.Vector2(px,py)
         self.v = pygame.math.Vector2(0,0)
         self.ball_control = 1
@@ -43,12 +44,12 @@ class CirclePhysical(ABC):
 
     def from_sector_remove(self):
         # remove element from currently occupied sector
-        if self in self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)]:
-            self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].remove(self)
+        if self in self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)]:
+            self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)].remove(self)
 
     def to_sector_add(self):
         # add element to right sector
-        self.game.sectors[int(self.p.x/self.game.sector_size)][int(self.p.y/self.game.sector_size)].append(self)
+        self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)].append(self)
 
 
     def set_move(self, v, p):
@@ -74,8 +75,8 @@ class CirclePhysical(ABC):
 
         # iterate through sectors and gather all circles
         objects = []
-        for i in range(int(self.p.x/self.game.sector_size) - sector_num, int(self.p.x/self.game.sector_size) + sector_num + 1):
-            for j in range(int(self.p.y/self.game.sector_size) - sector_num, int(self.p.y/self.game.sector_size) + sector_num + 1):
+        for i in range(int(self.p.x / self.game.sector_size) - sector_num, int(self.p.x / self.game.sector_size) + sector_num + 1):
+            for j in range(int(self.p.y / self.game.sector_size) - sector_num, int(self.p.y / self.game.sector_size) + sector_num + 1):
                 if i >= 0 and j >= 0 and i < len(self.game.sectors) and j < len(self.game.sectors[0]):
                     objects += self.game.sectors[i][j]
 

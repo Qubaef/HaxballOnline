@@ -2,8 +2,10 @@ import math
 
 import pygame
 from Post import Post
+from Ball import Ball
+from Player import Player
 
-class Collision(object):
+class Collision( object ):
 
     # check if circle collides with any other circle in nearest sectors
     @staticmethod
@@ -14,8 +16,8 @@ class Collision(object):
 
         for circ2 in nearby:
             if circ2 != circ1:
-                dist = (circ1.p.x - circ2.p.x) ** 2 + (circ2.p.y - circ1.p.y) ** 2
-                if dist <= (circ1.size + circ2.size) ** 2:
+                dist = math.sqrt((circ1.p.x - circ2.p.x) ** 2 + (circ2.p.y - circ1.p.y) ** 2)
+                if dist <= circ1.size + circ2.size:
 
                     # fix post speed
                     if isinstance(circ1, Post):
@@ -23,7 +25,6 @@ class Collision(object):
                         circ1.v.y = 0
 
                     ### move colliding circles away
-                    dist = math.sqrt(dist)
                     overlap = (dist - circ1.size - circ2.size) / 2
 
                     # move circle1
@@ -58,6 +59,9 @@ class Collision(object):
                     if circ2.v.magnitude() > circ2.v_max:
                         circ2.v = circ2.v.normalize() * circ2.v_max
 
+                    if circ1.v.magnitude() > circ1.v_max:
+                        circ1.v = circ1.v.normalize() * circ1.v_max
+
 
     @staticmethod
     def collision_calculator(v1, v2, m1, m2, x1, x2) -> pygame.math.Vector2:
@@ -71,32 +75,54 @@ class Collision(object):
     def walls_collision(obj, game):
         # check collision with pitch walls
 
+        # Top wall
+        if obj.p.y < int(obj.size + (game.screen_h - game.pitch_h) / 2):
+            obj.set_p(obj.p.x, int(obj.size + (game.screen_h - game.pitch_h) / 2))
+            obj.v.y *= -game.wall_bounce
+
+        # Bottom wall
+        if obj.p.y > int(game.pitch_h + ((game.screen_h - game.pitch_h) / 2) - obj.size):
+            obj.set_p(obj.p.x, int(game.pitch_h + ((game.screen_h - game.pitch_h) / 2) - obj.size))
+            obj.v.y *= -game.wall_bounce
+
+
+        if(isinstance(obj, Player)):
             # Left wall
-            if obj.p.x < int(obj.size + (game.screen_w - game.pitch_w)/2):
+            if obj.p.x < int(obj.size + (game.screen_w - game.pitch_w) / 2):
                 if obj.p.y < game.goal_left.post_down.p.y and obj.p.y > game.goal_left.post_up.p.y:
-                    if obj.p.x < game.goal_left.x - game.goal_left.width + obj.size:
-                        obj.set_p(game.goal_left.x - game.goal_left.width + obj.size, obj.p.y)
+                    if obj.p.x < game.goal_left.x:
+                        obj.set_p(game.goal_left.x, obj.p.y)
                         obj.v *= 0
                 else:
-                    obj.set_p(int(obj.size + (game.screen_w - game.pitch_w)/2), obj.p.y)
+                    obj.set_p(int(obj.size + (game.screen_w - game.pitch_w) / 2), obj.p.y)
                     obj.v.x *= -game.wall_bounce
 
             # Right wall
-            if obj.p.x > int(game.pitch_w + ((game.screen_w - game.pitch_w)/2) - obj.size):
+            if obj.p.x > int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size):
                 if obj.p.y < game.goal_right.post_down.p.y and obj.p.y > game.goal_right.post_up.p.y:
-                    if obj.p.x > game.goal_right.x + game.goal_right.width - obj.size:
-                        obj.set_p(game.goal_right.x + game.goal_right.width - obj.size, obj.p.y)
+                    if obj.p.x > game.goal_right.x:
+                        obj.set_p(game.goal_right.x, obj.p.y)
                         obj.v *= 0
                 else: 
-                    obj.set_p(int(game.pitch_w + ((game.screen_w - game.pitch_w)/2) - obj.size), obj.p.y)
+                    obj.set_p(int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size), obj.p.y)
                     obj.v.x *= -game.wall_bounce
 
-            # Top wall
-            if obj.p.y < int(obj.size + (game.screen_h - game.pitch_h)/2):
-                obj.set_p(obj.p.x, int(obj.size + (game.screen_h - game.pitch_h)/2))
-                obj.v.y *= -game.wall_bounce
 
-            # Bottom wall
-            if obj.p.y > int(game.pitch_h + ((game.screen_h - game.pitch_h)/2) - obj.size):
-                obj.set_p(obj.p.x, int(game.pitch_h + ((game.screen_h - game.pitch_h)/2) - obj.size))
-                obj.v.y *= -game.wall_bounce
+        elif(isinstance(obj, Ball)):
+            # Left wall
+            if obj.p.x < int(obj.size + (game.screen_w - game.pitch_w) / 2):
+                if obj.p.y < game.goal_left.post_down.p.y and obj.p.y > game.goal_left.post_up.p.y:
+                    if obj.p.x < game.goal_left.x - obj.size:
+                        game.goal_scored(game.goal_left)
+                else:
+                    obj.set_p(int(obj.size + (game.screen_w - game.pitch_w) / 2), obj.p.y)
+                    obj.v.x *= -game.wall_bounce
+
+            # Right wall
+            if obj.p.x > int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size):
+                if obj.p.y < game.goal_right.post_down.p.y and obj.p.y > game.goal_right.post_up.p.y:
+                    if obj.p.x > game.goal_right.x + obj.size:
+                        game.goal_scored(game.goal_right)
+                else: 
+                    obj.set_p(int(game.pitch_w + ((game.screen_w - game.pitch_w) / 2) - obj.size), obj.p.y)
+                    obj.v.x *= -game.wall_bounce

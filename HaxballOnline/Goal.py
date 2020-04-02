@@ -1,6 +1,8 @@
+import pygame
 from Post import Post
+from Collision import Collision
 
-class Goal(object):
+class Goal( object ):
     def __init__(self, game, color, p_post_x, p_post_y_up, p_post_y_down, width, direction):
         self.game = game
         self.color = color
@@ -13,6 +15,18 @@ class Goal(object):
         # initialize Posts
         self.post_up = Post(self.game, self.x, self.y_up)
         self.post_down = Post(self.game, self.x, self.y_down)
+
+        # load goal image
+        if(direction == -1):
+            self.goal = pygame.image.load("../goal_left.png").convert_alpha()
+        elif(direction == 0):
+            self.goal = pygame.image.load("../goal_right.png").convert_alpha()
+
+        
+
+    def goal_collide(self):
+        Collision.collide(self.post_up)
+        Collision.collide(self.post_down)
         
     def get_px(self):
         return self.x + self.direction * self.width

@@ -2,12 +2,26 @@ import pygame
 import sys
 import math
 import random
+import socket
 
 from pygame.locals import *
 from Post import Post
 from Player import Player
 from GameEngine import GameEngine
 from Ball import Ball
+
+# socket communication test
+HOST = '127.0.0.1'
+PORT = 8080 
+
+while (True):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        message = 'Hello, client here!' + chr(0)
+        s.sendall(bytes(message, encoding='utf-8'))
+        data = s.recv(1024)
+        print(data)
+
 
 # initialize game, ball, and player
 game = GameEngine()
@@ -16,6 +30,8 @@ player = Player(game, 400, 300, 1, (0, 0, 255))
 
 game.new_ball(ball)
 game.new_player(player)
+
+player.border_color = (255,255,0)
 
 # create bots
 bots = []
@@ -28,6 +44,9 @@ done = False
 
 # main loop of the game
 while not done:
+
+    player.mouse_pos = pygame.mouse.get_pos()
+
     # get user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -42,8 +61,7 @@ while not done:
             if event.key == pygame.K_SPACE:
                 player.mode_normal()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            p = pygame.mouse.get_pos()
-            player.kick(p)
+            player.kick(player.mouse_pos)
 
         if done != True:
             player_move = pygame.math.Vector2(0,0)
@@ -51,7 +69,7 @@ while not done:
             if input[K_w]:
                 player_move += (0,-1)
             if input[K_s]:
-                player_move += (0, 1)
+                player_move += (0,1)
             if input[K_d]:
                 player_move += (1,0)
             if input[K_a]:
@@ -66,20 +84,20 @@ while not done:
                 done = True
     
 
+    if game.play_mode == 0:
+        if player_move.length() > 0:
+            # make player move with equal speed in all directions
+            player_move = player_move.normalize()
+        # move player depending on keyboard input
+        player.velocity_add(player_move)
 
-    if player_move.length() > 0:
-        # make player move with equal speed in all directions
-        player_move = player_move.normalize()
-    # move player depending on keyboard input
-    player.velocity_add(player_move)
-
-    # move bots
-    for i in range (0,bots_number):
-        if game.timer > 100 * i:
-            dir = (ball.p - bots[i].p).normalize()
-            bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))
-    
-    if game.timer > 100 * bots_number:
-        game.timer = 0
+        # move bots
+        for i in range(0,bots_number):
+            if game.bots_timer > 100 * i:
+                dir = (ball.p - bots[i].p).normalize()
+                bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))    
+        
+        if game.bots_timer > 100 * bots_number:
+            game.bots_timer = 0
 
     game.redraw()
