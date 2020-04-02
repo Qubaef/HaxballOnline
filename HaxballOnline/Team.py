@@ -31,3 +31,10 @@ class Team( object ):
             pos_y = (obj.game.screen_h - obj.game.pitch_h) / 2 + i * obj.game.pitch_h / 4
             obj.set_move((0,0), (pos_x, pos_y))
             i += 1
+
+    def deserialize(self, data):
+        self.score=data[0]
+        data=data[1:]
+        for player in self.players:
+            player.deserialize(data)
+            data = data[5:]

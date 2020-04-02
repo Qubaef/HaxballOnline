@@ -69,4 +69,6 @@ public:
 	bool getFinished();
 	//serialize game data
 	double* serialize();
+	//recieve data to be sent size
+	int size();
 };
