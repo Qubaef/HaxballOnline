@@ -13,10 +13,13 @@ from TransferManager import TransferManager
 # main menu loop
 
 nickname = input('Enter nickname: ')
+# TODO: ask user for host ip and port
 
 transferManager = TransferManager(nickname);
 if transferManager.initConnection() == -1:
     sys.exit()
+else:
+    print('')
 
 transferManager.readyToPlay = True
 

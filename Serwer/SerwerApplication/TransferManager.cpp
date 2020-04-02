@@ -12,9 +12,10 @@ void TransferManager::newClient(SOCKET clientSocket)
 
 	// insert this data to vector in transfer manager
 	clientsData.push_back(newClient);
+	unsigned int threadNumber = clientsData.size();
 
 	// call new thread to communicate with given client
-	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient));
+	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient, threadNumber));
 }
 
 TransferManager::~TransferManager()
@@ -23,7 +24,7 @@ TransferManager::~TransferManager()
 
 // function called bu separate thread
 // communicate with your client
-void TransferManager::communicate(ClientData* data)
+void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 {
 	int iSendResult;
 	char recvbuf[DEFAULT_BUFLEN];
@@ -96,4 +97,17 @@ bool TransferManager::readyToPlay()
 vector<ClientData*>* TransferManager::getClientsData()
 {
 	return &(this->clientsData);
+}
+
+
+void TransferManager::sendInitializationPack()
+{
+	
+}
+
+
+
+void* TransferManager::getInitializationPack()
+{
+	
 }
