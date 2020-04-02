@@ -314,14 +314,14 @@ double* GameEngine::serialize()
 	double* data = new double[pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE + pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE + CIRCLE_SIZE];
 	double* ballData = pBall->serialize();
 	memcpy(data, ballData, CIRCLE_SIZE * sizeof(double));
-	double* data1 = data + CIRCLE_SIZE * sizeof(double);
+	double* data1 = data + CIRCLE_SIZE;
 	delete ballData;
 	double* leftTeamData = pTeamLeft->serialize();
 	memcpy(data1, leftTeamData, (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE)* sizeof(double));
-	data1 += (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE) * sizeof(double);
+	data1 += (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE);
 	delete leftTeamData;
 	double* rightTeamData = pTeamRight->serialize();
-	memcpy(data, rightTeamData, (pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE) * sizeof(double));
+	memcpy(data1, rightTeamData, (pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE) * sizeof(double));
 	delete rightTeamData;
 	return data;
 }

@@ -38,7 +38,7 @@ void Server::play()
 {
 	// initialize new game
 	pGame = new GameEngine();
-
+	pManager->addGame(pGame);
 	// for each client, create new player and add it to the game
 	vector<ClientData*>* clientsData = this->pManager->getClientsData();
 	for (ClientData* client : *clientsData)

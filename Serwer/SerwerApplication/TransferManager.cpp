@@ -2,6 +2,7 @@
 
 TransferManager::TransferManager()
 {
+	
 }
 
 // (New Thread) add new Client and start communicating with him
@@ -16,6 +17,16 @@ void TransferManager::newClient(SOCKET clientSocket)
 
 	// call new thread to communicate with given client
 	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient, threadNumber));
+}
+
+void TransferManager::addGame(GameEngine* pGame)
+{
+	if(this->pGame==NULL)
+		this->pGame = pGame;
+	else
+	{
+		throw exception("duplicating game");
+	}
 }
 
 TransferManager::~TransferManager()
@@ -49,6 +60,9 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 				return;
 			}
 			cout << "Bytes sent: " << iSendResult << endl;
+			double*dataToSent = this->pGame->serialize();
+			//TODO sen data
+			int a = 0;
 		}
 		else if (iResult == 0)
 		{	
