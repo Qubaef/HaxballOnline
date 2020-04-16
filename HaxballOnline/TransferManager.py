@@ -51,6 +51,11 @@ class TransferManager( object ):
             self.s.sendall(bytes(readySignal, encoding='utf-8'))
 
             # receive init pack
+                # check if data len is bigger than 1 (if so, it is init pack)
+                # init game and add players
+                    # send readyToPlay = True flag if game is loaded
+                    # if data pack length is bigger than 1 set flag to run the game
+                    # deserialize data from server
 
             # start getting game data
 

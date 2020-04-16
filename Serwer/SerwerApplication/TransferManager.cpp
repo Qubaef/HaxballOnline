@@ -12,7 +12,7 @@ void TransferManager::newClient(SOCKET clientSocket)
 	ClientData* newClient = new ClientData(clientSocket);
 
 	// insert this data to vector in transfer manager
-	ifNewData.push_back(false);
+	ifdataToSend.push_back(false);
 	clientsData.push_back(newClient);
 	unsigned int threadNumber = clientsData.size();
 
@@ -36,86 +36,167 @@ TransferManager::~TransferManager()
 
 // function called bu separate thread
 // communicate with your client
-void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
+void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 {
-	int iSendResult;
+	// TODO: (Kwiaciu) write separate function to close the connection if error appears (if iResult will return SOCKET_ERROR)
+	// It was like this previously:
+	//  if (iSendResult == SOCKET_ERROR) {
+	//  	cout << "send failed with error: " << WSAGetLastError() << endl;
+	//  	closesocket(data->getSocket());
+	//  	WSACleanup();
+	//  	return;
+	//  }
+	//  but it will be better to write it in separate function for code reuse purposes
+
+
+	// TODO: (Kwiaciu) write separate function to determine if timeout appeared
+	// This is the code used previously
+	// //1. check how long he is no responding
+	// std::chrono::time_point<std::chrono::system_clock> now;
+	// now = std::chrono::system_clock::now();
+	// std::chrono::duration<double> elapsed_seconds = now - current;
+	// 
+	// //2. if time is too long, timeouting player from game
+	// if (elapsed_seconds.count() < TIMEOUT)
+	// 	continue;
+
+
+	// TODO: (Kwiaciu) write separate function to close connection and disable player
+	// It will be used after error appears
+
+	
+	vector<double> dataToSend;
 	char recvbuf[DEFAULT_BUFLEN];
 	char sendbuf[DEFAULT_BUFLEN];
+	int iSendResult;
 	int iResult;
 
-	cout << "communicating with client!" << endl;
+	// Get timestamp to track user's timeout
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
+	printf_s("Communicating with client!\n");
 
+	
+	// CLIENT INITIALIZATION
+	// ** Get client's nick
+	iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+	data->setNickname(bufferToString(recvbuf, iResult));
+	printf_s("Received player's nick: %s\n", data->getNickname().c_str());
+
+	
+	// ** Generate client's number and send it to his socket
+	// BUG: possible error because I have not added two zeroes at the beginning of the dataToSend vector (I want to see if it is needed)
+	dataToSend.push_back(generateNewNumber());
+	iSendResult = send(data->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
+
+	
 	while (true)
 	{
-		// TODO: read readyToPlay flag and resend it back
-		// TODO: if ifNewData is set to true, send initialization pack and start sending players positions (currently below)
-
-		// ifGameRunning = False - read and resend readyToPlay
-		// ifGameRunning = True - read and send game data
-
-		if (this->ifGameRunning == true)
-		{
-			//1. recieve data from client
+		while (true) {
+			// PRE-GAME COMMUNICATION PHASE
+			// ** Receive "ready" flag from client
 			iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 
-			//if our connection is succeded
-			if (iResult > 0) {
-
-				//2. recieving information from client
-				current = std::chrono::system_clock::now();
-				cout << "Bytes received: " << iResult << endl;
-				cout << recvbuf;
-
-				//3.serialize data which should be sent
-
-				
-				vector<double> dataToSend;
-
-				dataToSend = this->pGame->serialize();
-
-
-				memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
-
-				//4.send information to client
-				iSendResult = send(data->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
-
-				//5.Handle sending error
-				if (iSendResult == SOCKET_ERROR) {
-					cout << "send failed with error: " << WSAGetLastError() << endl;
-					closesocket(data->getSocket());
-					WSACleanup();
-					return;
-				}
-				cout << "Bytes sent: " << iSendResult << endl;
-			}
-
-			//if player is not responding to the serwer
-			else if (iResult == 0)
+			if (iResult != 1)
 			{
-				//1. check how long he is no responding
-				std::chrono::time_point<std::chrono::system_clock> now;
-				now = std::chrono::system_clock::now();
-				std::chrono::duration<double> elapsed_seconds = now - current;
-
-				//2. if time is too long, timeouting player from game
-				if (elapsed_seconds.count() < TIMEOUT)
-					continue;
-				// TODO: deleting player from game, delete all his data, threads etc
-				break;
+				printf_s("Wrong data received from client: %s! Expected readyToPlay flag!", data->getNickname().c_str());
+			}
+			else
+			{
+				// Save ready flag state in client's data and resend it back to the user
+				data->setReady(recvbuf[0]);
+				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
 			}
 
-			//if error occured during connection to the serwer
-			else {
-				cout << "recv failed with error: " << WSAGetLastError() << endl;
+			// ** Check if there is initialization pack ready to be sent
+			// If true break the loop and send initialization pack
+			if (this->ifdataToSend[threadIndex] == true)
+			{
 				break;
 			}
-
 		}
-		closesocket(data->getSocket());
-		WSACleanup();
+
+		
+		// GAME PREPARATION PHASE
+		// ** Send initialization pack to the client
+
+		// TODO: (Kwiaciu) convert initialization pack to array of chars and send it to the client
+		// init pack will be accessable in saved in this->dataToSendContainer
+
+		
+		while (true) {
+			// GAME LOADING PHASE
+			// ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
+			iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+
+			if (iResult != 1)
+			{
+				printf_s("Wrong data received from client: %s! Expected readyGameLoaded flag!", data->getNickname().c_str());
+			}
+			else
+			{
+				// Save ready flag state in client's data and resend it back to the user
+				data->setReady(recvbuf[0]);
+				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
+			}
+
+			if (this->ifGameRunning == true) {
+				break;
+			}
+		}
+
+		
+		while (true) {
+			// GAME RUNNING PHASE
+			// ** Receive pack with user's input 
+			iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+			
+			// ** Get data from dataToSendContainer and send it to the user
+
+			// TODO: vector data from dataToSendContainer and send it to client
+			
+			// dataToSend = *((vector<double>*) dataToSendContainer);
+			// memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
+			// iSendResult = send(data->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
+
+			// ** Analyze user's input and save it in client's data
+
+			// TODO: save user's input (from recvbuf) in Client's data pack (ClientData* data)
+			// TODO: in server.cpp, analyze user's input every frame and modify the game
+
+			if (this->ifGameRunning == FALSE) {
+				break;
+			}
+		}
 	}
+
+	closesocket(data->getSocket());
+	WSACleanup();
 }
+
+
+// convert char buffer to string obj
+string TransferManager::bufferToString(char buffer[], int length)
+{
+	string str = "";
+	for (int i = 0; i < length; i++) {
+		str = str + buffer[i];
+	}
+	return str;
+}
+
+
+// generate and return new number for the player
+unsigned short TransferManager::generateNewNumber()
+{
+	unsigned short max = 0;
+	for (ClientData* client : this->clientsData)
+	{
+		max = client->getNumber() > max ? client->getNumber() : max;
+	}
+	return max + 1;
+}
+
+
 // check if every player is ready to play and if there is at least one player
 bool TransferManager::readyToPlay()
 {
@@ -137,6 +218,7 @@ bool TransferManager::readyToPlay()
 	return true;
 }
 
+
 // get pointer to client's data vector
 vector<ClientData*>* TransferManager::getClientsData()
 {
@@ -144,7 +226,7 @@ vector<ClientData*>* TransferManager::getClientsData()
 }
 
 
-void TransferManager::sendInitializationPack()
+void TransferManager::buildInitializationPack()
 {
 	// prepare initialization pack and place it in dataContainer
 	PlayerInitializePack* initData = new PlayerInitializePack[this->clientsData.size()];
@@ -154,36 +236,24 @@ void TransferManager::sendInitializationPack()
 	{
 		initData->playerNickname = client->getNickname();
 		initData->playerNumber = client->getNumber();
+		// TODO: team of the player
 		length += sizeof(PlayerInitializePack);
 	}
 
-	this->dataContainer = initData;
+	this->dataToSendContainer = initData;
 	this->dataContainerLength = length;
 
 	// set all flags to True
-	for (bool sendFlag : this->ifNewData)
+	for (bool sendFlag : this->ifdataToSend)
 	{
 		sendFlag = true;
 	}
 
-	this->ifGameRunning = true;
-}
-
-
-void* TransferManager::getInitializationPack(int threadNumber)
-{
-	if (this->ifNewData[threadNumber] == true)
-	{
-		return this->dataContainer;
-	}
-	else
-	{
-		return NULL;
-	}
+	// this->ifInitPackToSend = true;
 }
 
 
 void TransferManager::dataSent(int threadNumber)
 {
-	this->ifNewData[threadNumber] = false;
+	this->ifdataToSend[threadNumber] = false;
 }
