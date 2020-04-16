@@ -40,6 +40,7 @@ public:
 	
 };
 
+
 struct PlayerInitializePack
 {
 	const char * playerNickname;
