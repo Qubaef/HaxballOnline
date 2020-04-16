@@ -2,7 +2,7 @@
 
 TransferManager::TransferManager()
 {
-	
+	this->ifGameRunning = false;
 }
 
 // (New Thread) add new Client and start communicating with him
@@ -48,12 +48,20 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 
 	while (true)
 	{
+		// TODO: read readyToPlay flag and resend it back
+		// TODO: if ifNewData is set to true, send initalization pack and start sending players positions (currenlty below)
+
+		// ifGameRunning = False - read and resend readyToPlay
+		// 
+		// ifGameRunning = True - read and send game data
+		if (this->ifGameRunning == true)
+		{
 		//1. recieve data from client
 		iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 
 		//if our connection is succeded
 		if (iResult > 0) {
-			
+
 			//2. recieving information from client
 			current = std::chrono::system_clock::now();
 			cout << "Bytes received: " << iResult << endl;
@@ -64,7 +72,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 				//3.serialize data which should be sent
 				vector<double> dataToSent = this->pGame->serialize();
 				memcpy(sendbuf, &dataToSent[0], dataToSent.size() * sizeof(double));
-				
+
 				//4.send information to client
 				iSendResult = send(data->getSocket(), sendbuf, dataToSent.size() * sizeof(double), 0);
 
@@ -77,7 +85,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 				}
 				cout << "Bytes sent: " << iSendResult << endl;
 			}
-			
+
 		}
 
 		//if player is not responding to the serwer
@@ -89,7 +97,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 			std::chrono::duration<double> elapsed_seconds = now - current;
 
 			//2. if time is too long, timeouting player from game
-			if(elapsed_seconds.count()<TIMEOUT)
+			if (elapsed_seconds.count() < TIMEOUT)
 				continue;
 			// TODO: deleting player from game, delete all his data, threads etc
 			break;
@@ -100,7 +108,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 			cout << "recv failed with error: " << WSAGetLastError() << endl;
 			break;
 		}
-		
+
 	}
 	closesocket(data->getSocket());
 	WSACleanup();
@@ -155,6 +163,8 @@ void TransferManager::sendInitializationPack()
 	{
 		sendFlag = true;
 	}
+
+	this->ifGameRunning = true;
 }
 
 

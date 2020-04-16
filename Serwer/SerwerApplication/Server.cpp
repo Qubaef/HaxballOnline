@@ -47,6 +47,8 @@ void Server::play()
 		pGame->newPlayer(client->getPlayer());
 	}
 
+	pManager->sendInitializationPack();
+
 	// main game loop
 	while (pGame->getFinished() == false)
 	{
