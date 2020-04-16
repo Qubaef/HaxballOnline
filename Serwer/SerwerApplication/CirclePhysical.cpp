@@ -136,14 +136,12 @@ Vector2D CirclePhysical::getMove()
 	return this->v;
 }
 
-double* CirclePhysical::serialize()
+void CirclePhysical::serialize(vector<double> &dataVector) const
 {
-	double* data = new double[CIRCLE_SIZE];
-	data[0] = p.getX();
-	data[1] = p.getY();
-	data[2] = v.getX();
-	data[3] = v.getY();
-	data[4] = ballControl;
-	return data;
+	dataVector.push_back(p.getX());
+	dataVector.push_back(p.getY());
+	dataVector.push_back(v.getX());
+	dataVector.push_back(v.getY());
+	dataVector.push_back(ballControl);
 }
 

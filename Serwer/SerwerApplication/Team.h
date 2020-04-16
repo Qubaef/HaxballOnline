@@ -27,5 +27,5 @@ public:
 	//get list of players
 	vector<Player*> getPlayers();
 	//serialize team data to be sent to player
-	double* serialize();
+	void serialize(vector<double> &dataVector) const;
 };
