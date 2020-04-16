@@ -5,6 +5,7 @@ TransferManager::TransferManager()
 	this->ifGameRunning = false;
 }
 
+
 // (New Thread) add new Client and start communicating with him
 void TransferManager::newClient(SOCKET clientSocket)
 {
@@ -20,19 +21,11 @@ void TransferManager::newClient(SOCKET clientSocket)
 	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient, threadNumber));
 }
 
-void TransferManager::addGame(GameEngine* pGame)
-{
-	if (this->pGame == NULL)
-		this->pGame = pGame;
-	else
-	{
-		throw exception("duplicating game");
-	}
-}
 
 TransferManager::~TransferManager()
 {
 }
+
 
 // function called bu separate thread
 // communicate with your client
@@ -64,7 +57,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 	// TODO: (Kwiaciu) write separate function to close connection and disable player
 	// It will be used after error appears
 
-	
+
 	vector<double> dataToSend;
 	char recvbuf[DEFAULT_BUFLEN];
 	char sendbuf[DEFAULT_BUFLEN];
@@ -75,20 +68,20 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
 	printf_s("Communicating with client!\n");
 
-	
+
 	// CLIENT INITIALIZATION
 	// ** Get client's nick
 	iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 	data->setNickname(bufferToString(recvbuf, iResult));
 	printf_s("Received player's nick: %s\n", data->getNickname().c_str());
 
-	
+
 	// ** Generate client's number and send it to his socket
 	// BUG: possible error because I have not added two zeroes at the beginning of the dataToSend vector (I want to see if it is needed)
 	dataToSend.push_back(generateNewNumber());
 	iSendResult = send(data->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
 
-	
+
 	while (true)
 	{
 		while (true) {
@@ -115,14 +108,14 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 			}
 		}
 
-		
+
 		// GAME PREPARATION PHASE
 		// ** Send initialization pack to the client
 
 		// TODO: (Kwiaciu) convert initialization pack to array of chars and send it to the client
 		// init pack will be accessable in saved in this->dataToSendContainer
 
-		
+
 		while (true) {
 			// GAME LOADING PHASE
 			// ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
@@ -144,16 +137,16 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 			}
 		}
 
-		
+
 		while (true) {
 			// GAME RUNNING PHASE
 			// ** Receive pack with user's input 
 			iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
-			
+
 			// ** Get data from dataToSendContainer and send it to the user
 
 			// TODO: vector data from dataToSendContainer and send it to client
-			
+
 			// dataToSend = *((vector<double>*) dataToSendContainer);
 			// memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
 			// iSendResult = send(data->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
@@ -236,24 +229,55 @@ void TransferManager::buildInitializationPack()
 	{
 		initData->playerNickname = client->getNickname();
 		initData->playerNumber = client->getNumber();
-		// TODO: team of the player
+		initData->playerTeam = client->getPlayer()->getTeam();
+
 		length += sizeof(PlayerInitializePack);
 	}
 
 	this->dataToSendContainer = initData;
 	this->dataContainerLength = length;
 
-	// set all flags to True
+	// set all ifdataToSend flags to True
 	for (bool sendFlag : this->ifdataToSend)
 	{
 		sendFlag = true;
 	}
-
-	// this->ifInitPackToSend = true;
 }
 
 
 void TransferManager::dataSent(int threadNumber)
 {
 	this->ifdataToSend[threadNumber] = false;
+}
+
+
+// Function to execute player moves stored in their ClientsData structures
+void TransferManager::manageInputs(GameEngine* pGame)
+{
+	// TODO
+}
+
+
+// Serialize data and put it into dataToSendContainer, setting ifdataToSend flags to true for every thread
+void TransferManager::gameSerialize(GameEngine* pGame)
+{
+	// TODO: Critial section (?)
+	delete dataToSendContainer;
+	dataToSendContainer = &(pGame->serialize());
+
+	// set all ifdataToSend flags to True
+	for (bool sendFlag : this->ifdataToSend)
+	{
+		sendFlag = true;
+	}
+}
+
+
+void TransferManager::readyToPlayReset()
+{
+	// check if all players are ready
+	for (ClientData* client : this->clientsData)
+	{
+		client->setReady(false);
+	}
 }

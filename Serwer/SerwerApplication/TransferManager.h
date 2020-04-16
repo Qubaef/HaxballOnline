@@ -14,7 +14,7 @@ private:
 
 	bool ifGameRunning;
 
-	GameEngine* pGame = NULL;
+	// GameEngine* pGame = NULL;
 
 	string bufferToString(char* buffer, int length);
 	unsigned short generateNewNumber();
@@ -26,11 +26,14 @@ public:
 	void buildInitializationPack();						// send info to all client threads, that they need to send initialization pack to their clients
 	void dataSent(int threadNumber);					// as a client thread, set your ifNewData flag to false
 	vector<ClientData*>* getClientsData();
-	void addGame(GameEngine* pGame);					//add game, throws exception if game already exist
+	void manageInputs(GameEngine* pGame);
+	void gameSerialize(GameEngine* pGame);
+	void readyToPlayReset();
 };
 
 struct PlayerInitializePack
 {
 	string playerNickname;
 	unsigned int playerNumber;
+	short int playerTeam;
 };

@@ -12,22 +12,21 @@ Server::~Server()
 	delete pManager;
 }
 
+// initialize server's components and start waiting for players to join
 void Server::start()
 {
 	// initialize thread to accept connections from users on separate socket
 	thread connectionsManager(&Server::manageConnections, this);
 
-	cout << "Waiting for game to play!" << endl;
+	printf_s("Waiting for the game to start!\n");
 
 	// main server loop awaiting for players to be ready to start the game
 	while (true)
 	{
-
-
 		// check if there is enough players on the server
 		// and if all of them confirmed that they are ready to play
 		if (pManager->readyToPlay()) {
-			cout << "All players ready! Starting and waiting for their game to load!" << endl;
+			printf_s("All players ready! Initializing game and waiting for their game to load!\n");
 
 			play();
 		}
@@ -36,9 +35,9 @@ void Server::start()
 
 void Server::play()
 {
-	// initialize new game
+	// initialize new game object
 	pGame = new GameEngine();
-	pManager->addGame(pGame);
+
 	// for each client, create new player and add it to the game
 	vector<ClientData*>* clientsData = this->pManager->getClientsData();
 	for (ClientData* client : *clientsData)
@@ -47,12 +46,22 @@ void Server::play()
 		pGame->newPlayer(client->getPlayer());
 	}
 
+	// build initialization pack and put it to dataToSendContainer
 	pManager->buildInitializationPack();
+
+	// wait for all players to load their games
+	while (!pManager->readyToPlay())
+	{
+	}
+
+	printf_s("All players ready! Game Starts!\n");
 
 	// main game loop
 	while (pGame->getFinished() == false)
 	{
 		pGame->redraw();
+		pManager->gameSerialize();
+		pManager->manageInputs(pGame);
 	}
 }
 
@@ -71,7 +80,7 @@ void Server::manageConnections()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
-		cout << "WSAStartup failed with error: %d" << iResult << endl;
+		printf_s("WSAStartup failed with error: %d\n", iResult);
 		return;
 	}
 
@@ -84,7 +93,7 @@ void Server::manageConnections()
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
 	if (iResult != 0) {
-		cout << "getaddrinfo failed with error: %d" << iResult << endl;
+		printf_s("getaddrinfo failed with error: %d\n", iResult);
 		WSACleanup();
 		return;
 	}
@@ -92,7 +101,7 @@ void Server::manageConnections()
 	// Create a SOCKET for connecting to server
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (ListenSocket == INVALID_SOCKET) {
-		cout << "socket failed with error: %ld\n"<< WSAGetLastError() << endl;
+		printf_s("socket failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
 		return;
@@ -101,7 +110,7 @@ void Server::manageConnections()
 	// Setup the TCP listening socket
 	iResult = ::bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
 	if (iResult == SOCKET_ERROR) {
-		cout << "bind failed with error: %d\n" << WSAGetLastError() << endl;
+		printf_s("bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(result);
 		closesocket(ListenSocket);
 		WSACleanup();
@@ -112,7 +121,7 @@ void Server::manageConnections()
 
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
-		cout << "listen failed with error: %d\n" << WSAGetLastError() << endl;
+		printf_s("listen failed with error: %d\n", WSAGetLastError());
 		closesocket(ListenSocket);
 		WSACleanup();
 		return;
@@ -121,20 +130,20 @@ void Server::manageConnections()
 	// connections accept loop
 	while (true)
 	{
-		cout << "Managing connections!" << endl;
+		printf_s("Waiting for connections!\n");
 
 		SOCKET ClientSocket = INVALID_SOCKET;
 
 		// Accept a client socket
 		ClientSocket = accept(ListenSocket, NULL, NULL);
 		if (ClientSocket == INVALID_SOCKET) {
-			cout << "accept failed with error: %d\n" << WSAGetLastError() << endl;
+			printf_s("Accept failed with error: %d\n", WSAGetLastError());
 			closesocket(ListenSocket);
 			WSACleanup();
 			return;
 		}
 
-		cout << "New client connected!" << endl;
+		printf_s("New client connected!\n");
 		pManager->newClient(ClientSocket);
 	}
 }
