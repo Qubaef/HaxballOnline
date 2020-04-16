@@ -62,7 +62,7 @@ void Server::play()
 	while (pGame->getFinished() == false)
 	{
 		pGame->redraw();
-		pManager->gameSerialize();
+		pManager->gameSerialize(pGame);
 		pManager->manageInputs(pGame);
 	}
 }

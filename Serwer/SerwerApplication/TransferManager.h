@@ -19,9 +19,10 @@ private:
 	string bufferToString(char* buffer, int length);
 	unsigned short generateNewNumber();
 
-	//return pointer to recv buffer
-	//if error occured, return 0
-	char* customRecv(ClientData* data, unsigned int threadIndex, char* recvbuf);
+	// return pointer to recv buffer
+	// if error occured, return 0
+	// otherwise, return 1
+	int customRecv(ClientData* data, char* recvbuf);
 
 	void disablePlayer(ClientData* data);
 public:

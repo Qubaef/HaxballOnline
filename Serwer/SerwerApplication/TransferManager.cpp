@@ -31,7 +31,6 @@ TransferManager::~TransferManager()
 // communicate with your client
 void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 {
-
     vector<double> dataToSend;
     char recvbuf[DEFAULT_BUFLEN];
     char sendbuf[DEFAULT_BUFLEN];
@@ -45,7 +44,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
     // CLIENT INITIALIZATION
     // ** Get client's nick
-    iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+    iResult = customRecv(data, recvbuf);
     data->setNickname(bufferToString(recvbuf, iResult));
     printf_s("Received player's nick: %s\n", data->getNickname().c_str());
 
@@ -62,7 +61,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
         {
             // PRE-GAME COMMUNICATION PHASE
             // ** Receive "ready" flag from client
-            iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+            iResult = customRecv(data, recvbuf);
 
             if (iResult != 1)
             {
@@ -95,7 +94,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
         {
             // GAME LOADING PHASE
             // ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
-            iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+            iResult = customRecv(data, recvbuf);
 
             if (iResult != 1)
             {
@@ -119,7 +118,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
         {
             // GAME RUNNING PHASE
             // ** Receive pack with user's input 
-            iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+            iResult = customRecv(data, recvbuf);
 
             // ** Get data from dataToSendContainer and send it to the user
 
@@ -263,7 +262,7 @@ void TransferManager::readyToPlayReset()
 }
 
 
-char* TransferManager::customRecv(ClientData* data, unsigned int threadIndex, char* recvbuf)
+int TransferManager::customRecv(ClientData* data, char* recvbuf)
 {
     int iResult;
     std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
@@ -275,7 +274,7 @@ char* TransferManager::customRecv(ClientData* data, unsigned int threadIndex, ch
         //if we recieved data
         if (iResult > 0)
         {
-            return recvbuf;
+			return 1;
         }
         //if we have error
         if (iResult == SOCKET_ERROR)
@@ -286,7 +285,7 @@ char* TransferManager::customRecv(ClientData* data, unsigned int threadIndex, ch
         //if we recieve nothing
         if (iResult == 0)
         {
-            //1. check how long he is no responding
+            //1. check how long is he not responding
             std::chrono::time_point<std::chrono::system_clock> now;
             now = std::chrono::system_clock::now();
             std::chrono::duration<double> elapsed_seconds = now - current;
@@ -294,7 +293,7 @@ char* TransferManager::customRecv(ClientData* data, unsigned int threadIndex, ch
             //2. if time is too long, timeouting player from game
             if (elapsed_seconds.count() > TIMEOUT)
             {
-                printf_s("TIMEOUTED!!!\n");
+                printf_s("User timeout: %s!\n", data->getNickname().c_str());
                 return 0;
             }
         }

@@ -64,6 +64,7 @@ class TransferManager( object ):
             data = self.recvall(self.s, data_size)
             print(len(data))
             data = struct.unpack(self.unpack_format(data_size), data)
+            
             print(data)
             #TODO change bytes to double from C, convert to python double and serialzie
             self.game.deserialize(data)
