@@ -36,5 +36,6 @@ class Team( object ):
         self.score=data[0]
         data=data[1:]
         for player in self.players:
-            player.deserialize(data)
-            data = data[5:]
+            data = player.deserialize(data)
+
+        return data

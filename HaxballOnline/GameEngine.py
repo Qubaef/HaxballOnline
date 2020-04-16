@@ -314,7 +314,6 @@ class GameEngine( object ):
 
 
     def deserialize(self,data):
-        self.balls[0].deserialize(data)
-        data=data[5:]
-        self.team_left.deserialize(data)
-        self.team_right.deserialize(data)
+        data=self.balls[0].deserialize(data)
+        data=self.team_left.deserialize(data)
+        data=self.team_right.deserialize(data)

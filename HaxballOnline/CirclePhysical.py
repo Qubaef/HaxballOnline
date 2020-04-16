@@ -88,3 +88,5 @@ class CirclePhysical( ABC ):
         self.v.x=data[2]
         self.v.y=data[3]
         self.ball_control=data[4]
+        data=data[5:]
+        return data
