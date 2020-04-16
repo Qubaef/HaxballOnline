@@ -36,6 +36,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
     char sendbuf[DEFAULT_BUFLEN];
     int iSendResult;
     int iResult;
+    int playerSize;
 
     // Get timestamp to track user's timeout
     std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
@@ -88,7 +89,22 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
         //we have to send first number of players and after it pack od initialization data
         // BUG?: convert initialization pack to array of chars and send it to the client
         // init pack will be accessable in saved in this->dataToSendContainer
+        struct BasicInformation
+        {
+            int playerSize;
+            int length;
+        };
 
+        //send basic info size of player and total length of initialize pack
+        BasicInformation info;
+        info.playerSize = this->clientsData.size();
+        info.length = dataContainerLength;
+        memcpy_s(sendbuf, sizeof(BasicInformation), &info, sizeof(info));
+        iSendResult = send(data->getSocket(), sendbuf, sizeof(int), 0);
+
+        //build and send initialization pack
+        buildInitializationPack();
+        iSendResult = send(data->getSocket(), static_cast<const char*>(this->dataToSendContainer), dataContainerLength, 0);
 
         while (true) 
         {
@@ -206,11 +222,11 @@ void TransferManager::buildInitializationPack()
 
     for (int i=0;i< this->clientsData.size();i++)
     {
-        initData[i].playerNickname = clientsData[i]->getNickname();
+        initData[i].playerNickname = clientsData[i]->getNickname().c_str();
         initData[i].playerNumber = clientsData[i]->getNumber();
         initData[i].playerTeam = clientsData[i]->getPlayer()->getTeam();
 
-        length += initData[i].playerNickname.length() + sizeof(initData[i].playerNumber) + sizeof(initData[i].playerTeam);
+        length += clientsData[i]->getNickname().length() + sizeof(initData[i].playerNumber) + sizeof(initData[i].playerTeam);
     }
 
     int playerSize = this->clientsData.size();

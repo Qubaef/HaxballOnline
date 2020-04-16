@@ -42,7 +42,7 @@ public:
 
 struct PlayerInitializePack
 {
-	string playerNickname;
+	const char * playerNickname;
 	unsigned int playerNumber;
 	short int playerTeam;
 };
