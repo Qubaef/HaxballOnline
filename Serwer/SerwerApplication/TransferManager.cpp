@@ -86,8 +86,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
         // GAME PREPARATION PHASE
         // ** Send initialization pack to the client
-
-        // TODO: (Kwiaciu) convert initialization pack to array of chars and send it to the client
+        //we have to send first number of players and after it pack od initialization data
+        // BUG?: convert initialization pack to array of chars and send it to the client
         // init pack will be accessable in saved in this->dataToSendContainer
 
 
@@ -205,15 +205,16 @@ void TransferManager::buildInitializationPack()
     PlayerInitializePack* initData = new PlayerInitializePack[this->clientsData.size()];
     unsigned int length = 0;
 
-    for (ClientData* client : this->clientsData)
+    for (int i=0;i< this->clientsData.size();i++)
     {
-        initData->playerNickname = client->getNickname();
-        initData->playerNumber = client->getNumber();
-        initData->playerTeam = client->getPlayer()->getTeam();
+        initData[i].playerNickname = clientsData[i]->getNickname();
+        initData[i].playerNumber = clientsData[i]->getNumber();
+        initData[i].playerTeam = clientsData[i]->getPlayer()->getTeam();
 
-        length += sizeof(PlayerInitializePack);
+        length += initData[i].playerNickname.length() + sizeof(initData[i].playerNumber) + sizeof(initData[i].playerTeam);
     }
 
+    int playerSize = this->clientsData.size();
     this->dataToSendContainer = initData;
     this->dataContainerLength = length;
 

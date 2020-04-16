@@ -21,7 +21,7 @@ private:
 
 	//return pointer to recv buffer
 	//if error occured, return 0
-	char* customRecv(ClientData* data, unsigned int threadIndex, char* recvbuf);
+	char* customRecv(ClientData* data, unsigned int threadIndex,char*recvbuf);
 
 	void disablePlayer(ClientData* data);
 public:
