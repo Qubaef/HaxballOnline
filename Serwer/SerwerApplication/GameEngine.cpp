@@ -310,12 +310,14 @@ vector<double> GameEngine::serialize() const
 	//
 	//1. ball serialization
 	vector<double>dataVector;
+	dataVector.push_back(0);
+	dataVector.push_back(0);
+	
 	pBall->serialize(dataVector);
 	
 	//2. team left serialization
 	pTeamLeft->serialize(dataVector);
 	
-
 	//3.team right serialization
 	pTeamRight->serialize(dataVector);
 

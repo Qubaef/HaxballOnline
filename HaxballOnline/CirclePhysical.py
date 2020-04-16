@@ -84,7 +84,7 @@ class CirclePhysical( ABC ):
 
     def deserialize(self,data):
         self.p.x=data[0]
-        self.p.x=data[1]
+        self.p.y=data[1]
         self.v.x=data[2]
         self.v.y=data[3]
         self.ball_control=data[4]

@@ -49,11 +49,11 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 	while (true)
 	{
 		// TODO: read readyToPlay flag and resend it back
-		// TODO: if ifNewData is set to true, send initalization pack and start sending players positions (currenlty below)
+		// TODO: if ifNewData is set to true, send initialization pack and start sending players positions (currently below)
 
 		// ifGameRunning = False - read and resend readyToPlay
-		// 
 		// ifGameRunning = True - read and send game data
+
 		if (this->ifGameRunning == true)
 		{
 			//1. recieve data from client
@@ -67,25 +67,27 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 				cout << "Bytes received: " << iResult << endl;
 				cout << recvbuf;
 
-				if (this->pGame != NULL)
-				{
-					//3.serialize data which should be sent
-					vector<double> dataToSent = this->pGame->serialize();
-					memcpy(sendbuf, &dataToSent[0], dataToSent.size() * sizeof(double));
+				//3.serialize data which should be sent
 
-					//4.send information to client
-					iSendResult = send(data->getSocket(), sendbuf, dataToSent.size() * sizeof(double), 0);
+				
+				vector<double> dataToSend;
 
-					//5.Handle sending error
-					if (iSendResult == SOCKET_ERROR) {
-						cout << "send failed with error: " << WSAGetLastError() << endl;
-						closesocket(data->getSocket());
-						WSACleanup();
-						return;
-					}
-					cout << "Bytes sent: " << iSendResult << endl;
+				dataToSend = this->pGame->serialize();
+
+
+				memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
+
+				//4.send information to client
+				iSendResult = send(data->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
+
+				//5.Handle sending error
+				if (iSendResult == SOCKET_ERROR) {
+					cout << "send failed with error: " << WSAGetLastError() << endl;
+					closesocket(data->getSocket());
+					WSACleanup();
+					return;
 				}
-
+				cout << "Bytes sent: " << iSendResult << endl;
 			}
 
 			//if player is not responding to the serwer

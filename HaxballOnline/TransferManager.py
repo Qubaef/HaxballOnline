@@ -40,7 +40,7 @@ class TransferManager( object ):
         return 1
 
     def addGame(self, game:GameEngine):
-        self.game=game
+        self.game = game
 
 
     def communicate(self):
@@ -48,11 +48,23 @@ class TransferManager( object ):
         while(True):
             readySignal = str(self.readyToPlay) + chr(0)
             self.s.sendall(bytes(readySignal, encoding='utf-8'))
-            size=8
-            dataSize = 5*size + 2*size +size*len(self.game.team_left.players)*5 + size*len(self.game.team_right.players)*5
-            data = self.s.recv(dataSize)
-            data = struct.unpack_from('ddd', data)
+            size = 8
+            dataSize = 5 * size + 2 * size + size * len(self.game.team_left.players) * 5 + size * len(self.game.team_right.players) * 5
+            data = self.recvall(self.s, dataSize)
+            print(len(data))
+            data = struct.unpack('dddddddddddd', data)
             print(data)
             #TODO change bytes to double from C, convert to python double and serialzie
+            self.game.deserialize(data)
             time.sleep(0.2)
 
+
+    def recvall(self, sock, size):
+        data = b''
+        while True:
+            part = sock.recv(size)
+            data += part
+            if len(part) == size:
+                # either 0 or end of data
+                break
+        return data
