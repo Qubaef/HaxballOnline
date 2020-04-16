@@ -1,7 +1,10 @@
 import threading
+import struct
 import socket
 import time
 import GameEngine
+
+
 class TransferManager( object ):
     def __init__(self, nickname):
         self.nickname = nickname
@@ -48,6 +51,8 @@ class TransferManager( object ):
             size=8
             dataSize = 5*size + 2*size +size*len(self.game.team_left.players)*5 + size*len(self.game.team_right.players)*5
             data = self.s.recv(dataSize)
+            data = struct.unpack_from('ddd', data)
+            print(data)
             #TODO change bytes to double from C, convert to python double and serialzie
             time.sleep(0.2)
 

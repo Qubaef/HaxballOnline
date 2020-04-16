@@ -58,8 +58,15 @@ void TransferManager::communicate(ClientData* data, unsigned int threadsNumber)
 		{
 			iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 
-			double* dataToSent = this->pGame->serialize();
-			int size = pGame->size();
+			// double* dataToSent = this->pGame->serialize();
+			
+			double* dataToSent = new double[3];
+			dataToSent[0] = 3.14;
+			dataToSent[1] = 8.04;
+			dataToSent[2] = 9.724;
+			int size = 3;
+			
+			//int size = pGame->size();
 			size *= sizeof(double);
 
 			memcpy(sendbuf, dataToSent, size);
