@@ -46,17 +46,30 @@ class TransferManager( object ):
     def communicate(self):
         # keep sending and receiving readyToPlay to the server to keep connection
         while(True):
+            # send and receive readyToPlay, until init pack was recived
             readySignal = str(self.readyToPlay) + chr(0)
             self.s.sendall(bytes(readySignal, encoding='utf-8'))
+
+            # receive init pack
+
+            # start getting game data
+
             size = 8
-            dataSize = 5 * size + 2 * size + size * len(self.game.team_left.players) * 5 + size * len(self.game.team_right.players) * 5
-            data = self.recvall(self.s, dataSize)
+            data_size = 5 * size + 2 * size + size * len(self.game.team_left.players) * 5 + size * len(self.game.team_right.players) * 5
+            data = self.recvall(self.s, data_size)
             print(len(data))
-            data = struct.unpack('dddddddddddd', data)
+            data = struct.unpack(self.unpack_format(data_size), data)
             print(data)
             #TODO change bytes to double from C, convert to python double and serialzie
             self.game.deserialize(data)
             time.sleep(0.2)
+
+
+    def unpack_format(self, data_size):
+        format = ""
+        for i in range(int(data_size/8)):
+            format += 'd'
+        return format
 
 
     def recvall(self, sock, size):
