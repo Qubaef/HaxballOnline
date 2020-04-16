@@ -63,17 +63,12 @@ vector<Player*> Team::getPlayers()
 }
 
 
-double* Team::serialize()
+void Team::serialize(vector<double> &dataVector) const
 {
-	double* data = new double[TEAM_SIZE + players.size() * CIRCLE_SIZE];
-	data[0] = score;
+	dataVector.push_back(score);
 	int i = 0;
 	for(Player*player:players)
 	{
-		double* dataPlayer = player->serialize();
-		memcpy(&data[TEAM_SIZE + i * CIRCLE_SIZE], dataPlayer, CIRCLE_SIZE* sizeof(double));
-		i++;
-		delete dataPlayer;
+		player->serialize(dataVector);
 	}
-	return data;
 }

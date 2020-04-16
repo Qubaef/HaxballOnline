@@ -68,7 +68,7 @@ public:
 	int getPitchH();
 	bool getFinished();
 	//serialize game data
-	double* serialize();
+	vector<double> serialize() const;
 	//recieve data to be sent size
 	int size();
 };
