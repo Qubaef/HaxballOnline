@@ -25,7 +25,8 @@ void Server::start()
 	{
 		// check if there is enough players on the server
 		// and if all of them confirmed that they are ready to play
-		if (pManager->readyToPlay()) {
+		if (pManager->readyToPlay()) 
+		{
 			printf_s("All players ready! Initializing game and waiting for their game to load!\n");
 
 			play();
@@ -52,6 +53,7 @@ void Server::play()
 	// wait for all players to load their games
 	while (!pManager->readyToPlay())
 	{
+
 	}
 
 	printf_s("All players ready! Game Starts!\n");
@@ -79,7 +81,8 @@ void Server::manageConnections()
 
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
+	if (iResult != 0) 
+	{
 		printf_s("WSAStartup failed with error: %d\n", iResult);
 		return;
 	}
@@ -92,7 +95,8 @@ void Server::manageConnections()
 
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) {
+	if (iResult != 0) 
+	{
 		printf_s("getaddrinfo failed with error: %d\n", iResult);
 		WSACleanup();
 		return;
@@ -100,7 +104,8 @@ void Server::manageConnections()
 
 	// Create a SOCKET for connecting to server
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (ListenSocket == INVALID_SOCKET) {
+	if (ListenSocket == INVALID_SOCKET) 
+	{
 		printf_s("socket failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
@@ -109,7 +114,8 @@ void Server::manageConnections()
 
 	// Setup the TCP listening socket
 	iResult = ::bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
+	if (iResult == SOCKET_ERROR) 
+	{
 		printf_s("bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(result);
 		closesocket(ListenSocket);
@@ -120,7 +126,8 @@ void Server::manageConnections()
 	freeaddrinfo(result);
 
 	iResult = listen(ListenSocket, SOMAXCONN);
-	if (iResult == SOCKET_ERROR) {
+	if (iResult == SOCKET_ERROR) 
+	{
 		printf_s("listen failed with error: %d\n", WSAGetLastError());
 		closesocket(ListenSocket);
 		WSACleanup();
@@ -136,7 +143,8 @@ void Server::manageConnections()
 
 		// Accept a client socket
 		ClientSocket = accept(ListenSocket, NULL, NULL);
-		if (ClientSocket == INVALID_SOCKET) {
+		if (ClientSocket == INVALID_SOCKET) 
+		{
 			printf_s("Accept failed with error: %d\n", WSAGetLastError());
 			closesocket(ListenSocket);
 			WSACleanup();

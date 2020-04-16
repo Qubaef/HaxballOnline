@@ -46,7 +46,12 @@ void GameEngine::redraw()
 void GameEngine::update()
 {
 	// update players
-	for (int i = 0; i < players.size(); i++) {
+	for (int i = 0; i < players.size(); i++) 
+	{
+		//handling disconnected player
+		if (players[i]->getPosition().getX() <= -10 && players[i]->getPosition().getY() <= -10)
+			continue;
+
 		players[i]->update();
 	}
 
@@ -54,7 +59,12 @@ void GameEngine::update()
 	pBall->update();
 
 	// collide players
-	for (int i = 0; i < players.size(); i++) {
+	for (int i = 0; i < players.size(); i++) 
+	{
+		//handling disconnected player
+		if (players[i]->getPosition().getX() <= -10 && players[i]->getPosition().getY() <= -10)
+			continue;
+
 		players[i]->collide();
 	}
 
@@ -77,14 +87,17 @@ double GameEngine::clockTick()
 
 void GameEngine::gameStateManager()
 {
-	if (playMode == -2) {
+	if (playMode == -2) 
+	{
 		playMode = 1;
 		delayCounter = goalDelay;
 	}
-	else if (playMode == -1 && delayCounter == 0) {
+	else if (playMode == -1 && delayCounter == 0) 
+	{
 		playMode = 1;
 	}
-	else if (playMode == 1) {
+	else if (playMode == 1) 
+	{
 		positionsReset();
 		pTeamLeft->resetPosition();
 		pTeamRight->resetPosition();
@@ -92,7 +105,8 @@ void GameEngine::gameStateManager()
 		playMode = 2;
 		delayCounter = startDelay;
 	}
-	else if (playMode == 2 && delayCounter == 0) {
+	else if (playMode == 2 && delayCounter == 0) 
+	{
 		playMode = 0;
 
 		cout << "Game starts!" << endl;
@@ -111,11 +125,13 @@ void GameEngine::positionsReset()
 
 void GameEngine::goalScored(Goal* pGoal)
 {
-	if (pGoal == pGoalLeft) {
+	if (pGoal == pGoalLeft) 
+	{
 		cout << "Goal for team right!" << endl;
 		pTeamRight->addPoint();
 	}
-	else {
+	else 
+	{
 		cout << "Game for team left!" << endl;
 		pTeamLeft->addPoint();
 	}
@@ -148,19 +164,24 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
 	players.push_back(pPlayer);
 
-	if (teamNumber == 0) {
-		if (pTeamLeft->size() >= pTeamRight->size()) {
+	if (teamNumber == 0) 
+	{
+		if (pTeamLeft->size() >= pTeamRight->size()) 
+		{
 			pTeamRight->addPlayer(pPlayer);
 		}
-		else {
+		else 
+		{
 			pTeamLeft->addPlayer(pPlayer);
 		}
 	}
 	else {
-		if (teamNumber == 1) {
+		if (teamNumber == 1) 
+		{
 			pTeamLeft->addPlayer(pPlayer);
 		}
-		else {
+		else 
+		{
 			pTeamRight->addPlayer(pPlayer);
 		}
 	}
@@ -325,7 +346,4 @@ vector<double> GameEngine::serialize() const
 	return dataVector;
 }
 
-int GameEngine::size()
-{
-	return CIRCLE_SIZE + (pTeamLeft->size() * CIRCLE_SIZE + TEAM_SIZE) + (pTeamRight->size() * CIRCLE_SIZE + TEAM_SIZE);
-}
+

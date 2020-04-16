@@ -58,7 +58,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
     while (true)
     {
-        while (true) {
+        while (true) 
+        {
             // PRE-GAME COMMUNICATION PHASE
             // ** Receive "ready" flag from client
             iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
@@ -90,7 +91,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
         // init pack will be accessable in saved in this->dataToSendContainer
 
 
-        while (true) {
+        while (true) 
+        {
             // GAME LOADING PHASE
             // ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
             iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
@@ -106,13 +108,15 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
                 iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
             }
 
-            if (this->ifGameRunning == true) {
+            if (this->ifGameRunning == true) 
+            {
                 break;
             }
         }
 
 
-        while (true) {
+        while (true) 
+        {
             // GAME RUNNING PHASE
             // ** Receive pack with user's input 
             iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
@@ -130,7 +134,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
             // TODO: save user's input (from recvbuf) in Client's data pack (ClientData* data)
             // TODO: in server.cpp, analyze user's input every frame and modify the game
 
-            if (this->ifGameRunning == FALSE) {
+            if (this->ifGameRunning == FALSE) 
+            {
                 break;
             }
         }
@@ -145,7 +150,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 string TransferManager::bufferToString(char buffer[], int length)
 {
     string str = "";
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) 
+    {
         str = str + buffer[i];
     }
     return str;
@@ -298,5 +304,5 @@ char* TransferManager::customRecv(ClientData* data, unsigned int threadIndex, ch
 
 void TransferManager::disablePlayer(ClientData* data)
 {
-    data->getPlayer()->setPosition(Vector2D(-1, -1));
+    data->getPlayer()->setPosition(Vector2D(-10, -10));
 }

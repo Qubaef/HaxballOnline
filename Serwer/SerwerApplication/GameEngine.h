@@ -69,6 +69,4 @@ public:
 	bool getFinished();
 	//serialize game data
 	vector<double> serialize() const;
-	//recieve data to be sent size
-	int size();
 };

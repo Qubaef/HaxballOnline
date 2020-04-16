@@ -13,6 +13,8 @@ CirclePhysical::~CirclePhysical()
 
 void CirclePhysical::setPosition(Vector2D p)
 {
+	if (this->p.getX() <= -10 && this->p.getY() <= -10)
+		return;
 	this->p = p;
 }
 
@@ -23,6 +25,8 @@ void CirclePhysical::setMove(Vector2D v)
 
 void CirclePhysical::update()
 {
+	if (this->p.getX() <= -10 && this->p.getY() <= -10)
+		return;
 	this->v = this->v - this->v * friction;
 	this->p = this->p + this->v;
 
