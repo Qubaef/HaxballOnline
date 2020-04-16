@@ -143,6 +143,7 @@ void GameEngine::newBall(Ball* pBall)
 	this->pBall = pBall;
 }
 
+//BUG no editing team in player
 void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
 	players.push_back(pPlayer);
