@@ -32,7 +32,7 @@ public:
 	void buildInitializationPack();						// send info to all client threads, that they need to send initialization pack to their clients
 	void dataSent(int threadNumber);					// as a client thread, set your ifNewData flag to false
 	vector<ClientData*>* getClientsData();
-	void manageInputs(GameEngine* pGame);
+	void manageInputs(ClientData* pClientData);
 	void gameSerialize(GameEngine* pGame);
 	void readyToPlayReset();
 

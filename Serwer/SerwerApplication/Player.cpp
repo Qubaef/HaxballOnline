@@ -15,21 +15,21 @@ Player::~Player()
 }
 
 
-void Player::kick(Vector2D pos)
+void Player::kick(Vector2D mousePos)
 {
 	//for (Ball b : this->pGame->getBall)
-	Ball* b = this->pGame->getBall();
-	Vector2D v = pos - b->getMove();
+	Ball* pBall = this->pGame->getBall();
+	Vector2D v = mousePos - pBall->getMove();
 
 
-	float dist = pow(this->getPosition().getX() - b->getPosition().getX(), 2);
-	dist += pow(b->getPosition().getY() - this->getPosition().getY(), 2);
+	float dist = pow(this->getPosition().getX() - pBall->getPosition().getX(), 2);
+	dist += pow(pBall->getPosition().getY() - this->getPosition().getY(), 2);
 
-	if (dist <= pow(b->getHitbox() + this->getHitbox(), 2))
+	if (dist <= pow(pBall->getHitbox() + this->getHitbox(), 2))
 	{
 		//kick ball to given position
 		v = v.Normal(v) * v.length() / 12;
-		b->setMove(v);
+		pBall->setMove(v);
 	}
 }
 

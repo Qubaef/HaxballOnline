@@ -6,4 +6,3 @@ public:
 	Ball(GameEngine*game,int px,int py);
 	~Ball();
 };
-

@@ -29,7 +29,7 @@ TransferManager::~TransferManager()
 
 // function called bu separate thread
 // communicate with your client
-void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
+void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 {
 	vector<double> dataToSend;
 	char recvbuf[DEFAULT_BUFLEN];
@@ -39,7 +39,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 	int playerSize;
 
 	unsigned long l;
-	ioctlsocket(data->getSocket(), FIONREAD, &l);
+	ioctlsocket(pData->getSocket(), FIONREAD, &l);
 
 	// Get timestamp to track user's timeout
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
@@ -48,16 +48,16 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
 	// CLIENT INITIALIZATION
 	// ** Get client's nick
-	iResult = customRecv(data, recvbuf);
-	data->setNickname(bufferToString(recvbuf, iResult));
-	printf_s("Received player's nick: %s\n", data->getNickname().c_str());
+	iResult = customRecv(pData, recvbuf);
+	pData->setNickname(bufferToString(recvbuf, iResult));
+	printf_s("Received player's nick: %s\n", pData->getNickname().c_str());
 
 
 	// ** Generate client's number and send it to his socket
 	// dataToSend.push_back(0);
 	// dataToSend.push_back(0);
 	dataToSend.push_back(generateNewNumber());
-	iSendResult = send(data->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
+	iSendResult = send(pData->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
 
 
 	while (true)
@@ -66,17 +66,17 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 		{
 			// PRE-GAME COMMUNICATION PHASE
 			// ** Receive "ready" flag from client
-			iResult = customRecv(data, recvbuf);
+			iResult = customRecv(pData, recvbuf);
 
 			if (iResult != 1)
 			{
-				printf_s("Wrong data received from client: %s! Expected readyToPlay flag!", data->getNickname().c_str());
+				printf_s("Wrong data received from client: %s! Expected readyToPlay flag!", pData->getNickname().c_str());
 			}
 			else
 			{
 				// Save ready flag state in client's data and resend it back to the user
-				data->setReady(charToBool(recvbuf[0]));
-				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
+				pData->setReady(charToBool(recvbuf[0]));
+				iSendResult = send(pData->getSocket(), recvbuf, iResult, 0);
 			}
 
 			// ** Check if there is initialization pack ready to be sent
@@ -104,27 +104,27 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 		info.playerSize = this->clientsData.size();
 		info.length = dataContainerLength;
 		memcpy_s(sendbuf, sizeof(BasicInformation), &info, sizeof(info));
-		iSendResult = send(data->getSocket(), sendbuf, sizeof(int), 0);
+		iSendResult = send(pData->getSocket(), sendbuf, sizeof(int), 0);
 
 		//build and send initialization pack
 		buildInitializationPack();
-		iSendResult = send(data->getSocket(), static_cast<const char*>(this->dataToSendContainer), dataContainerLength, 0);
+		iSendResult = send(pData->getSocket(), static_cast<const char*>(this->dataToSendContainer), dataContainerLength, 0);
 
 		while (true)
 		{
 			// GAME LOADING PHASE
 			// ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
-			iResult = customRecv(data, recvbuf);
+			iResult = customRecv(pData, recvbuf);
 
 			if (iResult != 1)
 			{
-				printf_s("Wrong data received from client: %s! Expected readyGameLoaded flag!", data->getNickname().c_str());
+				printf_s("Wrong data received from client: %s! Expected readyGameLoaded flag!", pData->getNickname().c_str());
 			}
 			else
 			{
 				// Save ready flag state in client's data and resend it back to the user
-				data->setReady(charToBool(recvbuf[0]));
-				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
+				pData->setReady(charToBool(recvbuf[0]));
+				iSendResult = send(pData->getSocket(), recvbuf, iResult, 0);
 			}
 
 			if (this->ifGameRunning == true)
@@ -138,7 +138,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 		{
 			// GAME RUNNING PHASE
 			// ** Receive pack with user's input 
-			iResult = customRecv(data, recvbuf);
+			iResult = customRecv(pData, recvbuf);
 
 			// ** Get data from dataToSendContainer and send it to the user
 
@@ -150,8 +150,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
 			// ** Analyze user's input and save it in client's data
 
-			// TODO: save user's input (from recvbuf) in Client's data pack (ClientData* data)
-			// TODO: in server.cpp, analyze user's input every frame and modify the game
+			pData->setUserInput(recvbuf);
+			// TODO: in server.cpp, analyze user's input every frame and modify the game !!!DONE in transfer menager
 
 			if (this->ifGameRunning == FALSE)
 			{
@@ -160,7 +160,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 		}
 	}
 
-	closesocket(data->getSocket());
+	closesocket(pData->getSocket());
 	WSACleanup();
 }
 
@@ -258,9 +258,43 @@ void TransferManager::dataSent(int threadNumber)
 
 
 // Function to execute player moves stored in their ClientsData structures
-void TransferManager::manageInputs(GameEngine* pGame)
+void TransferManager::manageInputs(ClientData * pClientData)
 {
-	// TODO
+	if(pClientData->getUserInput().command)
+	{
+		if (pClientData->getUserInput().command & BALL_CONTROL)
+		{
+		    if(pClientData->getPlayer()->getBallControl()==1.0)
+		    {
+				pClientData->getPlayer()->modeBallControl();
+		    }
+			else
+			{
+				pClientData->getPlayer()->modeNormal();
+			}
+		}
+		else if (pClientData->getUserInput().command & KICK)
+		{
+			pClientData->getPlayer()->kick(Vector2D(pClientData->getUserInput().mouseXPos, pClientData->getUserInput().mouseYPos));
+		}
+		else if (pClientData->getUserInput().command & MOUSE_RIGHT)
+		{
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(1, 0));
+		}
+		else if (pClientData->getUserInput().command & MOUSE_LEFT)
+		{
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(-1, 0));
+		}
+		else if (pClientData->getUserInput().command & MOUSE_UP)
+		{
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, -1));
+		}
+		else if (pClientData->getUserInput().command & MOUSE_DOWN)
+		{
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, 1));
+		}
+	}
+    
 }
 
 
@@ -291,14 +325,14 @@ void TransferManager::readyToPlayReset()
 }
 
 
-int TransferManager::customRecv(ClientData* data, char* recvbuf)
+int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 {
 	int iResult;
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
 
 	while (true)
 	{
-		iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
+		iResult = recv(pData->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 
 		//if we have error
 		if (iResult == SOCKET_ERROR)
@@ -317,7 +351,7 @@ int TransferManager::customRecv(ClientData* data, char* recvbuf)
 			//2. if time is too long, timeouting player from game
 			if (elapsed_seconds.count() > TIMEOUT)
 			{
-				printf_s("User timeout: %s!\n", data->getNickname().c_str());
+				printf_s("User timeout: %s!\n", pData->getNickname().c_str());
 				return 0;
 			}
 		}
@@ -329,7 +363,7 @@ int TransferManager::customRecv(ClientData* data, char* recvbuf)
 }
 
 
-void TransferManager::disablePlayer(ClientData* data)
+void TransferManager::disablePlayer(ClientData* pData)
 {
-	data->getPlayer()->setPosition(Vector2D(-10, -10));
+	pData->getPlayer()->setPosition(Vector2D(-10, -10));
 }

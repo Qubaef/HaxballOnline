@@ -3,12 +3,14 @@
 
 class ClientData
 {
+
 private:
 	string nickname;
 	Player* pPlayer;
 	SOCKET clientSocket;
 	bool ready;
 	unsigned short number;
+	UserInput userInput;
 public:
 	ClientData(SOCKET clientSocket);
 	~ClientData();
@@ -25,4 +27,8 @@ public:
 	
 	string getNickname();
 	void setNickname(string nickname);
+
+	UserInput getUserInput() const;
+
+	void setUserInput(char* input);
 };

@@ -7,6 +7,9 @@ ClientData::ClientData(SOCKET clientSocket)
 	this->clientSocket = clientSocket;
 	this->number = 0;
 	this->nickname = "";
+	this->userInput.command = 0;
+	this->userInput.mouseXPos = 0;
+	this->userInput.mouseYPos = 0;
 }
 
 ClientData::~ClientData()
@@ -55,4 +58,16 @@ string ClientData::getNickname()
 void ClientData::setNickname(string nickname)
 {
 	this->nickname = nickname;
+}
+
+UserInput ClientData::getUserInput() const
+{
+	return this->userInput;
+}
+
+void ClientData::setUserInput(char * input)
+{
+	this->userInput.command = input[0];
+	memcpy_s(&this->userInput.mouseXPos,sizeof(this->userInput.mouseXPos), input + 1,sizeof(double));
+	memcpy_s(&this->userInput.mouseYPos, sizeof(this->userInput.mouseYPos), input + 1 + sizeof(double), sizeof(double));
 }

@@ -16,7 +16,22 @@
 #define DEFAULT_BUFLEN 256
 #define DEFAULT_PORT "8080"
 #define TIMEOUT 10.0
+
+//player input defines
+#define BALL_CONTROL 1
+#define KICK 2
+#define MOUSE_LEFT 4
+#define MOUSE_RIGHT 8
+#define MOUSE_UP 16
+#define MOUSE_DOWN 32
 using namespace std;
+
+struct UserInput
+{
+	char command;
+	double mouseXPos;
+	double mouseYPos;
+};
 
 #include "Vector2D.h"
 #include "CirclePhysical.h"
