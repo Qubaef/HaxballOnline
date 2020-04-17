@@ -14,7 +14,7 @@ from TransferManager import TransferManager
 
 nickname = input('Enter nickname: ')
 
-transferManager = TransferManager(nickname);
+transferManager = TransferManager(nickname)
 game = GameEngine()
 ball = Ball(game, 500, 300, 0)
 player = Player(game, 400, 300, 1, (0, 0, 255))
@@ -26,6 +26,7 @@ player.border_color = (255,255,0)
 if transferManager.initConnection() == -1:
     sys.exit()
 
+input('Ready?: ')
 transferManager.readyToPlay = True
 
 # initialize game, ball, and player

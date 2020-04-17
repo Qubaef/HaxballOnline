@@ -15,7 +15,7 @@ void TransferManager::newClient(SOCKET clientSocket)
 	// insert this data to vector in transfer manager
 	ifdataToSend.push_back(false);
 	clientsData.push_back(newClient);
-	unsigned int threadNumber = clientsData.size();
+	unsigned int threadNumber = clientsData.size() - 1;
 
 	// call new thread to communicate with given client
 	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient, threadNumber));
@@ -38,6 +38,9 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 	int iResult;
 	int playerSize;
 
+	unsigned long l;
+	ioctlsocket(data->getSocket(), FIONREAD, &l);
+
 	// Get timestamp to track user's timeout
 	std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
 	printf_s("Communicating with client!\n");
@@ -51,8 +54,8 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
 
 	// ** Generate client's number and send it to his socket
-	dataToSend.push_back(0);
-	dataToSend.push_back(0);
+	// dataToSend.push_back(0);
+	// dataToSend.push_back(0);
 	dataToSend.push_back(generateNewNumber());
 	iSendResult = send(data->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
 
@@ -72,7 +75,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 			else
 			{
 				// Save ready flag state in client's data and resend it back to the user
-				data->setReady(recvbuf[0]);
+				data->setReady(charToBool(recvbuf[0]));
 				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
 			}
 
@@ -120,7 +123,7 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 			else
 			{
 				// Save ready flag state in client's data and resend it back to the user
-				data->setReady(recvbuf[0]);
+				data->setReady(charToBool(recvbuf[0]));
 				iSendResult = send(data->getSocket(), recvbuf, iResult, 0);
 			}
 
@@ -159,6 +162,12 @@ void TransferManager::communicate(ClientData* data, unsigned int threadIndex)
 
 	closesocket(data->getSocket());
 	WSACleanup();
+}
+
+// convert given char (byte) to bool value
+bool TransferManager::charToBool(char flag)
+{
+	return flag == 0 ? false : true;
 }
 
 
@@ -259,6 +268,8 @@ void TransferManager::manageInputs(GameEngine* pGame)
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
 	// TODO: Critial section (?)
+	// 
+	// BUG: error while deleting void* (needs to be fixed)
 	delete dataToSendContainer;
 	dataToSendContainer = &(pGame->serialize());
 
@@ -289,11 +300,6 @@ int TransferManager::customRecv(ClientData* data, char* recvbuf)
 	{
 		iResult = recv(data->getSocket(), recvbuf, DEFAULT_BUFLEN, 0);
 
-		//if we recieved data
-		if (iResult > 0)
-		{
-			return 1;
-		}
 		//if we have error
 		if (iResult == SOCKET_ERROR)
 		{
@@ -314,6 +320,10 @@ int TransferManager::customRecv(ClientData* data, char* recvbuf)
 				printf_s("User timeout: %s!\n", data->getNickname().c_str());
 				return 0;
 			}
+		}
+		else
+		{
+			return iResult;
 		}
 	}
 }

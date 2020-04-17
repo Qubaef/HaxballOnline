@@ -14,8 +14,7 @@ private:
 
 	bool ifGameRunning;
 
-	// GameEngine* pGame = NULL;
-
+	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);
 	unsigned short generateNewNumber();
 

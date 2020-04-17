@@ -5,7 +5,7 @@ ClientData::ClientData(SOCKET clientSocket)
 	this->ready = false;
 	this->pPlayer = nullptr;			// player will be created right before game starts
 	this->clientSocket = clientSocket;
-	this->number = -1;
+	this->number = 0;
 	this->nickname = "";
 }
 
