@@ -9,7 +9,8 @@ private:
 	void communicate(ClientData* data, unsigned int threadNumber);
 
 	vector<bool> ifdataToSend;			// array of flags set to True, if dataContainer contains new data ready to send to clients
-	void* dataToSendContainer;			// pointer to an array containing data, which needs to be sent to the clients
+	vector<double> dataPackToSend;		// vector holding serialized data
+	void* initPackToSend;				// pointer to an array containing init pack, which needs to be sent to the clients
 	unsigned int dataContainerLength;	// length of data in dataContainer
 
 	bool ifGameRunning;
@@ -30,6 +31,7 @@ public:
 	void newClient(SOCKET clientSocket);
 	bool readyToPlay();
 	void buildInitializationPack();						// send info to all client threads, that they need to send initialization pack to their clients
+	void deleteInitializationPack();					// send info to all client threads, that they need to send initialization pack to their clients
 	void dataSent(int threadNumber);					// as a client thread, set your ifNewData flag to false
 	vector<ClientData*>* getClientsData();
 	void manageInputs(ClientData* pClientData);

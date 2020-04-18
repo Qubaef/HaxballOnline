@@ -90,25 +90,26 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 
 		// GAME PREPARATION PHASE
 		// ** Send initialization pack to the client
-		//we have to send first number of players and after it pack od initialization data
+		// we have to send first number of players and after it pack od initialization data
 		// BUG?: convert initialization pack to array of chars and send it to the client
-		// init pack will be accessable in saved in this->dataToSendContainer
+		// init pack will be accessible in saved in this->dataToSendContainer
+		
 		struct BasicInformation
 		{
 			int playerSize;
 			int length;
 		};
 
-		//send basic info size of player and total length of initialize pack
+		// send basic info size of player and total length of initialize pack
 		BasicInformation info;
 		info.playerSize = this->clientsData.size();
 		info.length = dataContainerLength;
 		memcpy_s(sendbuf, sizeof(BasicInformation), &info, sizeof(info));
 		iSendResult = send(pData->getSocket(), sendbuf, sizeof(int), 0);
 
-		//build and send initialization pack
+		// build and send initialization pack
 		buildInitializationPack();
-		iSendResult = send(pData->getSocket(), static_cast<const char*>(this->dataToSendContainer), dataContainerLength, 0);
+		iSendResult = send(pData->getSocket(), static_cast<const char*>(this->initPackToSend), dataContainerLength, 0);
 
 		while (true)
 		{
@@ -141,17 +142,11 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			iResult = customRecv(pData, recvbuf);
 
 			// ** Get data from dataToSendContainer and send it to the user
-
-			// TODO: vector data from dataToSendContainer and send it to client
-
-			// dataToSend = *((vector<double>*) dataToSendContainer);
-			// memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
-			// iSendResult = send(data->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
+			memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
+			iSendResult = send(pData->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
 
 			// ** Analyze user's input and save it in client's data
-
 			pData->setUserInput(recvbuf);
-			// TODO: in server.cpp, analyze user's input every frame and modify the game !!!DONE in transfer menager
 
 			if (this->ifGameRunning == FALSE)
 			{
@@ -240,7 +235,7 @@ void TransferManager::buildInitializationPack()
 	}
 
 	int playerSize = this->clientsData.size();
-	this->dataToSendContainer = initData;
+	this->initPackToSend = initData;
 	this->dataContainerLength = length;
 
 	// set all ifdataToSend flags to True
@@ -249,6 +244,13 @@ void TransferManager::buildInitializationPack()
 		sendFlag = true;
 	}
 }
+
+void TransferManager::deleteInitializationPack()
+{
+	delete[] initPackToSend;
+	initPackToSend = NULL;
+}
+
 
 
 void TransferManager::dataSent(int threadNumber)
@@ -302,10 +304,9 @@ void TransferManager::manageInputs(ClientData * pClientData)
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
 	// TODO: Critial section (?)
-	// 
-	// BUG: error while deleting void* (needs to be fixed)
-	delete dataToSendContainer;
-	dataToSendContainer = &(pGame->serialize());
+
+	dataPackToSend.clear();
+	dataPackToSend = pGame->serialize();
 
 	// set all ifdataToSend flags to True
 	for (bool sendFlag : this->ifdataToSend)

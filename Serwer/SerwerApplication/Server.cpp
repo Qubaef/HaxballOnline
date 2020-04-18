@@ -53,8 +53,10 @@ void Server::play()
 	// wait for all players to load their games
 	while (!pManager->readyToPlay())
 	{
-
 	}
+
+	// delete init pack
+	pManager->deleteInitializationPack();
 
 	printf_s("All players ready! Game Starts!\n");
 
@@ -63,7 +65,7 @@ void Server::play()
 	{
 		pGame->redraw();
 		pManager->gameSerialize(pGame);
-		pManager->manageInputs(pGame);
+		// TODO: for each client manage his inputs
 	}
 }
 
