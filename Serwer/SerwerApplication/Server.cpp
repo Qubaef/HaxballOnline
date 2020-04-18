@@ -63,7 +63,6 @@ void Server::play()
 	{
 		pGame->redraw();
 		pManager->gameSerialize(pGame);
-		pManager->manageInputs(pGame);
 	}
 }
 

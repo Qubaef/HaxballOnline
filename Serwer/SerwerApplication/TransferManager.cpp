@@ -24,6 +24,7 @@ void TransferManager::newClient(SOCKET clientSocket)
 
 TransferManager::~TransferManager()
 {
+
 }
 
 
@@ -93,11 +94,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		//we have to send first number of players and after it pack od initialization data
 		// BUG?: convert initialization pack to array of chars and send it to the client
 		// init pack will be accessable in saved in this->dataToSendContainer
-		struct BasicInformation
-		{
-			int playerSize;
-			int length;
-		};
+
 
 		//send basic info size of player and total length of initialize pack
 		BasicInformation info;
@@ -338,6 +335,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 		if (iResult == SOCKET_ERROR)
 		{
 			printf_s("send failed with error: %d\n", WSAGetLastError());
+			disablePlayer(pData);
 			return 0;
 		}
 		//if we recieve nothing
@@ -352,6 +350,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 			if (elapsed_seconds.count() > TIMEOUT)
 			{
 				printf_s("User timeout: %s!\n", pData->getNickname().c_str());
+				disablePlayer(pData);
 				return 0;
 			}
 		}
