@@ -48,3 +48,9 @@ struct PlayerInitializePack
 	unsigned int playerNumber;
 	short int playerTeam;
 };
+
+struct BasicInformation
+{
+	int playerSize;
+	int length;
+};
