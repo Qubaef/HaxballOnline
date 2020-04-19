@@ -7,11 +7,23 @@ import GameEngine
 
 class TransferManager( object ):
     def __init__(self, nickname):
-        self.nickname = nickname
-        self.number = -1
-        self.readyToPlay = False
+        self.client_nickname = nickname
+        self.client_number = -1
+        self.ready_to_play = False
         self.s = 0
-        self.game = 0
+
+        # data to init game
+        self.init_pack_recived = False
+        self.players_number = 0
+        self.players_numbers = []
+        self.players_nicknames = []
+        self.players_teams = []
+
+        # data to send
+        self.command = 0
+        self.mouse_x = 0
+        self.mouse_y = 0
+
     def initConnection(self):
 
         # initialize socket
@@ -23,13 +35,13 @@ class TransferManager( object ):
             # send nickname to server and receive number
             self.s.connect((HOST, PORT))
         
-            nickname = self.nickname + chr(0)
+            nickname = self.client_nickname + chr(0)
             self.s.sendall(bytes(nickname, encoding='utf-8'))
             
             dataSize = 8
             data = self.s.recv(dataSize)
-            self.number = int(struct.unpack('d',data)[0])
-            print('Nickname: ' + str(self.nickname) + ' Number: ' + str(self.number))
+            self.client_number = int(struct.unpack('d',data)[0])
+            print('Nickname: ' + str(self.client_nickname) + ' Number: ' + str(self.client_number))
         except:
             return -1
 
@@ -40,64 +52,86 @@ class TransferManager( object ):
 
         return 1
 
-    def addGame(self, game:GameEngine):
-        self.game = game
-
 
     def communicate(self):
         # keep sending and receiving readyToPlay to the server to keep connection
-        dataSize = 256
+        data_size = 256
+        sizeof_int = 4
+        sizeof_double = 8 
 
+
+        # send and receive readyToPlay, until init pack was recived
         while(True):
-            # send and receive readyToPlay, until init pack was recived
-            readyFlag = struct.pack('?', self.readyToPlay)
-            self.s.sendall(readyFlag)
+            ready_flag = struct.pack('?', self.ready_to_play)
+            self.s.sendall(ready_flag)
 
-            data = self.s.recv(dataSize)
+            data = self.s.recv(data_size)
             if(len(data) != 1):
                 # init pack received
-                # analyse and save data from init pack
+                self.ready_to_play = False  
                 break
+
+
+        # get init's pack info
+        data_unpacked = struct.unpack('i',data)
+        self.s.sendall(data)
+
+        self.players_number = data_unpacked[0]
+
+        # get init data of players
+        for i in range(self.players_number):
+            data = self.s.recv(data_size)
+
+            # unpack team and player's number
+            data_unpacked = struct.unpack_from('ii',data)
+
+            self.players_teams.append(data_unpacked[0])
+            self.players_numbers.append(data_unpacked[1])
+
+            # trim data and get player's nickname
+            data = data[2 * sizeof_int:]
+            sizeof_nickname = len(data)
+            data_unpacked = struct.unpack_from(str(sizeof_nickname) + 's',data)
+
+            # convert bytes to string, dropping last character ('\0' char is not needed in python)
+            self.players_nicknames.append(data_unpacked[0].decode("utf-8")[:-1])
+
+
+        # give info to GameController that data was sent and game needs to be initalized
+        self.init_pack_recived = True
+
+
+         # send and receive readyToPlay, until game pack was recived
+        while(True):
+            ready_flag = struct.pack('?', self.ready_to_play)
+            self.s.sendall(ready_flag)
+
+            data = self.s.recv(data_size)
+            if(len(data) != 1):
+                # game pack received
+                self.ready_to_play = False  
+                break
+
+
+        # receive and analyse game pack, send client's input
+        while(True):
+            # analyse game pack
+            game_data_size = 5 * sizeof_double + 2 * sizeof_double + sizeof_double * self.players_number * 5
+            data_unpacked = struct.unpack(self.unpack_format(game_data_size), data)
+            print(data_unpacked)
+            self.game.deserialize(data_unpacked)
+
+            # send client's input
             
-            # for debug reasons
-            # print(struct.unpack('?',data)[0])
+            # TODO: send client's input
 
-            # receive init pack
-                # check if data len is bigger than 1 (if so, it is init pack)
-                # init game and add players
-                    # send readyToPlay = True flag if game is loaded
-                    # if data pack length is bigger than 1 set flag to run the game
-                    # deserialize data from server
+            # receive new game pack
+            data = self.recvall(self.s, data_size)
 
-            # start getting game data
-
-
-        # code belowe is not working, it is here because it will be handy in the future
-        size = 8
-        data_size = 5 * size + 2 * size + size * len(self.game.team_left.players) * 5 + size * len(self.game.team_right.players) * 5
-        data = self.recvall(self.s, data_size)
-        print(len(data))
-        data = struct.unpack(self.unpack_format(data_size), data)
-        
-        print(data)
-        # TODO change bytes to double from C, convert to python double and serialzie
-        self.game.deserialize(data)
-        time.sleep(0.2)
-
+    
 
     def unpack_format(self, data_size):
         format = ""
-        for i in range(int(data_size/8)):
+        for i in range(int(data_size / 8)):
             format += 'd'
         return format
-
-
-    def recvall(self, sock, size):
-        data = b''
-        while True:
-            part = sock.recv(size)
-            data += part
-            if len(part) == size:
-                # either 0 or end of data
-                break
-        return data

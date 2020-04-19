@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-import random
 
 from pygame.locals import *
 from Post import Post
@@ -10,93 +9,95 @@ from GameEngine import GameEngine
 from Ball import Ball
 from TransferManager import TransferManager
 
-# main menu loop
 
+ # get user's input and return it as data ready to send to the server
+def manageInputs():
+
+    localCommand = 0
+    command = 0
+    mouse_x = 0
+    mouse_y = 0
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            localCommand = -1
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_t:
+            localCommand = 1
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            command += 2
+            mouse_x = pygame.mouse.get_pos()[0]
+            mouse_y = pygame.mouse.get_pos()[1]
+    
+        if localCommand != -1:
+            player_move = pygame.math.Vector2(0,0)
+            input = pygame.key.get_pressed()
+            if input[K_w]:
+                command += 16
+            if input[K_s]:
+                command += 32
+            if input[K_d]:
+                command += 8
+            if input[K_a]:
+                command += 4
+            if input[K_SPACE]:
+                command += 1
+            if input[K_ESCAPE]:
+                localCommand = -1
+    
+    return localCommand, command, mouse_x, mouse_y
+
+
+##### START OF THE GAME
+### Main Menu
+
+# get user's nick
 nickname = input('Enter nickname: ')
 
-transferManager = TransferManager(nickname)
-game = GameEngine()
-ball = Ball(game, 500, 300, 0)
-player = Player(game, 400, 300, 1, (0, 0, 255))
-transferManager.addGame(game)
-game.new_ball(ball)
-game.new_player(player)
-
-player.border_color = (255,255,0)
-if transferManager.initConnection() == -1:
+# init connection with the server
+transfer_manager = TransferManager(nickname)
+if transfer_manager.initConnection() == -1:
     sys.exit()
 
+ # ask user if he is ready to start the game
 input('Ready?: ')
-transferManager.readyToPlay = True
 
-# initialize game, ball, and player
+transfer_manager.ready_to_play = True
 
+# wait for init pack to be sent
+while(transfer_manager.init_pack_recived == False):
+    continue
 
-# create bots
-# bots = []
-# bots_number = 5
-# for i in range(0,bots_number):
-#    bots.append(Player(game, game.screen_w * random.uniform(0,1), game.screen_h * random.uniform(0,1), i + 2, (255, 0, 0)))
-#    game.new_player(bots[i])
+# intialize new game based on data recived in init packs
+game = GameEngine()
+ball = Ball(game, 500, 300, 0)
+game.new_ball(ball)
+
+for i in range(len(transfer_manager.players_numbers)):
+    game.new_player(Player(game, 0, 0, transfer_manager.players_numbers[i], (0, 0, 255), transfer_manager.players_nicknames[i]), transfer_manager.players_teams[i])
+
+    # if player is client's player, set his border to different color
+    if transfer_manager.players_numbers[i] == transfer_manager.client_number:
+        game.players[i].border_color = (255,255,0)
+
+# set flag read
+transfer_manager.ready_to_play = True
+print(pygame.mouse.get_pos())
 
 done = False
 
 # main loop of the game
 while not done:
 
-    player.mouse_pos = pygame.mouse.get_pos()
+    localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
 
-    # get user input
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_t:
-                if game.test_mode:
-                    game.test_mode = False
-                else:
-                    game.test_mode = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
-                player.mode_normal()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            player.kick(player.mouse_pos)
-
-        if done != True:
-            player_move = pygame.math.Vector2(0,0)
-            input = pygame.key.get_pressed()
-            if input[K_w]:
-                player_move += (0,-1)
-            if input[K_s]:
-                player_move += (0,1)
-            if input[K_d]:
-                player_move += (1,0)
-            if input[K_a]:
-                player_move += (-1,0)
-            if input[K_r]:
-                # cross ball from left top corner position
-                ball.set_move((15,15), (0,0))
-            if input[K_SPACE]:
-                # turn on better ball control
-                player.mode_ball_control()
-            if input[K_ESCAPE]:
-                done = True
-    
-
-    if game.play_mode == 0:
-        if player_move.length() > 0:
-            # make player move with equal speed in all directions
-            player_move = player_move.normalize()
-        # move player depending on keyboard input
-        player.velocity_add(player_move)
-
-        # move bots
-        # for i in range(0,bots_number):
-        #     if game.bots_timer > 100 * i:
-        #         dir = (ball.p - bots[i].p).normalize()
-        #         bots[i].set_move((bots[i].v_max * random.uniform(0,1) * dir.x,(bots[i].v_max * random.uniform(0,1) * dir.y)), (-1, -1))    
-        # 
-        # if game.bots_timer > 100 * bots_number:
-        #     game.bots_timer = 0
+    if localCommand == -1:
+        # if localCommand was -1, exit the game
+        done = True
+    elif localCommand == 1:
+        # if localCommand was 1, switch display mode
+        if game.test_mode:
+            game.test_mode = False
+        else:
+            game.test_mode = True
 
     game.redraw()

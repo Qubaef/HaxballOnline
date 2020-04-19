@@ -40,15 +40,23 @@ Player* ClientData::getPlayer()
 	return this->pPlayer;
 }
 
+
 SOCKET ClientData::getSocket()
 {
 	return this->clientSocket;
 }
 
+
 int ClientData::getNumber()
 {
 	return this->number;
 }
+
+void ClientData::setNumber(int number)
+{
+	this->number = number;
+}
+
 
 string ClientData::getNickname()
 {
@@ -59,6 +67,7 @@ void ClientData::setNickname(string nickname)
 {
 	this->nickname = nickname;
 }
+
 
 UserInput ClientData::getUserInput() const
 {

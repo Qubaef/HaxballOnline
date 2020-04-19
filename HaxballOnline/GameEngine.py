@@ -48,6 +48,7 @@ class GameEngine( object ):
     team1_color = (0,0,255)
     team2_color = (255,0,0)
 
+
     def __init__(self):
         pygame.init()
 
@@ -64,6 +65,7 @@ class GameEngine( object ):
 
         self.team_right = Team(self, self.team1_color, self.goal_right, 1)
         self.team_left = Team(self, self.team2_color, self.goal_left, -1)
+
 
     def draw_background(self):
         # draw backgroud
@@ -166,8 +168,10 @@ class GameEngine( object ):
         #goal right
         self.screen.blit(self.goal_right.goal, pygame.rect.Rect(self.goal_right.get_px(), self.goal_right.get_py() - 3, self.goal_right.get_width(), self.goal_right.get_height()))
 
+
     def clock_tick(self):
         return self.fps_clock.tick(self.fps)
+
 
     def new_player(self, player, team_number=None):
         # add new player to the game and team
@@ -181,11 +185,15 @@ class GameEngine( object ):
         else:
             if team_number == 1:
                 self.team_left.add_player(player)
-            else:
+            elif team_number == 2:
                 self.team_right.add_player(player)
+            else:
+                print('ERROR: Wrong team number!')
     
+
     def new_ball(self, ball):
         self.balls.append(ball)
+
 
     def redraw(self):
 
@@ -219,6 +227,7 @@ class GameEngine( object ):
             obj.update()
         for obj in self.balls:
             obj.update()
+
 
     def display_redraw(self):
         # redraw board and players
@@ -277,6 +286,7 @@ class GameEngine( object ):
     def walls_collision(self, obj):
         Collision.walls_collision(obj, self)
 
+
     # set game state to -2
     # add point to team which scored
     def goal_scored(self, goal):
@@ -307,6 +317,7 @@ class GameEngine( object ):
         elif self.play_mode == 2 and self.delay_counter == 0:
             # if delay passed, start the game
             self.play_mode = 0
+
 
     def positions_reset(self):
         for obj in self.balls:

@@ -21,9 +21,8 @@ GameEngine::~GameEngine()
 	delete pBall;
 	delete pGoalLeft;
 	delete pGoalRight;
-	
-
 }
+
 
 void GameEngine::redraw()
 {
@@ -42,6 +41,7 @@ void GameEngine::redraw()
 		update();
 	}
 }
+
 
 void GameEngine::update()
 {
@@ -76,6 +76,7 @@ void GameEngine::update()
 	pBall->collide();
 }
 
+
 double GameEngine::clockTick()
 {
 	// return time since last tick (in miliseconds)
@@ -84,6 +85,7 @@ double GameEngine::clockTick()
 	this->timer = current;
 	return dt;
 }
+
 
 void GameEngine::gameStateManager()
 {
@@ -117,11 +119,13 @@ void GameEngine::gameStateManager()
 	}
 }
 
+
 void GameEngine::positionsReset()
 {
 	pBall->setMove(Vector2D(0, 0));
 	pBall->setPosition(Vector2D(screenW / 2, screenH / 2));
 }
+
 
 void GameEngine::goalScored(Goal* pGoal)
 {
@@ -139,6 +143,7 @@ void GameEngine::goalScored(Goal* pGoal)
 	playMode = -2;
 }
 
+
 vector<CirclePhysical*> GameEngine::getObjects()
 {
 	// convert players to vector<CirclePhysical*>
@@ -154,10 +159,12 @@ vector<CirclePhysical*> GameEngine::getObjects()
 	return objects;
 }
 
+
 void GameEngine::newBall(Ball* pBall)
 {
 	this->pBall = pBall;
 }
+
 
 void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
@@ -168,23 +175,28 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 		if (pTeamLeft->size() >= pTeamRight->size()) 
 		{
 			pTeamRight->addPlayer(pPlayer);
+			pPlayer->setTeam(2);
 		}
 		else 
 		{
 			pTeamLeft->addPlayer(pPlayer);
+			pPlayer->setTeam(1);
 		}
 	}
 	else {
 		if (teamNumber == 1) 
 		{
 			pTeamLeft->addPlayer(pPlayer);
+			pPlayer->setTeam(1);
 		}
-		else 
+		else if (teamNumber == 2)
 		{
 			pTeamRight->addPlayer(pPlayer);
+			pPlayer->setTeam(2);
 		}
 	}
 }
+
 
 void GameEngine::wallsCollision(CirclePhysical* pObject)
 {
@@ -280,50 +292,60 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 	}
 }
 
+
 vector<Player*> GameEngine::getPlayers()
 {
 	return this->players;
 }
+
 
 Ball* GameEngine::getBall()
 {
 	return this->pBall;
 }
 
+
 Goal* GameEngine::getGoalRight()
 {
 	return this->pGoalRight;
 }
+
 
 Goal* GameEngine::getGoalLeft()
 {
 	return this->pGoalRight;
 }
 
+
 int GameEngine::getScreenW()
 {
 	return this->screenW;
 }
+
 
 int GameEngine::getScreenH()
 {
 	return this->screenH;
 }
 
+
 int GameEngine::getPitchW()
 {
 	return this->pitchW;
 }
+
 
 int GameEngine::getPitchH()
 {
 	return this->pitchH;
 }
 
+
 bool GameEngine::getFinished()
 {
 	return this->finished;
 }
+
 
 vector<double> GameEngine::serialize() const
 {
@@ -344,5 +366,3 @@ vector<double> GameEngine::serialize() const
 
 	return dataVector;
 }
-
-

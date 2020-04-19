@@ -6,9 +6,9 @@ from CirclePhysical import CirclePhysical
 class Player( CirclePhysical ):
     # Object containing player's mathods
 
-    def __init__(self, game, px, py, number, color):
+    def __init__(self, game, px, py, number, color, nickname):
         super().__init__(game, px, py, number, 1, 15, color)
-        self.mouse_pos = 0
+        self.nickname = nickname
 
     def kick(self, pos):
         # check if ball is in hitbox range

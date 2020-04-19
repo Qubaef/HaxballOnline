@@ -1,6 +1,14 @@
 #pragma once
 #include "stdafx.h"
 
+struct PlayerInitializePack
+{
+	string playerNickname;
+	unsigned int playerNumber;
+	unsigned int playerTeam;
+};
+
+
 class TransferManager
 {
 private:
@@ -8,13 +16,13 @@ private:
 	vector<thread> clientsThreads;
 	void communicate(ClientData* data, unsigned int threadNumber);
 
-	vector<bool> ifdataToSend;			// array of flags set to True, if dataContainer contains new data ready to send to clients
-	vector<double> dataPackToSend;		// vector holding serialized data
-	void* initPackToSend;				// pointer to an array containing init pack, which needs to be sent to the clients
-	unsigned int dataContainerLength;	// length of data in dataContainer
+	vector<bool> ifdataToSend;				// array of flags set to True, if dataContainer contains new data ready to send to clients
+	vector<double> dataPackToSend;			// vector holding serialized data
+	PlayerInitializePack* initPackToSend;	// pointer to an array containing init pack, which needs to be sent to the clients
+	unsigned int dataContainerLength;		// length of data in dataContainer
 
 	bool ifGameRunning;
-	mutex serializationSemaphore;							//semaphor for critical section
+	mutex serializationSemaphore;			//semaphore for critical section
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);
@@ -38,20 +46,5 @@ public:
 	void manageInputs(ClientData* pClientData);
 	void gameSerialize(GameEngine* pGame);
 	void readyToPlayReset();
-
-	
-};
-
-
-struct PlayerInitializePack
-{
-	const char * playerNickname;
-	unsigned int playerNumber;
-	short int playerTeam;
-};
-
-struct BasicInformation
-{
-	int playerSize;
-	int length;
+	void setGameRunning(bool ifGameRunning);
 };

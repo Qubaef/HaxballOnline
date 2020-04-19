@@ -50,6 +50,9 @@ void Server::play()
 	// build initialization pack and put it to dataToSendContainer
 	pManager->buildInitializationPack();
 
+	// reset readyToPlayFlags
+	pManager->readyToPlayReset();
+
 	// wait for all players to load their games
 	while (!pManager->readyToPlay())
 	{
@@ -59,6 +62,7 @@ void Server::play()
 	pManager->deleteInitializationPack();
 
 	printf_s("All players ready! Game Starts!\n");
+	pManager->setGameRunning(true);
 
 	// main game loop
 	while (pGame->getFinished() == false)

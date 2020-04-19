@@ -11,7 +11,6 @@ Player::Player(GameEngine* pGame, int px, int py, int number)
 
 Player::~Player()
 {
-
 }
 
 

@@ -24,6 +24,7 @@ public:
 	SOCKET getSocket();
 	
 	int getNumber();
+	void setNumber(int number);
 	
 	string getNickname();
 	void setNickname(string nickname);
