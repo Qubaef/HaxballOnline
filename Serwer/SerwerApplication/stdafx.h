@@ -10,7 +10,9 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 #include <winsock2.h> 
-#include <ctime> 
+#include <ctime>
+#include <stdio.h>
+#include <mutex>
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
 #define CIRCLE_SIZE 5

@@ -299,11 +299,10 @@ void TransferManager::manageInputs(ClientData * pClientData)
 // Serialize data and put it into dataToSendContainer, setting ifdataToSend flags to true for every thread
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
-	// TODO: Critial section (?)
-
+	serializationSemaphore.lock();
 	dataPackToSend.clear();
 	dataPackToSend = pGame->serialize();
-
+	serializationSemaphore.unlock();
 	// set all ifdataToSend flags to True
 	for (bool sendFlag : this->ifdataToSend)
 	{

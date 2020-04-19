@@ -65,7 +65,10 @@ void Server::play()
 	{
 		pGame->redraw();
 		pManager->gameSerialize(pGame);
-		// TODO: for each client manage his inputs
+		for (ClientData* clientData : *(this->pManager->getClientsData()))
+		{
+			this->pManager->manageInputs(clientData);
+		}
 	}
 }
 

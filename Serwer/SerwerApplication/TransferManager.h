@@ -14,6 +14,7 @@ private:
 	unsigned int dataContainerLength;	// length of data in dataContainer
 
 	bool ifGameRunning;
+	mutex serializationSemaphore;							//semaphor for critical section
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);

@@ -7,10 +7,10 @@ private:
 	Goal* pGoal;
 	vector<Player*> players;
 	int score;
-	int pitchHalf;
+	short int pitchHalf;
 public:
 	//constructor 
-	Team(GameEngine* game, Goal* goal, int pitchHalf);
+	Team(GameEngine* game, Goal* goal, short int pitchHalf);
 	~Team();
 	//add player to a list of players
 	void addPlayer(Player* player);

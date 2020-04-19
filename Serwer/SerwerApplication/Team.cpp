@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-Team::Team(GameEngine* game, Goal* goal, int pitchHalf)
+Team::Team(GameEngine* game, Goal* goal, short int pitchHalf)
 {
 	this->pGame = game;
 	this->pGoal = goal;
@@ -16,6 +16,7 @@ Team::~Team()
 void Team::addPlayer(Player* pPlayer)
 {
 	this->players.push_back(pPlayer);
+	pPlayer->setTeam(this->pitchHalf);
 }
 
 void Team::addPoint()
