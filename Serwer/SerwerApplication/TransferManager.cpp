@@ -3,6 +3,9 @@
 TransferManager::TransferManager()
 {
 	this->ifGameRunning = false;
+	this->dataContainerLength = 0;
+	this->dataPackToSend = vector<double>();
+	this->initPackToSend = NULL;
 }
 
 

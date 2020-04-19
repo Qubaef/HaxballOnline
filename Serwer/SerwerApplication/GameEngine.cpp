@@ -190,7 +190,7 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 void GameEngine::wallsCollision(CirclePhysical* pObject)
 {
 	// Top Wall
-	if (pObject->getPosition().getY() < (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2))
+	if (pObject->getPosition().getY() < static_cast<int>(pObject->getSize() + (this->screenH - this->pitchH) / 2))
 	{
 		pObject->setPosition(Vector2D(pObject->getPosition().getX(), (int)(pObject->getSize() + (this->screenH - this->pitchH) / 2)));
 		pObject->setMove(Vector2D(pObject->getMove().getX(), pObject->getMove().getY()*(-(this->wallBounce))));

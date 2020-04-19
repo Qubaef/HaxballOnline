@@ -3,6 +3,7 @@
 Server::Server()
 {
 	this->pManager = new TransferManager();
+	this->pGame = NULL;
 }
 
 Server::~Server()
