@@ -11,14 +11,14 @@ protected:
 	Vector2D p;
 	Vector2D v;
 	const int size;
-	const float hitbox;
-	float vMax;
-	float friction;
-	float ballControl;
-	float weight;
+	const double hitbox;
+	double vMax;
+	double friction;
+	double ballControl;
+	double weight;
 	int number;
 public:
-	CirclePhysical(GameEngine *game, int px, int py, int number, float weight, int size);
+	CirclePhysical(GameEngine *game, int px, int py, int number, double weight, int size);
 	~CirclePhysical();
 
 	//adding velocity to speed
@@ -37,7 +37,7 @@ public:
 	void collide();
 
 	//getter of vMax
-	float getVMax();
+	double getVMax();
 
 	//getter of game
 	GameEngine* getGame();
@@ -46,16 +46,16 @@ public:
 	int getSize();
 
 	//getter of hitbox
-	float getHitbox();
+	double getHitbox();
 
 	//getter of friction
-	float getFriction();
+	double getFriction();
 
 	//getter of ballControl
-	float getBallControl();
+	double getBallControl();
 
 	//getter of weight
-	float getWeight();
+	double getWeight();
 
 	//getter of number
 	int getNumber();

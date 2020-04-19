@@ -39,8 +39,8 @@ void Team::resetPosition()
 	int i = 1;
 	for (Player* player : players)
 	{
-		float px = player->getGame()->getScreenW() / 2 + this->pitchHalf * this->pGame->getPitchW() / 4;
-		float py = (player->getGame()->getScreenH() - player->getGame()->getPitchH()) / 2 + i * player->getGame()->getPitchH() / 4;
+		double px = player->getGame()->getScreenW() / 2 + this->pitchHalf * this->pGame->getPitchW() / 4;
+		double py = (player->getGame()->getScreenH() - player->getGame()->getPitchH()) / 2 + i * player->getGame()->getPitchH() / 4;
 		player->setMove(Vector2D(0, 0));
 		player->setPosition(Vector2D(px, py));
 		i++;
@@ -54,7 +54,7 @@ void Team::resetScore()
 
 int Team::size()
 {
-	return players.size();
+	return static_cast<int>(players.size());
 }
 
 vector<Player*> Team::getPlayers()

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, float weight, int size)
+CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, double weight, int size)
 	:pGame(game),p(px,py),number(number),weight(weight),size(size),v(0,0),vMax(6/pow(weight,2/3.0)),hitbox(size*3/2),ballControl(1),friction(weight*0.2)
 {
 }
@@ -46,10 +46,10 @@ void CirclePhysical::collide()
 	{
 		if(object != this)
 		{
-			float dist = sqrt(pow((this->p.getX() - object->p.getX()), 2) + pow((this->p.getY() - object->p.getY()), 2));
+			double dist = sqrt(pow((this->p.getX() - object->p.getX()), 2) + pow((this->p.getY() - object->p.getY()), 2));
 			if(dist<=object->size + this->size)
 			{
-				float overlap = (dist - this->size - object->size);
+				double overlap = (dist - this->size - object->size);
 				if(dist!=0)
 				{
 					Vector2D pNew = this->p - (this->p - object->p)* overlap * (object->weight / this->weight) / dist;
@@ -67,7 +67,7 @@ void CirclePhysical::collide()
 					object->setPosition(pNew);
 				}
 				object->pGame->wallsCollision(object);
-				float mass = 2 * this->weight / (this->weight + object->weight);
+				double mass = 2 * this->weight / (this->weight + object->weight);
 				Vector2D temp = this->v - (this->p - object->p) * (mass * Vector2D::Dot(this->v - object->v, this->p - object->p) / pow((this->p - object->p).length(), 2));
 				
 				object->setMove(object->v - (object->p - this->p) * (mass * Vector2D::Dot(object->v - this->v, object->p - this->p) / pow((object->p - this->p).length(), 2)));
@@ -88,18 +88,18 @@ void CirclePhysical::velocityAdd(Vector2D velocity)
 	this->v = this->v + velocity;
 }
 
-float CirclePhysical::getVMax()
+double CirclePhysical::getVMax()
 {
 	return this->vMax;
 }
 
 
-float CirclePhysical::getBallControl()
+double CirclePhysical::getBallControl()
 {
 	return this->ballControl;
 }
 
-float CirclePhysical::getFriction()
+double CirclePhysical::getFriction()
 {
 	return this->friction;
 }
@@ -109,7 +109,7 @@ GameEngine* CirclePhysical::getGame()
 	return this->pGame;
 }
 
-float CirclePhysical::getHitbox()
+double CirclePhysical::getHitbox()
 {
 	return this->hitbox;
 }
@@ -124,7 +124,7 @@ int CirclePhysical::getSize()
 	return this->size;
 }
 
-float CirclePhysical::getWeight()
+double CirclePhysical::getWeight()
 {
 	return this->weight;
 }

@@ -4,10 +4,10 @@ class GameEngine
 {
 private:
 	const int screenW = 1100;
-	const int screenH = screenW / 1.57;
+	const int screenH = static_cast<const int>(screenW / 1.57);
 
-	const int pitchW = screenW * 0.8;
-	const int pitchH = pitchW / 1.57;
+	const int pitchW = static_cast<const int>(screenW * 0.8);
+	const int pitchH = static_cast<const int>(pitchW / 1.57);
 
 	const double wallBounce = 1.0;
 

@@ -22,7 +22,7 @@ void Player::kick(Vector2D mousePos)
 	Vector2D v = mousePos - pBall->getMove();
 
 
-	float dist = pow(this->getPosition().getX() - pBall->getPosition().getX(), 2);
+	double dist = pow(this->getPosition().getX() - pBall->getPosition().getX(), 2);
 	dist += pow(pBall->getPosition().getY() - this->getPosition().getY(), 2);
 
 	if (dist <= pow(pBall->getHitbox() + this->getHitbox(), 2))

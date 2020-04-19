@@ -15,7 +15,7 @@ void TransferManager::newClient(SOCKET clientSocket)
 	// insert this data to vector in transfer manager
 	ifdataToSend.push_back(false);
 	clientsData.push_back(newClient);
-	unsigned int threadNumber = clientsData.size() - 1;
+	unsigned int threadNumber = static_cast<unsigned int>(clientsData.size() - 1);
 
 	// call new thread to communicate with given client
 	this->clientsThreads.push_back(thread(&TransferManager::communicate, this, newClient, threadNumber));
@@ -37,7 +37,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 	char sendbuf[DEFAULT_BUFLEN];
 	int iSendResult;
 	int iResult;
-	int playerSize;
 
 	unsigned long l;
 	ioctlsocket(pData->getSocket(), FIONREAD, &l);
@@ -58,7 +57,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 	// dataToSend.push_back(0);
 	// dataToSend.push_back(0);
 	dataToSend.push_back(generateNewNumber());
-	iSendResult = send(pData->getSocket(), (char*)&dataToSend[0], dataToSend.size() * sizeof(double), 0);
+	iSendResult = static_cast<int>(send(pData->getSocket(), (char*)&dataToSend[0], static_cast<int>(dataToSend.size()) * sizeof(double), 0));
 
 
 	while (true)
@@ -77,7 +76,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			{
 				// Save ready flag state in client's data and resend it back to the user
 				pData->setReady(charToBool(recvbuf[0]));
-				iSendResult = send(pData->getSocket(), recvbuf, iResult, 0);
+				iSendResult = static_cast<int>(send(pData->getSocket(), recvbuf, iResult, 0));
 			}
 
 			// ** Check if there is initialization pack ready to be sent
@@ -96,10 +95,10 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 
 		// send basic info size of player and total length of initialize pack
 		BasicInformation info;
-		info.playerSize = this->clientsData.size();
+		info.playerSize = static_cast<int>(this->clientsData.size());
 		info.length = dataContainerLength;
 		memcpy_s(sendbuf, sizeof(BasicInformation), &info, sizeof(info));
-		iSendResult = send(pData->getSocket(), sendbuf, sizeof(int), 0);
+		iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, sizeof(int), 0));
 
 		// build and send initialization pack
 		buildInitializationPack();
@@ -137,7 +136,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 
 			// ** Get data from dataToSendContainer and send it to the user
 			memcpy(sendbuf, &dataToSend[0], dataToSend.size() * sizeof(double));
-			iSendResult = send(pData->getSocket(), sendbuf, dataToSend.size() * sizeof(double), 0);
+			iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, static_cast<int>(dataToSend.size()) * sizeof(double), 0));
 
 			// ** Analyze user's input and save it in client's data
 			pData->setUserInput(recvbuf);
@@ -225,10 +224,10 @@ void TransferManager::buildInitializationPack()
 		initData[i].playerNumber = clientsData[i]->getNumber();
 		initData[i].playerTeam = clientsData[i]->getPlayer()->getTeam();
 
-		length += clientsData[i]->getNickname().length() + sizeof(initData[i].playerNumber) + sizeof(initData[i].playerTeam);
+		length += static_cast<unsigned int>(clientsData[i]->getNickname().length() + sizeof(initData[i].playerNumber) + sizeof(initData[i].playerTeam));
 	}
 
-	int playerSize = this->clientsData.size();
+	int playerSize = static_cast<int>(this->clientsData.size());
 	this->initPackToSend = initData;
 	this->dataContainerLength = length;
 
