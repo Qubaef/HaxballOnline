@@ -22,7 +22,7 @@ private:
 	unsigned int dataContainerLength;		// length of data in dataContainer
 
 	bool ifGameRunning;
-	mutex serializationSemaphore;			//semaphore for critical section
+	mutex dataPackToSendMutex;			//semaphore for critical section
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);

@@ -50,6 +50,12 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 	// CLIENT INITIALIZATION
 	// Get client's nick
 	iResult = customRecv(pData, recvbuf);
+	if (iResult == 0)
+	{
+		closesocket(pData->getSocket());
+		WSACleanup();
+		return;
+	}
 	pData->setNickname(bufferToString(recvbuf, iResult));
 	printf_s("Received player's nick: %s\n", pData->getNickname().c_str());
 
@@ -67,7 +73,12 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			// PRE-GAME COMMUNICATION PHASE
 			// Receive "ready" flag from client
 			iResult = customRecv(pData, recvbuf);
-
+			if (iResult == 0)
+			{
+				closesocket(pData->getSocket());
+				WSACleanup();
+				return;
+			}
 			// Check if there is initialization pack ready to be sent
 			// If true break the loop and send initialization pack
 			if (this->ifdataToSend[threadIndex] == false)
@@ -103,9 +114,9 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 
 
 		// build and send initialization packs for each player
-		for (int i = 0; i < dataContainerLength; i++)
+		for (unsigned int i = 0; i < dataContainerLength; i++)
 		{
-			int packageLength = initPackToSend[i].playerNickname.size() * sizeof(char);
+			int packageLength = static_cast<int>(initPackToSend[i].playerNickname.size()) * sizeof(char);
 
 			// copy data to sendbuf in correct way
 			memcpy_s(sendbuf, sizeof(int), &(initPackToSend[i].playerTeam), sizeof(int));
@@ -125,7 +136,12 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			// GAME LOADING PHASE
 			// ** Receive "ready" flag from client (if true, client has loaded the game and is ready to start the game)
 			iResult = customRecv(pData, recvbuf);
-
+			if (iResult == 0)
+			{
+				closesocket(pData->getSocket());
+				WSACleanup();
+				return;
+			}
 			if (iResult != 1)
 			{
 				printf_s("Wrong data received from client: %s! Expected readyGameLoaded flag!", pData->getNickname().c_str());
@@ -148,16 +164,23 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		{
 			// GAME RUNNING PHASE
 			// ** Get data from dataToSendContainer and send it to the user
-			double longMessageFix = 0;
-			memcpy_s(sendbuf, sizeof(double), &longMessageFix, sizeof(double));
-			memcpy_s(sendbuf + sizeof(double), sizeof(double), &longMessageFix, sizeof(double));
-			memcpy_s(sendbuf + 2 * sizeof(double), dataToSend.size() * sizeof(double),  &dataToSend[0], dataToSend.size() * sizeof(double));
-			// TODO: line below sends wrong data because semaphore does not work
-			iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, static_cast<int>(dataToSend.size()) * sizeof(double), 0));
-
+			if (this->ifdataToSend[threadIndex])
+			{
+				double longMessageFix = 0;
+				memcpy_s(sendbuf, sizeof(double), &longMessageFix, sizeof(double));
+				memcpy_s(sendbuf + sizeof(double), sizeof(double), &longMessageFix, sizeof(double));
+				memcpy_s(sendbuf + 2 * sizeof(double), dataPackToSend.size() * sizeof(double), &dataPackToSend[0], dataPackToSend.size() * sizeof(double));
+				// TODO: line below sends wrong data because semaphore does not work
+				iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, static_cast<int>(dataPackToSend.size()) * sizeof(double), 0));
+			}
 			// ** Receive pack with user's input 
 			iResult = customRecv(pData, recvbuf);
-
+			if(iResult==0)
+			{
+				closesocket(pData->getSocket());
+				WSACleanup();
+				return;
+			}
 			// ** Analyze user's input and save it in client's data
 			pData->setUserInput(recvbuf);
 
@@ -167,9 +190,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			}
 		}
 	}
-
-	closesocket(pData->getSocket());
-	WSACleanup();
 }
 
 // convert given char (byte) to bool value
@@ -315,13 +335,13 @@ void TransferManager::manageInputs(ClientData * pClientData)
 // Serialize data and put it into dataToSendContainer, setting ifdataToSend flags to true for every thread
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
-	serializationSemaphore.lock();
+	dataPackToSendMutex.lock();
 
 	// TODO: semaphore does not work
 	dataPackToSend.clear();
 	dataPackToSend = pGame->serialize();
 
-	serializationSemaphore.unlock();
+	dataPackToSendMutex.unlock();
 
 	// set all ifdataToSend flags to True
 	for (bool sendFlag : this->ifdataToSend)
@@ -353,7 +373,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 		//if we have error
 		if (iResult == SOCKET_ERROR)
 		{
-			printf_s("send failed with error: %d\n", WSAGetLastError());
+			printf_s("recieve failed with error: %d\n", WSAGetLastError());
 			disablePlayer(pData);
 			return 0;
 		}
