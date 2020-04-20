@@ -9,6 +9,8 @@ private:
 	const int pitchW = static_cast<const int>(screenW * 0.8);
 	const int pitchH = static_cast<const int>(pitchW / 1.57);
 
+	const int milisPerFrame = 1000 / 60;
+
 	const double wallBounce = 1.0;
 
 	// delay time in miliseconds
@@ -16,6 +18,7 @@ private:
 	const int goalDelay = 2000;
 	double delayCounter = 0;
 	chrono::high_resolution_clock::time_point timer;
+	double framePercentage;
 
 	int playMode = 1;
 	// play_mode flags states:
@@ -53,9 +56,13 @@ public:
 	void goalScored(Goal* pGoal);
 	//manage time
 	double clockTick();
+	// TODO: comment
+	double getTick();
+	// return current framePercentage
+	double getFramePercentage();
 	//manage walls colision effect and update player position and speed after it
 	void wallsCollision(CirclePhysical* pObject);
-	
+
 	vector<CirclePhysical*> getObjects();
 	vector<Player*> getPlayers();
 	Ball* getBall();

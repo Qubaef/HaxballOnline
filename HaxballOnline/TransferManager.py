@@ -19,8 +19,11 @@ class TransferManager( object ):
         self.players_nicknames = []
         self.players_teams = []
 
+        self.game_pack_recived = False
+        self.game_pack = 0
+
         # data to send
-        self.command = 0
+        self.command = 64
         self.mouse_x = 0
         self.mouse_y = 0
 
@@ -34,7 +37,9 @@ class TransferManager( object ):
 
             # send nickname to server and receive number
             self.s.connect((HOST, PORT))
-        
+
+            self.s.setblocking(True)
+
             nickname = self.client_nickname + chr(0)
             self.s.sendall(bytes(nickname, encoding='utf-8'))
             
@@ -118,17 +123,18 @@ class TransferManager( object ):
             # analyse game pack
             game_data_size = 5 * sizeof_double + 2 * sizeof_double + sizeof_double * self.players_number * 5
             data_unpacked = struct.unpack(self.unpack_format(game_data_size), data)
-            print(data_unpacked)
-            self.game.deserialize(data_unpacked)
+            
+            self.game_pack = data_unpacked
+            self.game_pack_recived = True
 
             # send client's input
             
-            # TODO: send client's input
+            clientInput = bytes([self.command]) + struct.pack('dd', *[self.mouse_x, self.mouse_y])
+            self.s.sendall(clientInput)
 
             # receive new game pack
-            data = self.recvall(self.s, data_size)
-
-    
+            data = self.s.recv(game_data_size)
+   
 
     def unpack_format(self, data_size):
         format = ""

@@ -17,12 +17,15 @@ private:
 	void communicate(ClientData* data, unsigned int threadNumber);
 
 	vector<bool> ifdataToSend;				// array of flags set to True, if dataContainer contains new data ready to send to clients
-	vector<double> dataPackToSend;			// vector holding serialized data
+	vector<double> gamePackToSend;			// vector holding serialized data
 	PlayerInitializePack* initPackToSend;	// pointer to an array containing init pack, which needs to be sent to the clients
 	unsigned int dataContainerLength;		// length of data in dataContainer
 
 	bool ifGameRunning;
-	mutex dataPackToSendMutex;			//semaphore for critical section
+	mutex dataPackToSendMutex;				// mutex for critical section
+	
+	mutex readyToPlayMutex;					// mutex for critical section
+	
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);
@@ -41,7 +44,6 @@ public:
 	bool readyToPlay();
 	void buildInitializationPack();						// send info to all client threads, that they need to send initialization pack to their clients
 	void deleteInitializationPack();					// send info to all client threads, that they need to send initialization pack to their clients
-	void dataSent(int threadNumber);					// as a client thread, set your ifNewData flag to false
 	vector<ClientData*>* getClientsData();
 	void manageInputs(ClientData* pClientData);
 	void gameSerialize(GameEngine* pGame);

@@ -14,7 +14,7 @@ from TransferManager import TransferManager
 def manageInputs():
 
     localCommand = 0
-    command = 0
+    command = 64
     mouse_x = 0
     mouse_y = 0
 
@@ -81,7 +81,6 @@ for i in range(len(transfer_manager.players_numbers)):
 
 # set flag read
 transfer_manager.ready_to_play = True
-print(pygame.mouse.get_pos())
 
 done = False
 
@@ -89,6 +88,11 @@ done = False
 while not done:
 
     localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
+    
+    # deserialize game
+    if transfer_manager.game_pack_recived == True:
+        game.deserialize(transfer_manager.game_pack)
+        transfer_manager.game_pack_recived = False
 
     if localCommand == -1:
         # if localCommand was -1, exit the game

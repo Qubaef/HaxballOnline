@@ -4,7 +4,7 @@ TransferManager::TransferManager()
 {
 	this->ifGameRunning = false;
 	this->dataContainerLength = 0;
-	this->dataPackToSend = vector<double>();
+	this->gamePackToSend = vector<double>();
 	this->initPackToSend = NULL;
 }
 
@@ -17,7 +17,11 @@ void TransferManager::newClient(SOCKET clientSocket)
 
 	// insert this data to vector in transfer manager
 	ifdataToSend.push_back(false);
+	
+	readyToPlayMutex.lock();
 	clientsData.push_back(newClient);
+	readyToPlayMutex.unlock();
+	
 	unsigned int threadNumber = static_cast<unsigned int>(clientsData.size() - 1);
 
 	// call new thread to communicate with given client
@@ -164,23 +168,28 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		{
 			// GAME RUNNING PHASE
 			// ** Get data from dataToSendContainer and send it to the user
-			if (this->ifdataToSend[threadIndex])
+
+			while (this->ifdataToSend[threadIndex] == false)
 			{
-				double longMessageFix = 0;
-				memcpy_s(sendbuf, sizeof(double), &longMessageFix, sizeof(double));
-				memcpy_s(sendbuf + sizeof(double), sizeof(double), &longMessageFix, sizeof(double));
-				memcpy_s(sendbuf + 2 * sizeof(double), dataPackToSend.size() * sizeof(double), &dataPackToSend[0], dataPackToSend.size() * sizeof(double));
-				// TODO: line below sends wrong data because semaphore does not work
-				iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, static_cast<int>(dataPackToSend.size()) * sizeof(double), 0));
 			}
-			// ** Receive pack with user's input 
+			
+			dataPackToSendMutex.lock();
+			
+			memcpy_s(sendbuf, gamePackToSend.size() * sizeof(double), &gamePackToSend[0], gamePackToSend.size() * sizeof(double));
+			iSendResult = send(pData->getSocket(), sendbuf, static_cast<int>(gamePackToSend.size()) * sizeof(double), 0);
+			
+			dataPackToSendMutex.unlock();
+
 			iResult = customRecv(pData, recvbuf);
-			if(iResult==0)
+			// ** Receive pack with user's input 
+			if (iResult == 0)
 			{
 				closesocket(pData->getSocket());
 				WSACleanup();
 				return;
 			}
+
+
 			// ** Analyze user's input and save it in client's data
 			pData->setUserInput(recvbuf);
 
@@ -191,6 +200,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		}
 	}
 }
+
 
 // convert given char (byte) to bool value
 bool TransferManager::charToBool(char flag)
@@ -232,6 +242,9 @@ bool TransferManager::readyToPlay()
 		return false;
 	}
 
+	// BUG: error with mutex
+	dataPackToSendMutex.lock();
+
 	// check if all players are ready
 	for (ClientData* client : this->clientsData)
 	{
@@ -240,6 +253,8 @@ bool TransferManager::readyToPlay()
 			return false;
 		}
 	}
+
+	dataPackToSendMutex.unlock();
 
 	return true;
 }
@@ -250,6 +265,7 @@ vector<ClientData*>* TransferManager::getClientsData()
 {
 	return &(this->clientsData);
 }
+
 
 
 void TransferManager::buildInitializationPack()
@@ -273,21 +289,15 @@ void TransferManager::buildInitializationPack()
 	// set all ifdataToSend flags to True
 	for (int i = 0; i < ifdataToSend.size(); i++)
 	{
-		ifdataToSend[0] = true;
+		ifdataToSend[i] = true;
 	}
 }
+
 
 void TransferManager::deleteInitializationPack()
 {
 	delete[] initPackToSend;
 	initPackToSend = NULL;
-}
-
-
-
-void TransferManager::dataSent(int threadNumber)
-{
-	this->ifdataToSend[threadNumber] = false;
 }
 
 
@@ -328,25 +338,27 @@ void TransferManager::manageInputs(ClientData * pClientData)
 			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, 1));
 		}
 	}
-
 }
 
 
 // Serialize data and put it into dataToSendContainer, setting ifdataToSend flags to true for every thread
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
-	dataPackToSendMutex.lock();
+	// BUG?: Possible memory leak with vectors
+	//vector<double> gamePackToSendTmp = gamePackToSend;
 
-	// TODO: semaphore does not work
-	dataPackToSend.clear();
-	dataPackToSend = pGame->serialize();
+	readyToPlayMutex.lock();
 
-	dataPackToSendMutex.unlock();
+	gamePackToSend.clear();
+	gamePackToSend = pGame->serialize();
+
+	readyToPlayMutex.unlock();
+
 
 	// set all ifdataToSend flags to True
-	for (bool sendFlag : this->ifdataToSend)
+	for (int i = 0; i < ifdataToSend.size(); i++)
 	{
-		sendFlag = true;
+		ifdataToSend[i] = true;
 	}
 }
 

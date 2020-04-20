@@ -13,8 +13,10 @@
 #include <ctime>
 #include <stdio.h>
 #include <mutex>
+
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
+
 #define CIRCLE_SIZE 5
 #define DEFAULT_BUFLEN 256
 #define DEFAULT_PORT "8080"

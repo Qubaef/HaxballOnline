@@ -77,6 +77,7 @@ UserInput ClientData::getUserInput() const
 void ClientData::setUserInput(char * input)
 {
 	this->userInput.command = input[0];
+	// BUG: mouse_pos not accurate
 	memcpy_s(&this->userInput.mouseXPos,sizeof(this->userInput.mouseXPos), input + 1,sizeof(double));
 	memcpy_s(&this->userInput.mouseYPos, sizeof(this->userInput.mouseYPos), input + 1 + sizeof(double), sizeof(double));
 }

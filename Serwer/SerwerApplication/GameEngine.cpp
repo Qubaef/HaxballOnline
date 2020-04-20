@@ -45,6 +45,9 @@ void GameEngine::redraw()
 
 void GameEngine::update()
 {
+	// calculate frame percentage
+	framePercentage = getTick() * milisPerFrame;
+
 	// update players
 	for (int i = 0; i < players.size(); i++) 
 	{
@@ -77,6 +80,12 @@ void GameEngine::update()
 }
 
 
+double GameEngine::getFramePercentage()
+{
+	return framePercentage;
+}
+
+
 double GameEngine::clockTick()
 {
 	// return time since last tick (in miliseconds)
@@ -84,6 +93,14 @@ double GameEngine::clockTick()
 	double dt = chrono::duration_cast<chrono::nanoseconds>(current - this->timer).count() / 1000000.0;
 	this->timer = current;
 	return dt;
+}
+
+
+double GameEngine::getTick()
+{
+	// return time since last tick (in miliseconds)
+	chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
+	return chrono::duration_cast<chrono::nanoseconds>(current - this->timer).count() / 1000000.0;
 }
 
 
@@ -353,8 +370,6 @@ vector<double> GameEngine::serialize() const
 	//
 	//1. ball serialization
 	vector<double>dataVector;
-	dataVector.push_back(0);
-	dataVector.push_back(0);
 	
 	pBall->serialize(dataVector);
 	
