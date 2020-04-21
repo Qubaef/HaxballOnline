@@ -191,12 +191,14 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			}
 			else if (iResult != 17)
 			{
-				printf_s("Wrong user input received! Skipping interpretation ", pData->getNickname().c_str());
+				printf_s("Wrong user input received! Skipping interpretation \n");
 			}
 			else
 			{
 				// ** Analyze user's input and save it in client's data
+				userInputMutex.lock();
 				pData->setUserInput(recvbuf);
+				userInputMutex.unlock();
 			}
 
 			if (this->ifGameRunning == FALSE)
@@ -311,6 +313,7 @@ void TransferManager::deleteInitializationPack()
 // Function to execute player moves stored in their ClientsData structures
 void TransferManager::manageInputs(ClientData * pClientData)
 {
+	userInputMutex.lock();
 	if (pClientData->getUserInput().command)
 	{
 		if (pClientData->getUserInput().command & BALL_CONTROL)
@@ -326,25 +329,26 @@ void TransferManager::manageInputs(ClientData * pClientData)
 		}
 		if (pClientData->getUserInput().command & KICK)
 		{
-			pClientData->getPlayer()->kick(Vector2D(pClientData->getUserInput().mouseXPos, pClientData->getUserInput().mouseYPos));
+			pClientData->getPlayer()->kick(pClientData->getUserInput().mouseXPos, pClientData->getUserInput().mouseYPos);
 		}
 		if (pClientData->getUserInput().command & MOUSE_RIGHT)
 		{
-			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(1, 0));
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(1, 0)*pClientData->getPlayer()->getGame()->getFramePercentage());
 		}
 		if (pClientData->getUserInput().command & MOUSE_LEFT)
 		{
-			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(-1, 0));
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(-1, 0) * pClientData->getPlayer()->getGame()->getFramePercentage());
 		}
 		if (pClientData->getUserInput().command & MOUSE_UP)
 		{
-			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, -1));
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, -1) * pClientData->getPlayer()->getGame()->getFramePercentage());
 		}
 		if (pClientData->getUserInput().command & MOUSE_DOWN)
 		{
-			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, 1));
+			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, 1) * pClientData->getPlayer()->getGame()->getFramePercentage());
 		}
 	}
+	userInputMutex.unlock();
 }
 
 

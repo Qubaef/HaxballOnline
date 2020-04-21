@@ -9,7 +9,7 @@ public:
 	~Player();
 	short int getTeam();
 	void setTeam(short int team);
-	void kick(Vector2D mousePos);
+	void kick(double mouseX, double mouseY);
 	void modeBallControl();
 	void modeNormal();
 };
