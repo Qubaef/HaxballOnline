@@ -28,7 +28,7 @@ void Player::kick(double mouseX, double mouseY)
 	if (dist <= pow(pBall->getHitbox() + this->getHitbox(), 2))
 	{
 		//kick ball to given position
-		v = Vector2D::Normal(v) * v.length() / 24;
+		v = Vector2D::Normal(v) * v.length() / 12;
 		pBall->setMove(v);
 	}
 }

@@ -266,12 +266,6 @@ class GameEngine( object ):
         # check collisions with posts
         self.goal_left.goal_collide()
         self.goal_right.goal_collide()
-
-        # redraw ball
-        #for obj in self.balls:
-            #pygame.gfxdraw.filled_circle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.color)
-            #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size, obj.border_color)
-            #pygame.gfxdraw.aacircle(self.screen, int(obj.p.x), int(obj.p.y), obj.size - 1, obj.border_color)
         
         # draw graphics on top of the screen
         self.draw_graphics()
