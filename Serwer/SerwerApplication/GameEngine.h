@@ -9,7 +9,7 @@ private:
 	const int pitchW = static_cast<const int>(screenW * 0.8);
 	const int pitchH = static_cast<const int>(pitchW / 1.57);
 
-	const int milisPerFrame = 1000 / 60;
+	const int milisPerFrame = 1000 / 100;
 
 	const double wallBounce = 1.0;
 

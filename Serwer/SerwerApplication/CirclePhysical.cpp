@@ -42,7 +42,6 @@ void CirclePhysical::update()
 void CirclePhysical::collide()
 {
 	vector<CirclePhysical*> objects = this->pGame->getObjects();
-	// BUG: Ball to player collision
 	for (CirclePhysical* object : objects)
 	{
 		if (object != this)
