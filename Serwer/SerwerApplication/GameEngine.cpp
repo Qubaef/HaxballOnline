@@ -128,11 +128,7 @@ void GameEngine::gameStateManager()
 	{
 		playMode = 0;
 
-		cout << "Game starts!" << endl;
-		for(Player* player : this->players)
-		{
-			cout << "player pos: " << player->getPosition().getX() << " " << player->getPosition().getY() << endl;
-		}
+		printf_s("Game starts!\n");
 	}
 }
 
@@ -148,12 +144,12 @@ void GameEngine::goalScored(Goal* pGoal)
 {
 	if (pGoal == pGoalLeft) 
 	{
-		cout << "Goal for team right!" << endl;
+		printf_s("Goal for team right!\n");
 		pTeamRight->addPoint();
 	}
 	else 
 	{
-		cout << "Game for team left!" << endl;
+		printf_s("Goal for team left!\n");
 		pTeamLeft->addPoint();
 	}
 

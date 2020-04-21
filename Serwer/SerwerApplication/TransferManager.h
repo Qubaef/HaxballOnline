@@ -26,7 +26,7 @@ private:
 	bool ifGameRunning;
 	mutex gamePackToSendMutex;				// mutex for critical section
 	mutex clientDataMutex;		// mutex for critical section
-
+	mutex userInputMutex;
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);

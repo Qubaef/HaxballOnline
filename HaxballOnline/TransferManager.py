@@ -133,6 +133,8 @@ class TransferManager( object ):
             # send client's input
             
             clientInput = bytes([self.command]) + struct.pack('dd', *[self.mouse_x, self.mouse_y])
+            if(self.mouse_x!=0):
+                print(self.mouse_x, self.mouse_y)
             self.s.sendall(clientInput)
 
             # receive new game pack
