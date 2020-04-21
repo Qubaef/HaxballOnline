@@ -1,16 +1,14 @@
 Server side:
-- main soccet in connectionsManager thread
-- sockets management inside client's threads
 - game finish condition (bool finished in GameEngine)
-
-Communication:
-- data serialization and switch between c++ and python data types
-- library to convert data types between languages
-
+- print serwer ip
 Local side:
-- polish of client application (numbers, score display)
 - main menu with server and team choice
+-ip give by client
+-after game finish behaviour
 
-Optional (added if necessary):
-- lag compensation
-- movement prediction
+Bugs:
+-mouse position
+-score printing(wrong color)
+-game start jump
+-fix position reset on local site
+-disconnection
