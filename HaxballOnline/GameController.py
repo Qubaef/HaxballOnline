@@ -28,21 +28,21 @@ def manageInputs():
             mouse_x = pygame.mouse.get_pos()[0]
             mouse_y = pygame.mouse.get_pos()[1]
     
-        if localCommand != -1:
-            player_move = pygame.math.Vector2(0,0)
-            input = pygame.key.get_pressed()
-            if input[K_w]:
-                command += 16
-            if input[K_s]:
-                command += 32
-            if input[K_d]:
-                command += 8
-            if input[K_a]:
-                command += 4
-            if input[K_SPACE]:
-                command += 1
-            if input[K_ESCAPE]:
-                localCommand = -1
+    if localCommand != -1:
+        player_move = pygame.math.Vector2(0,0)
+        input = pygame.key.get_pressed()
+        if input[K_w]:
+            command += 16
+        if input[K_s]:
+            command += 32
+        if input[K_d]:
+            command += 8
+        if input[K_a]:
+            command += 4
+        if input[K_SPACE]:
+            command += 1
+        if input[K_ESCAPE]:
+            localCommand = -1
     
     return localCommand, command, mouse_x, mouse_y
 
@@ -88,6 +88,8 @@ done = False
 while not done:
 
     localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
+    if transfer_manager.command != 64:
+        print(transfer_manager.command)
     
     # deserialize game
     if transfer_manager.game_pack_recived == True:

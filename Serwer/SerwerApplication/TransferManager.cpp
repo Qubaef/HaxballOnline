@@ -18,9 +18,9 @@ void TransferManager::newClient(SOCKET clientSocket)
 	// insert this data to vector in transfer manager
 	ifdataToSend.push_back(false);
 	
-	readyToPlayMutex.lock();
+	clientDataMutex.lock();
 	clientsData.push_back(newClient);
-	readyToPlayMutex.unlock();
+	clientDataMutex.unlock();
 	
 	unsigned int threadNumber = static_cast<unsigned int>(clientsData.size() - 1);
 
@@ -113,13 +113,13 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		memcpy_s(sendbuf, sizeof(int), &playersNumber, sizeof(int));
 		iSendResult = static_cast<int>(send(pData->getSocket(), sendbuf, sizeof(int), 0));
 
-		// receive number of players back as a confirmation
-		iResult = customRecv(pData, recvbuf);
-
 
 		// build and send initialization packs for each player
 		for (unsigned int i = 0; i < dataContainerLength; i++)
 		{
+			// receive number of players back as a confirmation
+			iResult = customRecv(pData, recvbuf);
+			
 			int packageLength = static_cast<int>(initPackToSend[i].playerNickname.size()) * sizeof(char);
 
 			// copy data to sendbuf in correct way
@@ -130,6 +130,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			// send buffer with data
 			iSendResult = send(pData->getSocket(), sendbuf, packageLength + 2 * sizeof(int), 0);
 		}
+		
 
 		// set flag that init pack was sent
 		this->ifdataToSend[threadIndex] = false;
@@ -173,12 +174,12 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			{
 			}
 			
-			dataPackToSendMutex.lock();
+			gamePackToSendMutex.lock();
 			
 			memcpy_s(sendbuf, gamePackToSend.size() * sizeof(double), &gamePackToSend[0], gamePackToSend.size() * sizeof(double));
 			iSendResult = send(pData->getSocket(), sendbuf, static_cast<int>(gamePackToSend.size()) * sizeof(double), 0);
 			
-			dataPackToSendMutex.unlock();
+			gamePackToSendMutex.unlock();
 
 			iResult = customRecv(pData, recvbuf);
 			// ** Receive pack with user's input 
@@ -188,10 +189,15 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 				WSACleanup();
 				return;
 			}
-
-
-			// ** Analyze user's input and save it in client's data
-			pData->setUserInput(recvbuf);
+			else if (iResult != 17)
+			{
+				printf_s("Wrong user input received! Skipping interpretation ", pData->getNickname().c_str());
+			}
+			else
+			{
+				// ** Analyze user's input and save it in client's data
+				pData->setUserInput(recvbuf);
+			}
 
 			if (this->ifGameRunning == FALSE)
 			{
@@ -243,18 +249,19 @@ bool TransferManager::readyToPlay()
 	}
 
 	// BUG: error with mutex
-	dataPackToSendMutex.lock();
+	clientDataMutex.lock();
 
 	// check if all players are ready
 	for (ClientData* client : this->clientsData)
 	{
 		if (client->getReady() == false)
 		{
+			clientDataMutex.unlock();
 			return false;
 		}
 	}
 
-	dataPackToSendMutex.unlock();
+	clientDataMutex.unlock();
 
 	return true;
 }
@@ -317,23 +324,23 @@ void TransferManager::manageInputs(ClientData * pClientData)
 				pClientData->getPlayer()->modeNormal();
 			}
 		}
-		else if (pClientData->getUserInput().command & KICK)
+		if (pClientData->getUserInput().command & KICK)
 		{
 			pClientData->getPlayer()->kick(Vector2D(pClientData->getUserInput().mouseXPos, pClientData->getUserInput().mouseYPos));
 		}
-		else if (pClientData->getUserInput().command & MOUSE_RIGHT)
+		if (pClientData->getUserInput().command & MOUSE_RIGHT)
 		{
 			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(1, 0));
 		}
-		else if (pClientData->getUserInput().command & MOUSE_LEFT)
+		if (pClientData->getUserInput().command & MOUSE_LEFT)
 		{
 			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(-1, 0));
 		}
-		else if (pClientData->getUserInput().command & MOUSE_UP)
+		if (pClientData->getUserInput().command & MOUSE_UP)
 		{
 			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, -1));
 		}
-		else if (pClientData->getUserInput().command & MOUSE_DOWN)
+		if (pClientData->getUserInput().command & MOUSE_DOWN)
 		{
 			pClientData->getPlayer()->setMove(pClientData->getPlayer()->getMove() + Vector2D(0, 1));
 		}
@@ -347,12 +354,12 @@ void TransferManager::gameSerialize(GameEngine* pGame)
 	// BUG?: Possible memory leak with vectors
 	//vector<double> gamePackToSendTmp = gamePackToSend;
 
-	readyToPlayMutex.lock();
+	gamePackToSendMutex.lock();
 
 	gamePackToSend.clear();
 	gamePackToSend = pGame->serialize();
 
-	readyToPlayMutex.unlock();
+	gamePackToSendMutex.unlock();
 
 
 	// set all ifdataToSend flags to True

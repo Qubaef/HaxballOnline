@@ -79,12 +79,11 @@ class TransferManager( object ):
 
         # get init's pack info
         data_unpacked = struct.unpack('i',data)
-        self.s.sendall(data)
-
         self.players_number = data_unpacked[0]
 
         # get init data of players
         for i in range(self.players_number):
+            self.s.sendall(data)
             data = self.s.recv(data_size)
 
             # unpack team and player's number

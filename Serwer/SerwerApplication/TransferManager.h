@@ -14,18 +14,19 @@ class TransferManager
 private:
 	vector<ClientData*> clientsData;
 	vector<thread> clientsThreads;
+	vector<bool> ifdataToSend;				// array of flags set to True, if dataContainer contains new data ready to send to clients
+	int threadsNumber;
+
 	void communicate(ClientData* data, unsigned int threadNumber);
 
-	vector<bool> ifdataToSend;				// array of flags set to True, if dataContainer contains new data ready to send to clients
 	vector<double> gamePackToSend;			// vector holding serialized data
 	PlayerInitializePack* initPackToSend;	// pointer to an array containing init pack, which needs to be sent to the clients
 	unsigned int dataContainerLength;		// length of data in dataContainer
 
 	bool ifGameRunning;
-	mutex dataPackToSendMutex;				// mutex for critical section
-	
-	mutex readyToPlayMutex;					// mutex for critical section
-	
+	mutex gamePackToSendMutex;				// mutex for critical section
+	mutex clientDataMutex;		// mutex for critical section
+
 
 	bool charToBool(char flag);
 	string bufferToString(char* buffer, int length);
