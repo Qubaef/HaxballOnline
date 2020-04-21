@@ -52,9 +52,13 @@ def manageInputs():
 
 # get user's nick
 nickname = input('Enter nickname: ')
+ip = input('Enter server\'s ip adress: ')
+
+if ip == '':
+    ip = '127.0.0.1'
 
 # init connection with the server
-transfer_manager = TransferManager(nickname)
+transfer_manager = TransferManager(nickname, ip)
 if transfer_manager.initConnection() == -1:
     sys.exit()
 
@@ -88,8 +92,6 @@ done = False
 while not done:
 
     localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
-    if transfer_manager.command != 64:
-        print(transfer_manager.command)
     
     # deserialize game
     if transfer_manager.game_pack_recived == True:

@@ -6,11 +6,12 @@ import GameEngine
 
 
 class TransferManager( object ):
-    def __init__(self, nickname):
+    def __init__(self, nickname, ip):
         self.client_nickname = nickname
         self.client_number = -1
         self.ready_to_play = False
         self.s = 0
+        self.ip = ip
 
         # data to init game
         self.init_pack_recived = False
@@ -30,15 +31,18 @@ class TransferManager( object ):
     def initConnection(self):
 
         # initialize socket
-        HOST = '127.0.0.1'
+        
+        HOST = self.ip
         PORT = 8080 
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             # send nickname to server and receive number
             self.s.connect((HOST, PORT))
-
+            
             self.s.setblocking(True)
+
+            print('Established connection ')
 
             nickname = self.client_nickname + chr(0)
             self.s.sendall(bytes(nickname, encoding='utf-8'))
