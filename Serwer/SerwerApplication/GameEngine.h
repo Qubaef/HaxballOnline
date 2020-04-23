@@ -35,7 +35,7 @@ private:
 	Team* pTeamRight;
 	Team* pTeamLeft;
 
-	bool finished;
+	bool finished;		// flag to inform server that the game is over
 
 public:
 	GameEngine();
