@@ -1,5 +1,5 @@
 Server side:
-- game finish condition (bool finished in GameEngine)
+- game finish condition (bool finished in GameEngine) + comment the code
 - print serwer ip
 Local side:
 - main menu with server and team choice
