@@ -16,17 +16,20 @@ private:
 	// delay time in miliseconds
 	const int startDelay = 2000;
 	const int goalDelay = 2000;
+	const int gameDurationLimit = 5 * 60; // game duration = 5mins = 300s
 	double delayCounter = 0;
+	chrono::high_resolution_clock::time_point gameStart;	
 	chrono::high_resolution_clock::time_point timer;
 	double framePercentage;
 
 	int playMode = 1;
 	// play_mode flags states:
 	// play_mode = 0 = > game running
-	// play_mode = -2 = > game freezed, players and ball not set on the right positions, waiting time not initialized(set after goal score)
-	// play_mode = -1 = > game freezed, players and ball not set on the right positions, waiting time initialized(set after goal score and -2 state)
-	// play_mode = 1 = > game freezed, players and ball set on the right positions, waiting time not initialized(set at the beginning of the game and after - 1 state(after goal score cooldown))
-	// play_mode = 2 = > game freezed, players and ball set on the right positions, waiting time initialized(set after 1 state; after time counter drops to 0, game starts)
+	// play_mode = -2 = > game freezed, players and ball not set on the right position, waiting, time not initialized (set after goal score)
+	// play_mode = -1 = > game freezed, players and ball not set on the right position, waiting, time initialized (set after goal score and -2 state)
+	// play_mode = 1  = > game freezed, players and ball set on the right position, waiting, time not initialized (set at the beginning of the game and after - 1 state(after goal score cooldown))
+	// play_mode = 2  = > game freezed, players and ball set on the right position, waiting, time initialized (set after 1 state; after time counter drops to 0, game starts)
+
 
 	Ball* pBall;
 	vector<Player*> players;
@@ -40,28 +43,30 @@ private:
 public:
 	GameEngine();
 	~GameEngine();
-	//add player to the game
+	//adds a new player to the game
 	void newPlayer(Player* pPlayer, int teamNumber = 0);
-	//add ball during initialize
+	//adds ball during game initialization
 	void newBall(Ball* pBall);
-	//update game status if should be updated
+	//updates game status if necessary
 	void redraw();
-	//update game status
+	//updates game status
 	void update();
-	//manage state of game(freeze and running switching)
+	//manages state of the game ( game froze/running switching )
 	void gameStateManager();
-	//reset position state to default
+	//resets position state to default
 	void positionsReset();
-	//manage goal scored event
+	//manages goal-scored event
 	void goalScored(Goal* pGoal);
-	//manage time
+	// time management
 	double clockTick();
-	// TODO: comment
 	double getTick();
-	// return current framePercentage
+	double countDurationTime();
+	// returns current framePercentage
 	double getFramePercentage();
-	//manage walls colision effect and update player position and speed after it
+	//manages walls colision effect and updates player position, speed after it
 	void wallsCollision(CirclePhysical* pObject);
+	// calculates the winner team
+	void winnersInfo();
 
 	vector<CirclePhysical*> getObjects();
 	vector<Player*> getPlayers();

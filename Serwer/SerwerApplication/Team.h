@@ -14,7 +14,7 @@ public:
 	~Team();
 	//add player to a list of players
 	void addPlayer(Player* player);
-	//remove player if necessery
+	//remove player if necessary
 	void removePlayer(Player* player);
 	//reset score when starting new game
 	void resetScore();
@@ -24,6 +24,8 @@ public:
 	int size();
 	//reset players position to defauly
 	void resetPosition();
+	// get score value
+	int getScore();
 	//get list of players
 	vector<Player*> getPlayers();
 	//serialize team data to be sent to player

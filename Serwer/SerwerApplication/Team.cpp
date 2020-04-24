@@ -48,6 +48,11 @@ void Team::resetPosition()
 	}
 }
 
+int Team::getScore()
+{
+	return this->score;
+}
+
 void Team::resetScore()
 {
 	this->score = 0;

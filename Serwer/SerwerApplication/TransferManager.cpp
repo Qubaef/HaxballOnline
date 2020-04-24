@@ -303,6 +303,8 @@ void TransferManager::buildInitializationPack()
 }
 
 
+
+
 void TransferManager::deleteInitializationPack()
 {
 	delete[] initPackToSend;
@@ -434,3 +436,4 @@ void TransferManager::setGameRunning(bool ifGameRunning)
 {
 	this->ifGameRunning = ifGameRunning;
 }
+

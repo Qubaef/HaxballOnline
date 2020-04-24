@@ -28,7 +28,6 @@ void Server::start()
 		if (pManager->readyToPlay()) 
 		{
 			printf_s("All players ready! Initializing game and waiting for their game to load!\n");
-
 			play();
 		}
 	}
@@ -74,6 +73,8 @@ void Server::play()
 			this->pManager->manageInputs(clientData);
 		}
 	}
+	// out of the loop means that pGame -> getFinished() == true
+	this->pManager->setGameRunning(false);
 }
 
 // (New Thread) initialize sockets and manage clients connections
