@@ -15,7 +15,7 @@ public:
 	ClientData(SOCKET clientSocket);
 	~ClientData();
 	
-	bool getReady();				//	getting to know if player is ready 
+	bool getReady();				//getting to know if player is ready 
 	void setReady(bool ready);		// setting that the player is ready
 	
 	void setPlayer(Player* pPlayer);// setter for a player

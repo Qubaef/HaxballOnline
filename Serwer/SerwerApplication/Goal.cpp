@@ -12,14 +12,12 @@ Goal::Goal(GameEngine* pGame, int x, int yUp, int yDown, int width, int directio
 	this->pPostDown = new Post(pGame, x, yDown);
 }
 
-Goal::~Goal()
-{
+Goal::~Goal(){
 	delete pPostUp;
 	delete pPostDown;
 }
 
-int Goal::getPx()
-{
+int Goal::getPx(){
 	return this->x;
 }
 
@@ -28,28 +26,23 @@ int Goal::getPy()
 	return this->yUp;
 }
 
-int Goal::getWidth()
-{
+int Goal::getWidth(){
 	return this->width;
 }
 
-int Goal::getHeight()
-{
+int Goal::getHeight(){
 	return (this->yDown)-(this->yUp);
 }
 
-void Goal::goalCollide()
-{
+void Goal::goalCollide(){
 	this->pPostDown->collide();
 	this->pPostUp->collide();
 }
 
-Post* Goal::getPostUp()
-{
+Post* Goal::getPostUp(){
 	return pPostUp;
 }
 
-Post* Goal::getPostDown()
-{
+Post* Goal::getPostDown(){
 	return pPostDown;
 }

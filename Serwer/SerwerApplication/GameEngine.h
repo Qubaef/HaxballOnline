@@ -2,25 +2,27 @@
 #include "stdafx.h"
 class GameEngine
 {
-private:
+private:		// Game parameters below
 	const int screenW = 1100;
 	const int screenH = static_cast<const int>(screenW / 1.57);
 
+	// pitch is obviously a little bit smaller than the whole game window
 	const int pitchW = static_cast<const int>(screenW * 0.8);
 	const int pitchH = static_cast<const int>(pitchW / 1.57);
 
+	// refreshing frequency 
 	const int milisPerFrame = 1000 / 100;
-
+	// the coefficient of elasticity
 	const double wallBounce = 1.0;
 
-	// delay time in milliseconds
+	// delays of time in milliseconds
 	const int startDelay = 2000;
 	const int goalDelay = 2000;
 	const unsigned gameDurationLimit = 1;		// game duration (in minutes)
 	unsigned elapsedTime;						// elapsed time (in minutes)
 	double delayCounter = 0;
-	chrono::high_resolution_clock::time_point gameStart;
-	chrono::high_resolution_clock::time_point timer;
+	chrono::high_resolution_clock::time_point gameStart;	// since the particular game starts 
+	chrono::high_resolution_clock::time_point timer;		// since the server starts
 	double framePercentage;
 
 	int playMode = 1;
@@ -32,15 +34,15 @@ private:
 	// play_mode = 2  = > game freezed, players and ball set on the right position, waiting, time initialized (set after 1 state; after time counter drops to 0, game starts)
 
 
-	Ball* pBall;
-	vector<Player*> players;
-	Goal* pGoalLeft;
+	Ball* pBall;				// pointer to the ball from the game 
+	vector<Player*> players;	// set of all players
+	// the teams and their scored goals
+	Goal* pGoalLeft;				
 	Goal* pGoalRight;
 	Team* pTeamRight;
 	Team* pTeamLeft;
 
-	// flag to inform server that the game is over
-	bool finished;
+	bool finished;				// flag to inform server that the game is over
 
 public:
 	GameEngine();
@@ -70,17 +72,18 @@ public:
 	// calculates the winner team
 	void winnersInfo();
 
-	vector<CirclePhysical*> getObjects();
-	vector<Player*> getPlayers();
-	Ball* getBall();
-	Goal* getGoalRight();
-	Goal* getGoalLeft();
+	vector<CirclePhysical*> getObjects();		// getting round, material all objects (ball+posts)
+	vector<Player*> getPlayers();				// getting all players from the pitch 
+	Ball* getBall();							// getting the ball
+	Goal* getGoalRight();						// getting goal from the rigth side of the pitch
+	Goal* getGoalLeft();						// and from the left side as well
 
+	// getters to the other private variables from this class
 	int getScreenW();
 	int getScreenH();
 	int getPitchW();
 	int getPitchH();
 	bool getFinished();
-	//serialize game data
-	vector<double> serialize() const;
+
+	vector<double> serialize() const;		//serialized game data
 };
