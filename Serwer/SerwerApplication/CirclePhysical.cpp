@@ -6,11 +6,9 @@ CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, dou
 {
 }
 
-CirclePhysical::~CirclePhysical()
-{
+CirclePhysical::~CirclePhysical() {}
 
-}
-
+//setting position of an object 
 void CirclePhysical::setPosition(Vector2D p)
 {
 	if (this->p.getX() <= -10 && this->p.getY() <= -10)
@@ -18,11 +16,13 @@ void CirclePhysical::setPosition(Vector2D p)
 	this->p = p;
 }
 
+//setting velocity of an object
 void CirclePhysical::setMove(Vector2D v)
 {
 	this->v = v;
 }
 
+// updating object's velocity and position by occurred the friction 
 void CirclePhysical::update()
 {
 	if (this->p.getX() <= -10 && this->p.getY() <= -10)
@@ -39,6 +39,7 @@ void CirclePhysical::update()
 	this->pGame->wallsCollision(this);
 }
 
+// function that solves collisions - with any other object in the pitch 
 void CirclePhysical::collide()
 {
 	vector<CirclePhysical*> objects = this->pGame->getObjects();
@@ -83,63 +84,55 @@ void CirclePhysical::collide()
 	}
 }
 
+// ading velocity to object's current  velocity
 void CirclePhysical::velocityAdd(Vector2D velocity)
 {
 	this->v = this->v + velocity;
 }
 
-double CirclePhysical::getVMax()
-{
+// getters and setters for all over the variables from private section 
+
+double CirclePhysical::getVMax() {
 	return this->vMax;
 }
 
-
-double CirclePhysical::getBallControl()
-{
+double CirclePhysical::getBallControl(){
 	return this->ballControl;
 }
 
-double CirclePhysical::getFriction()
-{
+double CirclePhysical::getFriction(){
 	return this->friction;
 }
 
-GameEngine* CirclePhysical::getGame()
-{
+GameEngine* CirclePhysical::getGame(){
 	return this->pGame;
 }
 
-double CirclePhysical::getHitbox()
-{
+double CirclePhysical::getHitbox(){
 	return this->hitbox;
 }
 
-int CirclePhysical::getNumber()
-{
+int CirclePhysical::getNumber(){
 	return this->number;
 }
 
-int CirclePhysical::getSize()
-{
+int CirclePhysical::getSize(){
 	return this->size;
 }
 
-double CirclePhysical::getWeight()
-{
+double CirclePhysical::getWeight(){
 	return this->weight;
 }
 
-Vector2D CirclePhysical::getPosition()
-{
+Vector2D CirclePhysical::getPosition(){
 	return this->p;
 }
 
-
-Vector2D CirclePhysical::getMove()
-{
+Vector2D CirclePhysical::getMove(){
 	return this->v;
 }
 
+//function to serialie data about current values of object's variables
 void CirclePhysical::serialize(vector<double> &dataVector) const
 {
 	dataVector.push_back(p.getX());

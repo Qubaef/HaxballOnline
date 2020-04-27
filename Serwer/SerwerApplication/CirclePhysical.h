@@ -7,16 +7,16 @@ class GameEngine;
 class CirclePhysical
 {
 protected:
-	GameEngine* pGame;
-	Vector2D p;
-	Vector2D v;
-	const int size;
-	const double hitbox;
-	double vMax;
-	double friction;
-	double ballControl;
-	double weight;
-	int number;
+	GameEngine* pGame;		// current game
+	Vector2D p;				// the vector of position
+	Vector2D v;				// the vector of velocity
+	const int size;	
+	const double hitbox;	// area around each object
+	double vMax;			// maximum value of velocity
+	double friction;	
+	double ballControl;	
+	double weight;	
+	int number;	
 public:
 	CirclePhysical(GameEngine *game, int px, int py, int number, double weight, int size);
 	~CirclePhysical();
@@ -27,10 +27,10 @@ public:
 	//update speed, position
 	virtual void update();
 
-	//setter of v
+	//setter of v (velocity)
 	virtual void setMove(Vector2D v);
 
-	//setter of p
+	//setter of p (position)
 	virtual void setPosition(Vector2D p);
 
 	//check if collision happened and solve it
@@ -60,10 +60,10 @@ public:
 	//getter of number
 	int getNumber();
 
-	//getter of p
+	//getter of p (position)
 	Vector2D getPosition();
 
-	//getter of v
+	//getter of v (velocity)
 	Vector2D getMove();
 
 	//serialize circle data to be send to the client
