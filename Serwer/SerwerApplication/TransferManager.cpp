@@ -17,11 +17,11 @@ void TransferManager::newClient(SOCKET clientSocket)
 
 	// insert this data to vector in transfer manager
 	ifdataToSend.push_back(false);
-	
+
 	clientDataMutex.lock();
 	clientsData.push_back(newClient);
 	clientDataMutex.unlock();
-	
+
 	unsigned int threadNumber = static_cast<unsigned int>(clientsData.size() - 1);
 
 	// call new thread to communicate with given client
@@ -48,7 +48,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 	unsigned long l;
 	ioctlsocket(pData->getSocket(), FIONREAD, &l);
 
-	printf_s("Communicating with client!\n");
+	printf_s("SERVER THREAD %d: Communicating with client!\n", threadIndex);
 
 
 	// CLIENT INITIALIZATION
@@ -61,7 +61,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		return;
 	}
 	pData->setNickname(bufferToString(recvbuf, iResult));
-	printf_s("Received player's nick: %s\n", pData->getNickname().c_str());
+	printf_s("SERVER THREAD %d: Received player's nick: %s\n", threadIndex, pData->getNickname().c_str());
 
 
 	// Generate client's number and send it to his socket
@@ -89,7 +89,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			{
 				if (iResult != 1)
 				{
-					printf_s("Wrong data received from client: %s! Expected readyToPlay flag!", pData->getNickname().c_str());
+					printf_s("SERVER THREAD %d: Wrong data received from client: %s! Expected readyToPlay flag!", threadIndex, pData->getNickname().c_str());
 				}
 				else
 				{
@@ -119,7 +119,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 		{
 			// receive number of players back as a confirmation
 			iResult = customRecv(pData, recvbuf);
-			
+
 			int packageLength = static_cast<int>(initPackToSend[i].playerNickname.size()) * sizeof(char);
 
 			// copy data to sendbuf in correct way
@@ -130,7 +130,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			// send buffer with data
 			iSendResult = send(pData->getSocket(), sendbuf, packageLength + 2 * sizeof(int), 0);
 		}
-		
+
 
 		// set flag that init pack was sent
 		this->ifdataToSend[threadIndex] = false;
@@ -149,7 +149,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			}
 			if (iResult != 1)
 			{
-				printf_s("Wrong data received from client: %s! Expected readyGameLoaded flag!", pData->getNickname().c_str());
+				printf_s("SERVER THREAD %d: Wrong data received from client: %s! Expected readyGameLoaded flag!", threadIndex, pData->getNickname().c_str());
 			}
 			else
 			{
@@ -173,12 +173,12 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			while (this->ifdataToSend[threadIndex] == false)
 			{
 			}
-			
+
 			gamePackToSendMutex.lock();
-			
+
 			memcpy_s(sendbuf, gamePackToSend.size() * sizeof(double), &gamePackToSend[0], gamePackToSend.size() * sizeof(double));
 			iSendResult = send(pData->getSocket(), sendbuf, static_cast<int>(gamePackToSend.size()) * sizeof(double), 0);
-			
+
 			gamePackToSendMutex.unlock();
 
 			iResult = customRecv(pData, recvbuf);
@@ -191,7 +191,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			}
 			else if (iResult != 17)
 			{
-				printf_s("Wrong user input received! Skipping interpretation \n");
+				printf_s("SERVER THREAD %d: Wrong user input received! Skipping interpretation \n", threadIndex);
 			}
 			else
 			{
@@ -201,11 +201,15 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 				userInputMutex.unlock();
 			}
 
-			if (this->ifGameRunning == FALSE)
+			if (this->ifGameRunning == false)
 			{
 				break;
 			}
 		}
+
+		// send info that the game was finished
+		sendbuf[0] = true;
+		iSendResult = send(pData->getSocket(), sendbuf, sizeof(bool), 0);
 	}
 }
 
@@ -250,7 +254,6 @@ bool TransferManager::readyToPlay()
 		return false;
 	}
 
-	// BUG: error with mutex
 	clientDataMutex.lock();
 
 	// check if all players are ready
@@ -301,7 +304,6 @@ void TransferManager::buildInitializationPack()
 		ifdataToSend[i] = true;
 	}
 }
-
 
 
 
@@ -357,9 +359,6 @@ void TransferManager::manageInputs(ClientData * pClientData)
 // Serialize data and put it into dataToSendContainer, setting ifdataToSend flags to true for every thread
 void TransferManager::gameSerialize(GameEngine* pGame)
 {
-	// BUG?: Possible memory leak with vectors
-	//vector<double> gamePackToSendTmp = gamePackToSend;
-
 	gamePackToSendMutex.lock();
 
 	gamePackToSend.clear();
@@ -378,10 +377,18 @@ void TransferManager::gameSerialize(GameEngine* pGame)
 
 void TransferManager::readyToPlayReset()
 {
-	// check if all players are ready
 	for (ClientData* client : this->clientsData)
 	{
 		client->setReady(false);
+	}
+}
+
+
+void TransferManager::dataToSendReset()
+{
+	for (int i = 0; i < ifdataToSend.size(); i++)
+	{
+		ifdataToSend[i] = false;
 	}
 }
 
@@ -398,7 +405,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 		//if we have error
 		if (iResult == SOCKET_ERROR)
 		{
-			printf_s("recieve failed with error: %d\n", WSAGetLastError());
+			printf_s("SERVER: recieve failed with error: %d\n", WSAGetLastError());
 			disablePlayer(pData);
 			return 0;
 		}
@@ -413,7 +420,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 			//2. if time is too long, timeouting player from game
 			if (elapsed_seconds.count() > TIMEOUT)
 			{
-				printf_s("User timeout: %s!\n", pData->getNickname().c_str());
+				printf_s("SERVER: User timeout: %s!\n", pData->getNickname().c_str());
 				disablePlayer(pData);
 				return 0;
 			}

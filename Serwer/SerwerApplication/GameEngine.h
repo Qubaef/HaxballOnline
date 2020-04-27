@@ -13,12 +13,13 @@ private:
 
 	const double wallBounce = 1.0;
 
-	// delay time in miliseconds
+	// delay time in milliseconds
 	const int startDelay = 2000;
 	const int goalDelay = 2000;
-	const int gameDurationLimit = 5 * 60; // game duration = 5mins = 300s
+	const unsigned gameDurationLimit = 1;		// game duration (in minutes)
+	unsigned elapsedTime;						// elapsed time (in minutes)
 	double delayCounter = 0;
-	chrono::high_resolution_clock::time_point gameStart;	
+	chrono::high_resolution_clock::time_point gameStart;
 	chrono::high_resolution_clock::time_point timer;
 	double framePercentage;
 
@@ -38,7 +39,8 @@ private:
 	Team* pTeamRight;
 	Team* pTeamLeft;
 
-	bool finished;		// flag to inform server that the game is over
+	// flag to inform server that the game is over
+	bool finished;
 
 public:
 	GameEngine();
@@ -63,7 +65,7 @@ public:
 	double countDurationTime();
 	// returns current framePercentage
 	double getFramePercentage();
-	//manages walls colision effect and updates player position, speed after it
+	//manages walls collision effect and updates player position, speed after it
 	void wallsCollision(CirclePhysical* pObject);
 	// calculates the winner team
 	void winnersInfo();

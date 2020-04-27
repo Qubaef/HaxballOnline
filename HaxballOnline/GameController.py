@@ -62,50 +62,59 @@ transfer_manager = TransferManager(nickname, ip)
 if transfer_manager.initConnection() == -1:
     sys.exit()
 
- # ask user if he is ready to start the game
-input('Ready?: ')
-
-transfer_manager.ready_to_play = True
-
-# wait for init pack to be sent
-while(transfer_manager.init_pack_recived == False):
-    continue
-
-# intialize new game based on data recived in init packs
-game = GameEngine()
-ball = Ball(game, 500, 300, 0)
-game.new_ball(ball)
-
-for i in range(len(transfer_manager.players_numbers)):
-    game.new_player(Player(game, 0, 0, transfer_manager.players_numbers[i], (0, 0, 255), transfer_manager.players_nicknames[i]), transfer_manager.players_teams[i])
-
-    # if player is client's player, set his border to different color
-    if transfer_manager.players_numbers[i] == transfer_manager.client_number:
-        game.players[i].border_color = (255,255,0)
-
-# set flag read
-transfer_manager.ready_to_play = True
-
 done = False
 
-# main loop of the game
-while not done:
+while(not done):
+     # ask user if he is ready to start the game
+    input('Ready?: ')
 
-    localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
+    transfer_manager.ready_to_play = True
+
+    # wait for init pack to be sent
+    while(transfer_manager.init_pack_recived == False):
+        continue
+
+    # intialize new game based on data recived in init packs
+    game = GameEngine()
+    ball = Ball(game, 500, 300, 0)
+    game.new_ball(ball)
+
+    for i in range(len(transfer_manager.players_numbers)):
+        game.new_player(Player(game, 0, 0, transfer_manager.players_numbers[i], (0, 0, 255), transfer_manager.players_nicknames[i]), transfer_manager.players_teams[i])
+
+        # if player is client's player, set his border to different color
+        if transfer_manager.players_numbers[i] == transfer_manager.client_number:
+            game.players[i].border_color = (255,255,0)
+
+    # set flag read
+    transfer_manager.ready_to_play = True
+
+    # main loop of the game
+    while(True):
+
+        localCommand, transfer_manager.command, transfer_manager.mouse_x, transfer_manager.mouse_y = manageInputs()
     
-    # deserialize game
-    if transfer_manager.game_pack_recived == True:
-        game.deserialize(transfer_manager.game_pack)
-        transfer_manager.game_pack_recived = False
+        # deserialize game
+        if transfer_manager.game_pack_recived == True:
+            game.deserialize(transfer_manager.game_pack)
+            transfer_manager.game_pack_recived = False
 
-    if localCommand == -1:
-        # if localCommand was -1, exit the game
-        done = True
-    elif localCommand == 1:
-        # if localCommand was 1, switch display mode
-        if game.test_mode:
-            game.test_mode = False
-        else:
-            game.test_mode = True
+        if localCommand == -1:
+            # if localCommand was -1, exit the game
+            done = True
+            break
+        elif localCommand == 1:
+            # if localCommand was 1, switch display mode
+            if game.test_mode:
+                game.test_mode = False
+            else:
+                game.test_mode = True
 
-    game.redraw()
+        game.redraw()
+
+        # if game was finished, break the loop
+        if transfer_manager.game_running == False:
+            break
+
+    game.reset()
+    del game

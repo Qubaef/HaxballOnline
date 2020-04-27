@@ -33,8 +33,8 @@ class Team( object ):
             i += 1
 
     def deserialize(self, data):
-        self.score=data[0]
-        data=data[1:]
+        self.score = int(data[0])
+        data = data[1:]
         for player in self.players:
             data = player.deserialize(data)
 

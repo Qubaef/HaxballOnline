@@ -12,6 +12,7 @@ class TransferManager( object ):
         self.ready_to_play = False
         self.s = 0
         self.ip = ip
+        self.game_running = False
 
         # data to init game
         self.init_pack_recived = False
@@ -71,72 +72,77 @@ class TransferManager( object ):
 
         # send and receive readyToPlay, until init pack was recived
         while(True):
-            ready_flag = struct.pack('?', self.ready_to_play)
-            self.s.sendall(ready_flag)
+            while(True):
+                ready_flag = struct.pack('?', self.ready_to_play)
+                self.s.sendall(ready_flag)
 
-            data = self.s.recv(data_size)
-            if(len(data) != 1):
-                # init pack received
-                self.ready_to_play = False  
-                break
-
-
-        # get init's pack info
-        data_unpacked = struct.unpack('i',data)
-        self.players_number = data_unpacked[0]
-
-        # get init data of players
-        for i in range(self.players_number):
-            self.s.sendall(data)
-            data = self.s.recv(data_size)
-
-            # unpack team and player's number
-            data_unpacked = struct.unpack_from('ii',data)
-
-            self.players_teams.append(data_unpacked[0])
-            self.players_numbers.append(data_unpacked[1])
-
-            # trim data and get player's nickname
-            data = data[2 * sizeof_int:]
-            sizeof_nickname = len(data)
-            data_unpacked = struct.unpack_from(str(sizeof_nickname) + 's',data)
-
-            # convert bytes to string, dropping last character ('\0' char is not needed in python)
-            self.players_nicknames.append(data_unpacked[0].decode("utf-8")[:-1])
+                data = self.s.recv(data_size)
+                if(len(data) != 1):
+                    # init pack received
+                    self.ready_to_play = False  
+                    break
 
 
-        # give info to GameController that data was sent and game needs to be initalized
-        self.init_pack_recived = True
+            # get init's pack info
+            data_unpacked = struct.unpack('i',data)
+            self.players_number = data_unpacked[0]
+
+            # get init data of players
+            for i in range(self.players_number):
+                self.s.sendall(data)
+                data = self.s.recv(data_size)
+
+                # unpack team and player's number
+                data_unpacked = struct.unpack_from('ii',data)
+
+                self.players_teams.append(data_unpacked[0])
+                self.players_numbers.append(data_unpacked[1])
+
+                # trim data and get player's nickname
+                data = data[2 * sizeof_int:]
+                sizeof_nickname = len(data)
+                data_unpacked = struct.unpack_from(str(sizeof_nickname) + 's',data)
+
+                # convert bytes to string, dropping last character ('\0' char is not needed in python)
+                self.players_nicknames.append(data_unpacked[0].decode("utf-8")[:-1])
 
 
-         # send and receive readyToPlay, until game pack was recived
-        while(True):
-            ready_flag = struct.pack('?', self.ready_to_play)
-            self.s.sendall(ready_flag)
-
-            data = self.s.recv(data_size)
-            if(len(data) != 1):
-                # game pack received
-                self.ready_to_play = False  
-                break
+            # give info to GameController that data was sent and game needs to be initalized
+            self.init_pack_recived = True
 
 
-        # receive and analyse game pack, send client's input
-        while(True):
-            # analyse game pack
-            game_data_size = 5 * sizeof_double + 2 * sizeof_double + sizeof_double * self.players_number * 5
-            data_unpacked = struct.unpack(self.unpack_format(game_data_size), data)
+             # send and receive readyToPlay, until game pack was recived
+            while(True):
+                ready_flag = struct.pack('?', self.ready_to_play)
+                self.s.sendall(ready_flag)
+
+                data = self.s.recv(data_size)
+                if(len(data) != 1):
+                    # game pack received
+                    self.ready_to_play = False  
+                    self.game_running = True
+                    break
+
+
+            # receive and analyse game pack, send client's input
+            while(True):
+                # analyse game pack
+                game_data_size = 5 * sizeof_double + 2 * sizeof_double + sizeof_double * self.players_number * 5
+                data_unpacked = struct.unpack(self.unpack_format(game_data_size), data)
             
-            self.game_pack = data_unpacked
-            self.game_pack_recived = True
+                self.game_pack = data_unpacked
+                self.game_pack_recived = True
 
-            # send client's input
+                # send client's input
             
-            clientInput = bytes([self.command]) + struct.pack('dd', *[self.mouse_x, self.mouse_y])
-            self.s.sendall(clientInput)
+                clientInput = bytes([self.command]) + struct.pack('dd', *[self.mouse_x, self.mouse_y])
+                self.s.sendall(clientInput)
 
-            # receive new game pack
-            data = self.s.recv(game_data_size)
+                # receive new game pack
+                data = self.s.recv(game_data_size)
+                if len(data) == 1:
+                    self.resetTransferData()
+                    break
    
 
     def unpack_format(self, data_size):
@@ -144,3 +150,24 @@ class TransferManager( object ):
         for i in range(int(data_size / 8)):
             format += 'd'
         return format
+
+
+    def resetTransferData(self):
+        self.init_pack_recived = False
+        self.game_pack_recived = False
+        self.game_running = False
+
+        # data to init game
+        self.init_pack_recived = False
+        self.players_number = 0
+        self.players_numbers = []
+        self.players_nicknames = []
+        self.players_teams = []
+
+        self.game_pack_recived = False
+        self.game_pack = 0
+
+        # data to send
+        self.command = 64
+        self.mouse_x = 0
+        self.mouse_y = 0

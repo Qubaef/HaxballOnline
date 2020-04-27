@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-GameEngine::GameEngine() 
+GameEngine::GameEngine()
 {
 	int screenMargin = (screenH - pitchH) / 2;
 	this->pGoalLeft = new Goal(this, (screenW - pitchW) / 2, screenMargin + pitchH * 6 / 16, screenMargin + pitchH * 10 / 16, 50, -1);
@@ -8,15 +8,15 @@ GameEngine::GameEngine()
 
 	this->pBall = new Ball(this, 300, 300);
 
-	this->pTeamLeft = new Team(this, pGoalLeft, 1);
-	this->pTeamRight = new Team(this, pGoalLeft, -1);
+	this->pTeamRight = new Team(this, pGoalLeft, 1);
+	this->pTeamLeft = new Team(this, pGoalLeft, -1);
 
 	this->timer = chrono::high_resolution_clock::now();
 
 	this->finished = false;
 }
 
-GameEngine::~GameEngine() 
+GameEngine::~GameEngine()
 {
 	delete pTeamRight;
 	delete pTeamLeft;
@@ -26,7 +26,7 @@ GameEngine::~GameEngine()
 }
 
 
-void GameEngine::redraw() 
+void GameEngine::redraw()
 {
 	this->gameStateManager();
 
@@ -45,13 +45,13 @@ void GameEngine::redraw()
 }
 
 
-void GameEngine::update() 
+void GameEngine::update()
 {
 	// calculate frame percentage
 	framePercentage = getTick() * milisPerFrame;
 
 	// update players
-	for (int i = 0; i < players.size(); i++) 
+	for (int i = 0; i < players.size(); i++)
 	{
 		//handling disconnected player
 		if (players[i]->getPosition().getX() <= -10 && players[i]->getPosition().getY() <= -10)
@@ -64,7 +64,7 @@ void GameEngine::update()
 	pBall->update();
 
 	// collide players
-	for (int i = 0; i < players.size(); i++) 
+	for (int i = 0; i < players.size(); i++)
 	{
 		// handling disconnected player
 		if (players[i]->getPosition().getX() <= -10 && players[i]->getPosition().getY() <= -10)
@@ -82,13 +82,13 @@ void GameEngine::update()
 }
 
 
-double GameEngine::getFramePercentage(){
+double GameEngine::getFramePercentage() {
 	return framePercentage;
 }
 
 
+// return time since last tick (in miliseconds)
 double GameEngine::clockTick() {
-	// return time since last tick (in miliseconds)
 	chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
 	double dt = chrono::duration_cast<chrono::nanoseconds>(current - this->timer).count() / 1000000.0;
 	this->timer = current;
@@ -96,15 +96,15 @@ double GameEngine::clockTick() {
 }
 
 
+// returns time since the last tick (in miliseconds)
 double GameEngine::getTick() {
-	// returns time since the last tick (in miliseconds)
 	chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
 	return chrono::duration_cast<chrono::nanoseconds>(current - this->timer).count() / 1000000.0;
 }
 
 
 // returns elapsed time since the game starts (in seconds)
-double GameEngine::countDurationTime(){
+double GameEngine::countDurationTime() {
 	chrono::high_resolution_clock::time_point now = chrono::high_resolution_clock::now();
 	return chrono::duration_cast<chrono::nanoseconds>(now - this->gameStart).count() / 1000000000.0;
 }
@@ -133,24 +133,31 @@ void GameEngine::gameStateManager()
 	{
 		// All set - game starts
 		playMode = 0;
+		elapsedTime = 0;
 		if (pTeamLeft->getScore() + pTeamRight->getScore() == 0) // first round
-					this->gameStart = chrono::high_resolution_clock::now();
-		
-		printf_s("Game starts!\n");
+		{
+			this->gameStart = chrono::high_resolution_clock::now();
+		}
+
+		printf_s("GAME: Game starts!\n");
+		printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
 	}
 	else if (playMode == 0) //game is running
 	{
 		// Game over
-		if (countDurationTime() > this->gameDurationLimit)
+		if (countDurationTime() >= 60)
+		{
+			elapsedTime++;
+			printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
+			this->gameStart = chrono::high_resolution_clock::now();
+		}
+		if (elapsedTime >= this->gameDurationLimit)
 		{
 			// set all variables and game states				
 			this->finished = true;
 			this->playMode = -2;
-			printf_s("Time's up! GAME OVER\n");
+			printf_s("GAME: Time's up! Game over\n");
 			this->winnersInfo();
-			//preparation for the next game
-			pTeamLeft->resetScore();
-			pTeamLeft->resetScore();
 		}
 	}
 }
@@ -166,14 +173,14 @@ void GameEngine::positionsReset()
 void GameEngine::goalScored(Goal* pGoal)
 {
 	if (pGoal == pGoalLeft) {
-		printf_s("Goal for team right!\n");
+		printf_s("GAME: Goal for team right!\n");
 		pTeamRight->addPoint();
-	} else {
-		printf_s("Goal for team left!\n");
+	}
+	else {
+		printf_s("GAME: Goal for team left!\n");
 		pTeamLeft->addPoint();
 	}
 
-	printf_s("Remained time: %f s \n", gameDurationLimit - countDurationTime());
 	playMode = -2;
 }
 
@@ -205,21 +212,21 @@ void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 	players.push_back(pPlayer);
 
 	// choose in which team the player will be 
-	if (teamNumber == 0) 
+	if (teamNumber == 0)
 	{
-		if (pTeamLeft->size() >= pTeamRight->size()) 
+		if (pTeamLeft->size() >= pTeamRight->size())
 		{
 			pTeamRight->addPlayer(pPlayer);
 			pPlayer->setTeam(2);
 		}
-		else 
+		else
 		{
 			pTeamLeft->addPlayer(pPlayer);
 			pPlayer->setTeam(1);
 		}
 	}
 	else {
-		if (teamNumber == 1) 
+		if (teamNumber == 1)
 		{
 			pTeamLeft->addPlayer(pPlayer);
 			pPlayer->setTeam(1);
@@ -330,13 +337,13 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 void GameEngine::winnersInfo()
 {
 	if (pTeamLeft->getScore() == pTeamRight->getScore()) {
-		printf_s("The game ended with a draw! Congratulations to the both teams! \n\n");
+		printf_s("GAME: The game ended with a draw! \n\n");
 	}
 	else if (pTeamLeft->getScore() > pTeamRight->getScore()) {
-		printf_s("And the winner is The Left Team! Congratulations! \n\n");
+		printf_s("GAME: And the winner is The Left Team! \n\n");
 	}
 	else {
-		printf_s("And the winner is The Right Team! Congratulations! \n\n ");
+		printf_s("GAME: And the winner is The Right Team! \n\n ");
 	}
 }
 
@@ -399,15 +406,15 @@ bool GameEngine::getFinished()
 vector<double> GameEngine::serialize() const
 {
 	//we don't have to send const value like goals and screen, we have to send balls and teams
-	
+
 	//1. ball serialization
 	vector<double>dataVector;
-	
+
 	pBall->serialize(dataVector);
-	
+
 	//2. team left serialization
 	pTeamLeft->serialize(dataVector);
-	
+
 	//3.team right serialization
 	pTeamRight->serialize(dataVector);
 

@@ -1,5 +1,6 @@
 import pygame
 import pygame.gfxdraw
+import datetime
 from math import ceil
 from CirclePhysical import CirclePhysical
 from Goal import Goal
@@ -66,6 +67,20 @@ class GameEngine( object ):
         self.team_right = Team(self, self.team1_color, self.goal_right, 1)
         self.team_left = Team(self, self.team2_color, self.goal_left, -1)
 
+        self.start_time = pygame.time.get_ticks()
+
+    def reset(self):
+        pygame.quit()
+        del self.sectors[:]
+
+        del self.goal_left
+        del self.goal_right
+            
+        del self.team_right
+        del self.team_left 
+
+        del self.balls[:]
+        del self.players[:]
 
     def draw_background(self):
         # draw backgroud
@@ -73,19 +88,29 @@ class GameEngine( object ):
 
         # draw score
         font = pygame.font.Font(pygame.font.get_default_font(), 30)
-        score_left = font.render(str(self.team_left.score), False, self.team_left.color)
-        score_right = font.render(str(self.team_right.score), False, self.team_right.color)
+        score_left = font.render(str(self.team_left.score), True, self.team_left.color)
+        score_right = font.render(str(self.team_right.score), True, self.team_right.color)
 
-        self.screen.blit(score_left, (self.screen_w / 10, self.screen_h / 20))
-        self.screen.blit(score_right, (self.screen_w * 9 / 10, self.screen_h / 20))
+        self.screen.blit(score_left, ((self.screen_w - self.pitch_w) / 4, (self.screen_h - self.pitch_h) / 4))
+        self.screen.blit(score_right, (self.pitch_w + (self.screen_w - self.pitch_w) * 3 / 4, (self.screen_h - self.pitch_h) / 4))
 
+        # draw status message
         if self.play_mode == -1:
-            status_message = font.render('GOAL!', False, (0,0,0))
-            self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
+            status_message = font.render('GOAL!', True, (0,0,0))
+            status_message_rect = status_message.get_rect(center=(self.screen_w / 2, (self.screen_h - self.pitch_h) / 4))
+            self.screen.blit(status_message, status_message_rect)
         elif self.play_mode == 2 and self.delay_counter < 500:
-            status_message = font.render('PLAY!', False, (0,0,0))
-            self.screen.blit(status_message, (self.screen_w * 3 / 10, self.screen_h / 20))
+            status_message = font.render('PLAY!', True, (0,0,0))
+            status_message_rect = status_message.get_rect(center=(self.screen_w / 2, (self.screen_h - self.pitch_h) / 4))
+            self.screen.blit(status_message, status_message_rect)
 
+        # measure time 
+        time = pygame.time.get_ticks() - self.start_time
+
+        # draw time
+        time_message = font.render(str(datetime.timedelta(seconds=int(time / 1000)))[-5:], True, (0,0,0))
+        time_message_rect = time_message.get_rect(center=(self.screen_w / 2, self.pitch_h + (self.screen_h - self.pitch_h) * 3 / 4))
+        self.screen.blit(time_message, time_message_rect)
         
         # draw pitch border
         pygame.draw.rect(self.screen, self.border_color, \
@@ -314,6 +339,6 @@ class GameEngine( object ):
 
 
     def deserialize(self,data):
-        data=self.balls[0].deserialize(data)
-        data=self.team_left.deserialize(data)
-        data=self.team_right.deserialize(data)
+        data = self.balls[0].deserialize(data)
+        data = self.team_left.deserialize(data)
+        data = self.team_right.deserialize(data)

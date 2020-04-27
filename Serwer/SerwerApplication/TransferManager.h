@@ -25,7 +25,7 @@ private:
 
 	bool ifGameRunning;
 	mutex gamePackToSendMutex;				// mutex for critical section
-	mutex clientDataMutex;		// mutex for critical section
+	mutex clientDataMutex;					// mutex for critical section
 	mutex userInputMutex;
 
 	bool charToBool(char flag);
@@ -49,5 +49,6 @@ public:
 	void manageInputs(ClientData* pClientData);
 	void gameSerialize(GameEngine* pGame);
 	void readyToPlayReset();
+	void dataToSendReset();
 	void setGameRunning(bool ifGameRunning);
 };

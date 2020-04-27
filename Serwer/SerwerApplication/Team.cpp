@@ -72,8 +72,7 @@ vector<Player*> Team::getPlayers()
 void Team::serialize(vector<double> &dataVector) const
 {
 	dataVector.push_back(score);
-	int i = 0;
-	for(Player*player:players)
+	for (Player*player : players)
 	{
 		player->serialize(dataVector);
 	}
