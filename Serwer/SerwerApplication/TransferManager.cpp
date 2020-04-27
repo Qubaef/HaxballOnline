@@ -34,8 +34,7 @@ TransferManager::~TransferManager()
 }
 
 
-// function called bu separate thread
-// communicate with your client
+// function called bu separate thread to communicate with its client
 void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 {
 	vector<double> dataToSend;
@@ -215,8 +214,7 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 
 
 // convert given char (byte) to bool value
-bool TransferManager::charToBool(char flag)
-{
+bool TransferManager::charToBool(char flag){
 	return flag == 0 ? false : true;
 }
 
@@ -226,9 +224,8 @@ string TransferManager::bufferToString(char buffer[], int length)
 {
 	string str = "";
 	for (int i = 0; i < length; i++)
-	{
 		str = str + buffer[i];
-	}
+	
 	return str;
 }
 
@@ -238,9 +235,8 @@ unsigned short TransferManager::generateNewNumber()
 {
 	unsigned short max = 0;
 	for (ClientData* client : this->clientsData)
-	{
 		max = client->getNumber() > max ? client->getNumber() : max;
-	}
+	
 	return max + 1;
 }
 
@@ -305,14 +301,11 @@ void TransferManager::buildInitializationPack()
 	}
 }
 
-
-
 void TransferManager::deleteInitializationPack()
 {
 	delete[] initPackToSend;
 	initPackToSend = NULL;
 }
-
 
 // Function to execute player moves stored in their ClientsData structures
 void TransferManager::manageInputs(ClientData * pClientData)
@@ -365,33 +358,24 @@ void TransferManager::gameSerialize(GameEngine* pGame)
 	gamePackToSend = pGame->serialize();
 
 	gamePackToSendMutex.unlock();
-
-
+	
 	// set all ifdataToSend flags to True
 	for (int i = 0; i < ifdataToSend.size(); i++)
-	{
-		ifdataToSend[i] = true;
-	}
+			ifdataToSend[i] = true;
 }
-
 
 void TransferManager::readyToPlayReset()
 {
 	for (ClientData* client : this->clientsData)
-	{
 		client->setReady(false);
-	}
+	
 }
-
 
 void TransferManager::dataToSendReset()
 {
 	for (int i = 0; i < ifdataToSend.size(); i++)
-	{
 		ifdataToSend[i] = false;
-	}
 }
-
 
 int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 {
@@ -405,7 +389,7 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 		//if we have error
 		if (iResult == SOCKET_ERROR)
 		{
-			printf_s("SERVER: recieve failed with error: %d\n", WSAGetLastError());
+			printf_s("SERVER: Data receivation failed with error: %d\n", WSAGetLastError());
 			disablePlayer(pData);
 			return 0;
 		}
@@ -432,15 +416,12 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 	}
 }
 
-
 void TransferManager::disablePlayer(ClientData* pData)
 {
 	pData->getPlayer()->setPosition(Vector2D(-10, -10));
 }
 
-
 void TransferManager::setGameRunning(bool ifGameRunning)
 {
 	this->ifGameRunning = ifGameRunning;
 }
-
