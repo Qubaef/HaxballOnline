@@ -120,7 +120,6 @@ class TransferManager( object ):
                 if(len(data) != 1):
                     # game pack received
                     self.ready_to_play = False  
-                    self.game_running = True
                     break
 
 

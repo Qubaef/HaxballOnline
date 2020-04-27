@@ -71,6 +71,14 @@ class GameEngine( object ):
 
     def reset(self):
         pygame.quit()
+
+        if self.team_left.score > self.team_right.score:
+            print('Team red won!')
+        elif self.team_left.score < self.team_right.score:
+            print('Team blue won!')
+        else:
+            print('It is a tie!')
+
         del self.sectors[:]
 
         del self.goal_left

@@ -88,6 +88,7 @@ while(not done):
 
     # set flag read
     transfer_manager.ready_to_play = True
+    transfer_manager.game_running = True
 
     # main loop of the game
     while(True):

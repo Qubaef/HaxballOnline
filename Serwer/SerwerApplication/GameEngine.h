@@ -16,7 +16,7 @@ private:
 	// delay time in milliseconds
 	const int startDelay = 2000;
 	const int goalDelay = 2000;
-	const unsigned gameDurationLimit = 1;		// game duration (in minutes)
+	const unsigned gameDurationLimit = 5;		// game duration (in minutes)
 	unsigned elapsedTime;						// elapsed time (in minutes)
 	double delayCounter = 0;
 	chrono::high_resolution_clock::time_point gameStart;

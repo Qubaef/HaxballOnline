@@ -14,7 +14,10 @@ GameEngine::GameEngine()
 	this->timer = chrono::high_resolution_clock::now();
 
 	this->finished = false;
+
+	this->elapsedTime = 0;
 }
+
 
 GameEngine::~GameEngine()
 {
@@ -133,7 +136,6 @@ void GameEngine::gameStateManager()
 	{
 		// All set - game starts
 		playMode = 0;
-		elapsedTime = 0;
 		if (pTeamLeft->getScore() + pTeamRight->getScore() == 0) // first round
 		{
 			this->gameStart = chrono::high_resolution_clock::now();
