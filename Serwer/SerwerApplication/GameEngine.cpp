@@ -139,15 +139,15 @@ void GameEngine::gameStateManager()
 		if (pTeamLeft->getScore() + pTeamRight->getScore() == 0) // first round
 		{
 			this->gameStart = chrono::high_resolution_clock::now();
-		}
 
-		printf_s("GAME: Game starts!\n");
-		printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
+			printf_s("GAME: Game starts!\n");
+			printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
+		}
 	}
 	else if (playMode == 0) //game is running
 	{
 		// Game over
-		if (countDurationTime() >= gameDurationLimit*60)		// minutes * 60secs
+		if (countDurationTime() >= 60)		// minutes * 60secs
 		{
 			elapsedTime++;
 			printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
@@ -202,7 +202,7 @@ vector<CirclePhysical*> GameEngine::getObjects()
 	return objects;
 }
 
-void GameEngine::newBall(Ball* pBall){
+void GameEngine::newBall(Ball* pBall) {
 	this->pBall = pBall;
 }
 
@@ -346,39 +346,39 @@ void GameEngine::winnersInfo()
 	}
 }
 
-vector<Player*> GameEngine::getPlayers(){
+vector<Player*> GameEngine::getPlayers() {
 	return this->players;
 }
 
-Ball* GameEngine::getBall(){
+Ball* GameEngine::getBall() {
 	return this->pBall;
 }
 
-Goal* GameEngine::getGoalRight(){
+Goal* GameEngine::getGoalRight() {
 	return this->pGoalRight;
 }
 
-Goal* GameEngine::getGoalLeft(){
+Goal* GameEngine::getGoalLeft() {
 	return this->pGoalRight;
 }
 
-int GameEngine::getScreenW(){
+int GameEngine::getScreenW() {
 	return this->screenW;
 }
 
-int GameEngine::getScreenH(){
+int GameEngine::getScreenH() {
 	return this->screenH;
 }
 
-int GameEngine::getPitchW(){
+int GameEngine::getPitchW() {
 	return this->pitchW;
 }
 
-int GameEngine::getPitchH(){
+int GameEngine::getPitchH() {
 	return this->pitchH;
 }
 
-bool GameEngine::getFinished(){
+bool GameEngine::getFinished() {
 	return this->finished;
 }
 
