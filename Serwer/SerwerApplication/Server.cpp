@@ -77,7 +77,7 @@ void Server::play()
 	// reset flags
 	pManager->readyToPlayReset();
 	pManager->dataToSendReset();
-
+	pManager->cleanPlayers();
 	delete pGame;
 }
 
