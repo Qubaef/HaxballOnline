@@ -3,31 +3,32 @@
 class Team
 {
 private:
-	GameEngine* pGame;
-	Goal* pGoal;
-	vector<Player*> players;
-	int score;
-	short int pitchHalf;
+	GameEngine* pGame;			// actual game 
+	Goal* pGoal;				// team's goal
+	vector<Player*> players;	// set of all players from this team
+	int score;					// how many goals the managed to score
+	short int pitchHalf;		// to which half of the pitch they belong
+	
 public:
-	//constructor 
+	//constructor & destructor
 	Team(GameEngine* game, Goal* goal, short int pitchHalf);
 	~Team();
-	//add player to a list of players
+	//adds player to a list of players
 	void addPlayer(Player* player);
-	//remove player if necessary
+	//removes player if necessary
 	void removePlayer(Player* player);
-	//reset score when starting new game
+	//resets score when starting new game
 	void resetScore();
-	//add point when goal scorred event occured
+	//adds point when goal-event occured
 	void addPoint();
-	//return size of team
+	//returns size of team
 	int size();
-	//reset players position to defauly
+	//resets players position to defaulty
 	void resetPosition();
-	// get score value
+	// gets score's value
 	int getScore();
-	//get list of players
+	//get list of all players
 	vector<Player*> getPlayers();
-	//serialize team data to be sent to player
+	//serialize team data in case to be sent to the player
 	void serialize(vector<double> &dataVector) const;
 };

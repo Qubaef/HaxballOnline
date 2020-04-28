@@ -1,13 +1,11 @@
 #include "stdafx.h"
 
-Server::Server()
-{
+Server::Server(){
 	this->pManager = new TransferManager();
 	this->pGame = NULL;
 }
 
-Server::~Server()
-{
+Server::~Server(){
 	delete pGame;
 	delete pManager;
 }
@@ -122,7 +120,7 @@ void Server::manageConnections()
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (ListenSocket == INVALID_SOCKET)
 	{
-		printf_s("SERVER: socket failed with error: %ld\n", WSAGetLastError());
+		printf_s("SERVER: socket creation failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
 		return;

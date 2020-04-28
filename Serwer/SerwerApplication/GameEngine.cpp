@@ -147,7 +147,7 @@ void GameEngine::gameStateManager()
 	else if (playMode == 0) //game is running
 	{
 		// Game over
-		if (countDurationTime() >= 60)
+		if (countDurationTime() >= gameDurationLimit*60)		// minutes * 60secs
 		{
 			elapsedTime++;
 			printf_s("GAME: %d minutes left\n", gameDurationLimit - elapsedTime);
@@ -202,12 +202,9 @@ vector<CirclePhysical*> GameEngine::getObjects()
 	return objects;
 }
 
-
-void GameEngine::newBall(Ball* pBall)
-{
+void GameEngine::newBall(Ball* pBall){
 	this->pBall = pBall;
 }
-
 
 void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
@@ -349,69 +346,49 @@ void GameEngine::winnersInfo()
 	}
 }
 
-
-
-vector<Player*> GameEngine::getPlayers()
-{
+vector<Player*> GameEngine::getPlayers(){
 	return this->players;
 }
 
-
-Ball* GameEngine::getBall()
-{
+Ball* GameEngine::getBall(){
 	return this->pBall;
 }
 
-
-Goal* GameEngine::getGoalRight()
-{
+Goal* GameEngine::getGoalRight(){
 	return this->pGoalRight;
 }
 
-
-Goal* GameEngine::getGoalLeft()
-{
+Goal* GameEngine::getGoalLeft(){
 	return this->pGoalRight;
 }
 
-
-int GameEngine::getScreenW()
-{
+int GameEngine::getScreenW(){
 	return this->screenW;
 }
 
-
-int GameEngine::getScreenH()
-{
+int GameEngine::getScreenH(){
 	return this->screenH;
 }
 
-
-int GameEngine::getPitchW()
-{
+int GameEngine::getPitchW(){
 	return this->pitchW;
 }
 
-
-int GameEngine::getPitchH()
-{
+int GameEngine::getPitchH(){
 	return this->pitchH;
 }
 
-
-bool GameEngine::getFinished()
-{
+bool GameEngine::getFinished(){
 	return this->finished;
 }
-
 
 vector<double> GameEngine::serialize() const
 {
 	//we don't have to send const value like goals and screen, we have to send balls and teams
-
-	//1. ball serialization
+	// here is a vectore to store serialized data
 	vector<double>dataVector;
 
+	//1. ball serialization
 	pBall->serialize(dataVector);
 
 	//2. team left serialization
