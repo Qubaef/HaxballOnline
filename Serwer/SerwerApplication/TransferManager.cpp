@@ -56,7 +56,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 	if (iResult == 0)
 	{
 		closesocket(pData->getSocket());
-		WSACleanup();
 		return;
 	}
 	pData->setNickname(bufferToString(recvbuf, iResult));
@@ -79,7 +78,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			if (iResult == 0)
 			{
 				closesocket(pData->getSocket());
-				WSACleanup();
 				return;
 			}
 			// Check if there is initialization pack ready to be sent
@@ -143,7 +141,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			if (iResult == 0)
 			{
 				closesocket(pData->getSocket());
-				WSACleanup();
 				return;
 			}
 			if (iResult != 1)
@@ -185,7 +182,6 @@ void TransferManager::communicate(ClientData* pData, unsigned int threadIndex)
 			if (iResult == 0)
 			{
 				closesocket(pData->getSocket());
-				WSACleanup();
 				return;
 			}
 			else if (iResult != 17)
@@ -301,6 +297,7 @@ void TransferManager::buildInitializationPack()
 	}
 }
 
+
 void TransferManager::deleteInitializationPack()
 {
 	delete[] initPackToSend;
@@ -364,6 +361,7 @@ void TransferManager::gameSerialize(GameEngine* pGame)
 			ifdataToSend[i] = true;
 }
 
+
 void TransferManager::readyToPlayReset()
 {
 	for (ClientData* client : this->clientsData)
@@ -371,11 +369,13 @@ void TransferManager::readyToPlayReset()
 	
 }
 
+
 void TransferManager::dataToSendReset()
 {
 	for (int i = 0; i < ifdataToSend.size(); i++)
 		ifdataToSend[i] = false;
 }
+
 
 int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 {
@@ -416,12 +416,25 @@ int TransferManager::customRecv(ClientData* pData, char* recvbuf)
 	}
 }
 
+
 void TransferManager::disablePlayer(ClientData* pData)
 {
 	pData->getPlayer()->setPosition(Vector2D(-10, -10));
 }
 
+
 void TransferManager::setGameRunning(bool ifGameRunning)
 {
 	this->ifGameRunning = ifGameRunning;
+}
+
+void TransferManager::cleanPlayers()
+{
+	for (int i = 0; i < this->clientsData.size(); i++)
+	{
+		if (clientsData[i]->getPlayer()->getPosition().getX() < 0 && clientsData[i]->getPlayer()->getPosition().getY() < 0)
+		{
+			this->clientsData.erase(this->clientsData.begin() + i);
+		}
+	}
 }

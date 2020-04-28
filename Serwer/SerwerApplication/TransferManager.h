@@ -37,6 +37,7 @@ private:
 	// if error occured, return 0
 	// otherwise, return 1
 	int customRecv(ClientData* data, char* recvbuf);
+
 	// kicking the player out of the pitch ( due to bad communication or any other error ) 
 	void disablePlayer(ClientData* data);
 
@@ -45,21 +46,33 @@ public:
 	~TransferManager();
 	// creates new thread for every newly connected client
 	void newClient(SOCKET clientSocket);
+
 	// returns if all players confirmed that they are ready to play
 	bool readyToPlay();
+
 	// send info to all client's threads that they need to send initialization pack to their clients
-	void buildInitializationPack();						
-	void deleteInitializationPack();		
+	void buildInitializationPack();
+
+	void deleteInitializationPack();
+
 	// gets information about all connected clients
 	vector<ClientData*>* getClientsData();
+
 	// gets and manages input data from connected clients
 	void manageInputs(ClientData* pClientData);
+
 	// serializes game to a compressed form
 	void gameSerialize(GameEngine* pGame);
+
 	// resets settings - we asume that all players are NOT ready to play, yet..
 	void readyToPlayReset();
+
 	// so there is NO data to send by all threads ( at the moment )
 	void dataToSendReset();
+
 	// setting bool variable to given value 
 	void setGameRunning(bool ifGameRunning);
+
+	//clear data of players in next game if disconnect occured
+	void cleanPlayers();
 };

@@ -74,7 +74,8 @@ class Collision( object ):
     @staticmethod
     def walls_collision(obj, game):
         # check collision with pitch walls
-
+        if obj.p.x<0 and obj.p.y<0:
+            return
         # Top wall
         if obj.p.y < int(obj.size + (game.screen_h - game.pitch_h) / 2):
             obj.set_p(obj.p.x, int(obj.size + (game.screen_h - game.pitch_h) / 2))
