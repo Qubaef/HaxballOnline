@@ -1,3 +1,6 @@
+
+# The following class describes a team ( a set of players ).
+
 class Team( object ):
 
     def __init__(self, game, color, goal, pitch_half):

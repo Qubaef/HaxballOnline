@@ -19,4 +19,3 @@ public:
 	void setPosition(Vector2D p) override;
 	void setMove(Vector2D v)override;
 };
-

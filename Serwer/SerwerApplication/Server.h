@@ -1,3 +1,9 @@
+
+/**
+ *  The following class describes the server side of the game. 
+ *  The server manages the whole connection process and the main game loop. 
+ */
+
 #pragma once
 #include "stdafx.h"
 

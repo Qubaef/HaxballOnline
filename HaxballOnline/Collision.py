@@ -1,3 +1,6 @@
+
+#  The following class describes the way the collisions are handled.
+
 import math
 
 import pygame

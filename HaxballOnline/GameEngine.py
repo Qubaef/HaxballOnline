@@ -1,13 +1,16 @@
+
+# The following class stores data about the current game. 
+# It also makes available many functions to manage and coordinate the game.
+
 import pygame
 import pygame.gfxdraw
 import datetime
 from math import ceil
+
 from CirclePhysical import CirclePhysical
 from Goal import Goal
 from Team import Team
-
 from Collision import Collision
-
 
 class GameEngine( object ):
     # object containing Game's data

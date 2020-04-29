@@ -1,3 +1,8 @@
+
+# The following class describes the game controller.
+# It manages the connection/communication process ( pressed keys, mouse movements, sending data to the server )
+# and basically the main game loop 
+
 import pygame
 import sys
 import math

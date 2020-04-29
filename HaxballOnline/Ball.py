@@ -1,3 +1,7 @@
+
+#  The following class describes the ball used while playing game.
+#  This class is a derived class and inherits from the "CirclePhysical" base class.
+ 
 import pygame
 from CirclePhysical import CirclePhysical
 

@@ -1,3 +1,7 @@
+
+# The following class describes goals set on the opposite sides of the pitch.
+# Each goal contains two posts ( the upper and the lower one ).
+
 import pygame
 from Post import Post
 from Collision import Collision
@@ -22,8 +26,7 @@ class Goal( object ):
         elif(direction == 0):
             self.goal = pygame.image.load("../goal_right.png").convert_alpha()
 
-        
-
+     
     def goal_collide(self):
         Collision.collide(self.post_up)
         Collision.collide(self.post_down)

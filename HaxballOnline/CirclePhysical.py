@@ -1,3 +1,7 @@
+
+# The following class describes all of the moving elements in the game - players, posts, ball.
+# It enables to calculate objects collisions and any changes in their movement and position.
+
 import pygame
 import math
 from abc import ABC
@@ -21,6 +25,7 @@ class CirclePhysical( ABC ):
 
     # methods
 
+    # increase the object's velocity
     def velocity_add(self, velocity):
         self.v += velocity
 
@@ -41,14 +46,14 @@ class CirclePhysical( ABC ):
 
         self.to_sector_add()
 
-
-    def from_sector_remove(self):
+             
         # remove element from currently occupied sector
+    def from_sector_remove(self):
         if self in self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)]:
             self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)].remove(self)
 
-    def to_sector_add(self):
         # add element to right sector
+    def to_sector_add(self):
         self.game.sectors[int(self.p.x / self.game.sector_size)][int(self.p.y / self.game.sector_size)].append(self)
 
 
@@ -62,10 +67,12 @@ class CirclePhysical( ABC ):
         self.v.x = v[0]
         self.v.y = v[1]
 
+
     def set_p(self, px, py):
         # set p vector
         self.p.x = px
         self.p.y = py
+
 
     def get_nearby(self):
         # return list of objects located in nearby sectors

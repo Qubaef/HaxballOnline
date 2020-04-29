@@ -1,5 +1,8 @@
-from CirclePhysical import CirclePhysical
 
+# The following class describes the posts ( goal components ).
+# This class is a derived class and inherits from the "CirclePhysical" base class.
+
+from CirclePhysical import CirclePhysical
 
 class Post( CirclePhysical ):
     def __init__(self, game, px, py):

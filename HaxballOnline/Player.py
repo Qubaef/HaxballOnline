@@ -1,3 +1,7 @@
+
+ #  The following class describes a single player during the game. 
+ #  This class is a derived class and inherits from the "CirclePhysical" base class.
+ 
 import pygame
 import math
 from Ball import Ball

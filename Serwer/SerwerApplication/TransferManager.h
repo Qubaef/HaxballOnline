@@ -1,7 +1,13 @@
+
+/**
+ *  The following class enables parallel communication between multiple clients in real-time.
+ *  Each client has got its private socket to transfer input data to the server.
+ */
+
 #pragma once
 #include "stdafx.h"
 
-// structure created to store data sent to the player before game starts
+// Structure created to store data sent to the player before game starts.
 struct PlayerInitializePack
 {
 	string playerNickname;
@@ -44,6 +50,7 @@ private:
 public:
 	TransferManager();
 	~TransferManager();
+
 	// creates new thread for every newly connected client
 	void newClient(SOCKET clientSocket);
 

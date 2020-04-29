@@ -1,3 +1,7 @@
+
+# The following class enables parallel communication between multiple clients in real-time.
+# A client has got its private socket to transfer input data to the server.
+
 import threading
 import struct
 import socket
