@@ -41,7 +41,6 @@ void GameEngine::redraw()
 	if (delayCounter < 0) {
 		delayCounter = 0;
 	}
-
 	if (playMode == 0) {
 		update();
 	}
@@ -202,9 +201,11 @@ vector<CirclePhysical*> GameEngine::getObjects()
 	return objects;
 }
 
+
 void GameEngine::newBall(Ball* pBall) {
 	this->pBall = pBall;
 }
+
 
 void GameEngine::newPlayer(Player* pPlayer, int teamNumber)
 {
@@ -333,6 +334,7 @@ void GameEngine::wallsCollision(CirclePhysical* pObject)
 	}
 }
 
+
 void GameEngine::winnersInfo()
 {
 	if (pTeamLeft->getScore() == pTeamRight->getScore()) {
@@ -345,6 +347,7 @@ void GameEngine::winnersInfo()
 		printf_s("GAME: And the winner is The Right Team! \n\n ");
 	}
 }
+
 
 vector<Player*> GameEngine::getPlayers() {
 	return this->players;
@@ -381,6 +384,7 @@ int GameEngine::getPitchH() {
 bool GameEngine::getFinished() {
 	return this->finished;
 }
+
 
 vector<double> GameEngine::serialize() const
 {

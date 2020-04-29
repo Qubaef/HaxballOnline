@@ -8,7 +8,9 @@ Team::Team(GameEngine* game, Goal* goal, short int pitchHalf)
 	this->score = 0;
 }
 
+
 Team::~Team() {}
+
 
 void Team::addPlayer(Player* pPlayer)
 {
@@ -16,9 +18,11 @@ void Team::addPlayer(Player* pPlayer)
 	pPlayer->setTeam(this->pitchHalf);
 }
 
+
 void Team::addPoint(){
 	this->score += 1;
 }
+
 
 void Team::removePlayer(Player *pPlayer)
 {
@@ -26,6 +30,7 @@ void Team::removePlayer(Player *pPlayer)
 		if (players[i] == pPlayer)
 			players.erase(players.begin() + i);	
 }
+
 
 void Team::resetPosition()
 {
@@ -40,21 +45,26 @@ void Team::resetPosition()
 	}
 }
 
+
 int Team::getScore(){
 	return this->score;
 }
+
 
 void Team::resetScore(){
 	this->score = 0;
 }
 
+
 int Team::size(){
 	return static_cast<int>(players.size());
 }
 
+
 vector<Player*> Team::getPlayers(){
 	return this->players;
 }
+
 
 void Team::serialize(vector<double> &dataVector) const
 {

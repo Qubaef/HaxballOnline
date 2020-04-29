@@ -12,6 +12,8 @@ private:
 public:
 	Server();
 	~Server();
-	void start();				//  initialize server's components and start waiting for players to join
+
+	// initializing server's components and start waiting for players to join
+	void start();				
 
 };

@@ -15,6 +15,7 @@ ClientData::ClientData(SOCKET clientSocket)
 
 ClientData::~ClientData() {}
 
+
 bool ClientData::getReady(){
 	return this->ready;
 }
@@ -54,6 +55,7 @@ void ClientData::setNickname(string nickname){
 UserInput ClientData::getUserInput() const{
 	return this->userInput;
 }
+
 
 void ClientData::setUserInput(char * input){
 	this->userInput.command = input[0];

@@ -1,3 +1,8 @@
+
+/**
+ * The following class describes and stores all players' data and information.
+ */
+
 #pragma once
 #include "stdafx.h"
 

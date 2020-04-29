@@ -7,8 +7,7 @@ Player::Player(GameEngine* pGame, int px, int py, int number)
 	this->team = -1;
 }
 
-Player::~Player()
-{}
+Player::~Player() {}
 
 void Player::kick(double mouseX, double mouseY)
 {
@@ -45,7 +44,6 @@ void Player::modeNormal()
 short int Player::getTeam(){
 	return team;
 }
-
 
 void Player::setTeam(short int team){
 	this->team = team;

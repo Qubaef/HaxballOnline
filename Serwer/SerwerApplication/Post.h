@@ -1,5 +1,12 @@
+
+/**
+ *  The following class describes the posts ( goal components ).
+ *  This class is a derived class and inherits from the "CirclePhysical" base class.
+ */
+
 #pragma once
 #include "stdafx.h"
+
 class Post:public CirclePhysical
 {
 	// Each of 4 posts implements function from an above class (CirclePhysical). As far as we are concerned,

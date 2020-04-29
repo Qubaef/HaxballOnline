@@ -3,10 +3,11 @@
 
 CirclePhysical::CirclePhysical(GameEngine* game, int px, int py, int number, double weight, int size)
 	:pGame(game), p(px, py), number(number), weight(weight), size(size), v(0, 0), vMax(6 / pow(weight, 2 / 3.0)), hitbox(size * 3 / 2), ballControl(1), friction(weight*0.2)
-{
-}
+{}
+
 
 CirclePhysical::~CirclePhysical() {}
+
 
 //setting position of an object 
 void CirclePhysical::setPosition(Vector2D p)
@@ -16,15 +17,17 @@ void CirclePhysical::setPosition(Vector2D p)
 	this->p = p;
 }
 
+
 //setting velocity of an object
-void CirclePhysical::setMove(Vector2D v)
-{
+void CirclePhysical::setMove(Vector2D v){
 	this->v = v;
 }
+
 
 // updating object's velocity and position by occurred the friction 
 void CirclePhysical::update()
 {
+	// out of the pitch 
 	if (this->p.getX() <= -10 && this->p.getY() <= -10)
 		return;
 
@@ -32,17 +35,18 @@ void CirclePhysical::update()
 	this->p = this->p + this->v * pGame->getFramePercentage();
 
 	if (this->v.length() > this->getVMax())
-	{
 		this->setMove(Vector2D::Normal(this->v) * this->getVMax());
-	}
+	
 
 	this->pGame->wallsCollision(this);
 }
 
-// function that solves collisions - with any other object in the pitch 
+
+// function that solves collisions (with any other object in the pitch)
 void CirclePhysical::collide()
 {
 	vector<CirclePhysical*> objects = this->pGame->getObjects();
+
 	for (CirclePhysical* object : objects)
 	{
 		if (object != this)
@@ -61,12 +65,14 @@ void CirclePhysical::collide()
 					Vector2D pNew = this->p - Vector2D::Normal(this->p) * overlap * (object->weight / this->weight);
 					this->setPosition(pNew);
 				}
+
 				this->pGame->wallsCollision(this);
 				if (dist != 0)
 				{
 					Vector2D pNew = object->p - (object->p - this->p) * overlap * (this->weight / object->weight) / dist;
 					object->setPosition(pNew);
 				}
+
 				object->pGame->wallsCollision(object);
 				double mass = 2 * this->weight / (this->weight + object->weight);
 				Vector2D temp = this->v - (this->p - object->p) * (mass * Vector2D::Dot(this->v - object->v, this->p - object->p) / pow((this->p - object->p).length(), 2));
@@ -74,6 +80,7 @@ void CirclePhysical::collide()
 				object->setMove(object->v - (object->p - this->p) * (mass * Vector2D::Dot(object->v - this->v, object->p - this->p) / pow((object->p - this->p).length(), 2)));
 				this->setMove(temp);
 				object->v = object->v * this->ballControl;
+
 				if (this->v.length() > this->getVMax())
 					this->setMove(Vector2D::Normal(this->v) * this->getVMax());
 
@@ -84,14 +91,14 @@ void CirclePhysical::collide()
 	}
 }
 
-// ading velocity to object's current  velocity
-void CirclePhysical::velocityAdd(Vector2D velocity)
-{
+
+// ading velocity to object's current velocity
+void CirclePhysical::velocityAdd(Vector2D velocity){
 	this->v = this->v + velocity;
 }
 
-// getters and setters for all over the variables from private section 
 
+// getters and setters for all over the variables from the private section 
 double CirclePhysical::getVMax() {
 	return this->vMax;
 }
@@ -132,7 +139,8 @@ Vector2D CirclePhysical::getMove(){
 	return this->v;
 }
 
-//function to serialie data about current values of object's variables
+
+//function serialized data about current values of the object's variables
 void CirclePhysical::serialize(vector<double> &dataVector) const
 {
 	dataVector.push_back(p.getX());

@@ -5,10 +5,12 @@ Server::Server(){
 	this->pGame = NULL;
 }
 
+
 Server::~Server(){
 	delete pGame;
 	delete pManager;
 }
+
 
 // initialize server's components and start waiting for players to join
 void Server::start()
@@ -30,6 +32,7 @@ void Server::start()
 		}
 	}
 }
+
 
 void Server::play()
 {
@@ -80,6 +83,7 @@ void Server::play()
 	pManager->cleanPlayers();
 	delete pGame;
 }
+
 
 // (New Thread) initialize sockets and manage clients connections
 void Server::manageConnections()
